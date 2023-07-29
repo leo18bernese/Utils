@@ -1,0 +1,5 @@
+name: LUtils
+version: ${project.version}
+author: itz_leoo
+main: me.leoo.utils.Utils
+description: Utils methods by itz_leoo
