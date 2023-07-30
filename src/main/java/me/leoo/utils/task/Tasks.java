@@ -1,34 +1,32 @@
 package me.leoo.utils.task;
 
 import me.leoo.utils.Utils;
+import org.bukkit.Bukkit;
 
 public class Tasks {
 
-    public static void run(Callable callable) {
-        Utils.get().getServer().getScheduler().runTask(Utils.get(), callable::call);
+    public static void run(Runnable task) {
+        Bukkit.getScheduler().runTask(Utils.get(), task);
     }
 
-    public static void runAsync(Callable callable) {
-        Utils.get().getServer().getScheduler().runTaskAsynchronously(Utils.get(), callable::call);
+    public static void runAsync(Runnable task) {
+        Bukkit.getScheduler().runTaskAsynchronously(Utils.get(), task);
     }
 
-    public static void runLater(Callable callable, long delay) {
-        Utils.get().getServer().getScheduler().runTaskLater(Utils.get(), callable::call, delay);
+    public static void runLater(Runnable task, long delay) {
+        Bukkit.getScheduler().runTaskLater(Utils.get(), task, delay);
     }
 
-    public static void runAsyncLater(Callable callable, long delay) {
-        Utils.get().getServer().getScheduler().runTaskLaterAsynchronously(Utils.get(), callable::call, delay);
+    public static void runAsyncLater(Runnable task, long delay) {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(Utils.get(), task, delay);
     }
 
-    public static void runTimer(Callable callable, long delay, long interval) {
-        Utils.get().getServer().getScheduler().runTaskTimer(Utils.get(), callable::call, delay, interval);
+    public static void runTimer(Runnable task, long delay, long interval) {
+        Bukkit.getScheduler().runTaskTimer(Utils.get(), task, delay, interval);
     }
 
-    public static void runAsyncTimer(Callable callable, long delay, long interval) {
-        Utils.get().getServer().getScheduler().runTaskTimerAsynchronously(Utils.get(), callable::call, delay, interval);
+    public static void runAsyncTimer(Runnable task, long delay, long interval) {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(Utils.get(), task, delay, interval);
     }
 
-    public interface Callable {
-        void call();
-    }
 }

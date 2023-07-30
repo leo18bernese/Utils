@@ -1,20 +1,21 @@
 package me.leoo.utils;
 
-import lombok.Getter;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-@Getter
 public class Utils extends JavaPlugin {
 
-    @Getter
-    private static Utils instance;
+    private static Plugin plugin;
 
     @Override
     public void onEnable() {
-        instance = this;
+        plugin = this;
     }
 
-    public static Utils get() {
-        return instance;
+    public static Plugin get() {
+        if (plugin == null) {
+            plugin = JavaPlugin.getProvidingPlugin(Utils.class);
+        }
+        return plugin;
     }
 }
