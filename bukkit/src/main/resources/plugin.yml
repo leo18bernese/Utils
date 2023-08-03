@@ -1,0 +1,5 @@
+name: LUtils
+version: ${project.version}
+author: itz_leoo
+main: me.leoo.utils.bukkit.Utils
+description: Utils methods for bukkit plugins by itz_leoo
