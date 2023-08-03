@@ -4,13 +4,8 @@ import java.util.*;
 
 public final class Configuration {
 
-    private static final char SEPARATOR = '.';
     final Map<String, Object> self;
     private final Configuration defaults;
-
-    public Configuration() {
-        this(null);
-    }
 
     public Configuration(Configuration defaults) {
         this(new LinkedHashMap<String, Object>(), defaults);
@@ -32,7 +27,7 @@ public final class Configuration {
     }
 
     private Configuration getSectionFor(String path) {
-        int index = path.indexOf(SEPARATOR);
+        int index = path.indexOf('.');
         if (index == -1) {
             return this;
         }
@@ -48,7 +43,7 @@ public final class Configuration {
     }
 
     private String getChild(String path) {
-        int index = path.indexOf(SEPARATOR);
+        int index = path.indexOf('.');
         return (index == -1) ? path : path.substring(index + 1);
     }
 
@@ -79,12 +74,12 @@ public final class Configuration {
     }
 
     public Object getDefault(String path) {
-        return (defaults == null) ? null : defaults.get(path);
+        return defaults == null ? null : defaults.get(path);
     }
 
     public void set(String path, Object value) {
         if (value instanceof Map) {
-            value = new Configuration((Map) value, (defaults == null) ? null : defaults.getSection(path));
+            value = new Configuration((Map<?, ?>) value, (defaults == null) ? null : defaults.getSection(path));
         }
 
         Configuration section = getSectionFor(path);
@@ -278,7 +273,7 @@ public final class Configuration {
 
     public char getChar(String path) {
         Object def = getDefault(path);
-        return getChar(path, (def instanceof Character) ? (Character) def : '\u0000');
+        return getChar(path, def instanceof Character ? (Character) def : '\u0000');
     }
 
     public char getChar(String path, char def) {
@@ -322,7 +317,6 @@ public final class Configuration {
         return result;
     }
 
-    /*------------------------------------------------------------------------*/
     public List<?> getList(String path) {
         Object def = getDefault(path);
         return getList(path, (def instanceof List<?>) ? (List<?>) def : Collections.EMPTY_LIST);

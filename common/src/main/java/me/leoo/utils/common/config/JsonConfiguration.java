@@ -1,12 +1,13 @@
 package me.leoo.utils.common.config;
 
 import com.google.common.base.Charsets;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSerializer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.Map;
