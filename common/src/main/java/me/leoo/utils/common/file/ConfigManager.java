@@ -2,9 +2,7 @@ package me.leoo.utils.common.file;
 
 import lombok.Getter;
 import me.leoo.utils.common.compatibility.SoftwareUtils;
-import me.leoo.utils.common.config.Configuration;
-import me.leoo.utils.common.config.ConfigurationProvider;
-import me.leoo.utils.common.config.YamlConfiguration;
+import me.leoo.utils.common.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +13,7 @@ import java.util.stream.Collectors;
 @Getter
 public class ConfigManager {
 
-    private Configuration yml;
-    private ConfigurationProvider provider;
+    private YamlConfiguration yml;
     private final File config;
     private String name;
 
@@ -27,20 +24,19 @@ public class ConfigManager {
 
         if (config == null) return;
 
-        try {
-            provider = ConfigurationProvider.getProvider(YamlConfiguration.class);
-            yml = provider.load(config);
+        yml = YamlConfiguration.loadConfiguration(config);
+        yml.options().copyDefaults(true);
 
-            this.name = name;
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+        this.name = name;
+    }
 
+    public void reload() {
+        yml = YamlConfiguration.loadConfiguration(config);
     }
 
     public void save() {
         try {
-            provider.save(yml, config);
+            yml.save(config);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -62,15 +58,15 @@ public class ConfigManager {
         String string = yml.getString(path);
 
         if (string == null) {
-            utils.info("String " + path + " not found in " + name + ".yml");
+            SoftwareUtils.getInstance().info("String " + path + " not found in " + name + ".yml");
             return "StringNotFound";
         }
 
-        return utils.color(string);
+        return SoftwareUtils.getInstance().color(string);
     }
 
     public List<String> getList(String path) {
-        return yml.getStringList(path).stream().map(utils::color).collect(Collectors.toList());
+        return yml.getStringList(path).stream().map(SoftwareUtils.getInstance()::color).collect(Collectors.toList());
     }
 
     public List<Integer> getIntegerSplitList(String path) {
@@ -78,5 +74,6 @@ public class ConfigManager {
                 .map(Integer::valueOf)
                 .collect(Collectors.toList());
     }
+
 
 }

@@ -7,10 +7,10 @@ import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import lombok.Getter;
 import lombok.Setter;
-import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.menu.MenuBuilder;
 import me.leoo.utils.bukkit.menu.MenuItem;
 import me.leoo.utils.common.file.ConfigManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -190,7 +190,7 @@ public class ItemBuilder {
 
     public void setInInventory(Player player, MenuBuilder menu, MenuItem.Callback<InventoryClickEvent> eventCallBack) {
         if (getSlot() == -1) {
-            Utils.get().getLogger().severe(
+            Bukkit.getLogger().severe(
                     "Slot not set for item: " + itemMeta.getDisplayName() + " in menu: " + menu.getTitle(player) + "." +
                             "\nUsing first slot.");
 

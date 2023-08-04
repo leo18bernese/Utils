@@ -7,7 +7,7 @@
     <parent>
         <groupId>me.leoo.utils</groupId>
         <artifactId>Utils</artifactId>
-        <version>1.4</version>
+        <version>1.5</version>
     </parent>
 
     <artifactId>bukkit</artifactId>
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>me.leoo.utils</groupId>
             <artifactId>common</artifactId>
-            <version>1.4</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -81,7 +81,7 @@
         </resources>
         <plugins>
             <plugin>
-                <version>3.8.1</version>
+                <version>3.11.0</version>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>

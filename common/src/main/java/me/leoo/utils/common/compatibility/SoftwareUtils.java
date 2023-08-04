@@ -3,9 +3,9 @@ package me.leoo.utils.common.compatibility;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 public abstract class SoftwareUtils {
 
+    @Getter
     @Setter
     private static SoftwareUtils instance;
 

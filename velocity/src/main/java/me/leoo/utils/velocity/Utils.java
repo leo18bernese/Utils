@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 public class Utils {
 
     private static Utils plugin;
+
     private final ProxyServer server;
     private final Logger logger;
 
