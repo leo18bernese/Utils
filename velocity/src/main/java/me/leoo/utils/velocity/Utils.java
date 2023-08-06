@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
+import me.leoo.utils.common.compatibility.SoftwareManager;
 import me.leoo.utils.common.compatibility.SoftwareUtils;
 import me.leoo.utils.velocity.software.Software;
 import org.slf4j.Logger;
@@ -24,8 +25,14 @@ public class Utils {
 
         this.server = server;
         this.logger = logger;
+    }
 
-        SoftwareUtils.setInstance(new Software());
+    /**
+     * Initialize utils.
+     * Must be executed before running anything related to this plugin.
+     */
+    public static void initialize(){
+        SoftwareManager.setUtils(new Software());
     }
 
     public static Utils get() {

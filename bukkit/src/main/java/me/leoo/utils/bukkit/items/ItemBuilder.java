@@ -138,8 +138,6 @@ public class ItemBuilder {
             nbt.setString("Guilds", value);
         });
 
-        System.out.println("Guilds" + "     " + getTag(itemStack));
-
         return this;
     }
 

@@ -1,21 +1,19 @@
 package me.leoo.utils.common.file;
 
-import me.leoo.utils.common.compatibility.SoftwareUtils;
+import me.leoo.utils.common.compatibility.SoftwareManager;
 
 import java.io.File;
 import java.io.IOException;
 
 public class FileUtil {
 
-    private static final SoftwareUtils utils = SoftwareUtils.getInstance();
-
     public static File generateFile(String name, String dir) {
         File folder = new File(dir);
 
         if (!folder.exists()) {
-            utils.info("Creating " + folder.getPath());
+            SoftwareManager.getUtils().info("Creating folder " + folder.getPath());
             if (!folder.mkdirs()) {
-                utils.severe("Could not create " + folder.getPath());
+                SoftwareManager.getUtils().severe("Could not create " + folder.getPath());
                 return null;
             }
         }
@@ -23,10 +21,10 @@ public class FileUtil {
         File file = new File(folder, name);
 
         if (!file.exists()) {
-            utils.info("Creating " + file.getPath());
+            SoftwareManager.getUtils().info("Creating file " + file.getPath());
             try {
                 if (!file.createNewFile()) {
-                    utils.severe("Could not create " + file.getPath());
+                    SoftwareManager.getUtils().severe("Could not create " + file.getPath());
                     return null;
                 }
             } catch (IOException exception) {

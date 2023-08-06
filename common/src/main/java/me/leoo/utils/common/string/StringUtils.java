@@ -1,13 +1,13 @@
 package me.leoo.utils.common.string;
 
-import me.leoo.utils.common.compatibility.SoftwareUtils;
+import me.leoo.utils.common.compatibility.SoftwareManager;
 
 public class StringUtils {
 
     public static String getCenteredMessage(String message) {
         if (message == null || message.isEmpty()) return "";
 
-        message = SoftwareUtils.getInstance().color(message);
+        message = SoftwareManager.getUtils().color(message);
 
         int messagePxSize = 0;
         boolean previousCode = false;

@@ -8,7 +8,6 @@ public class Software extends SoftwareUtils {
 
     @Override
     public void info(String text) {
-
         Utils.get().getLogger().info(text);
     }
 
