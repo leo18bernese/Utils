@@ -23,9 +23,9 @@ public class Utils extends JavaPlugin {
     }
 
     public static Plugin get() {
-        /*if (plugin == null) {
+        if (plugin == null) {
             plugin = JavaPlugin.getProvidingPlugin(Utils.class);
-        }*/
+        }
         return plugin;
     }
 }

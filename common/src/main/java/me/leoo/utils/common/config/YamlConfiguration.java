@@ -23,7 +23,7 @@ public class YamlConfiguration {
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 
-        Representer representer = new Representer() {
+        Representer representer = new Representer(options) {
             {
                 representers.put(Configuration.class, data -> represent(((Configuration) data).getValues()));
             }

@@ -1,6 +1,7 @@
 package me.leoo.utils.common.file;
 
 import me.leoo.utils.common.compatibility.SoftwareManager;
+import sun.plugin2.main.server.Plugin;
 
 import java.io.File;
 import java.io.IOException;

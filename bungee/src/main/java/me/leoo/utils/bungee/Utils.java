@@ -2,7 +2,6 @@ package me.leoo.utils.bungee;
 
 import me.leoo.utils.bungee.software.Software;
 import me.leoo.utils.common.compatibility.SoftwareManager;
-import me.leoo.utils.common.compatibility.SoftwareUtils;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class Utils extends Plugin {
@@ -12,20 +11,21 @@ public class Utils extends Plugin {
     @Override
     public void onEnable() {
         plugin = this;
+        System.out.println("enabled utils");
     }
 
     /**
      * Initialize utils.
      * Must be executed before running anything related to this plugin.
      */
-    public static void initialize(){
+    public static void initialize() {
         SoftwareManager.setUtils(new Software());
     }
 
     public static Plugin get() {
-        /*if (plugin == null) {
-            plugin = JavaPlugin.getProvidingPlugin(Utils.class);
-        }*/
+        if (plugin == null) {
+            //    ProxyServer.getInstance().
+        }
         return plugin;
     }
 }
