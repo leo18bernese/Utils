@@ -18,7 +18,7 @@ public class Utils extends JavaPlugin {
      * Initialize utils.
      * Must be executed before running anything related to this plugin.
      */
-    public static void initialize(){
+    public static void initialize() {
         SoftwareManager.setUtils(new Software());
     }
 

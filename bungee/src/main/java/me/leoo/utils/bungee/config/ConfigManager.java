@@ -1,10 +1,12 @@
-package me.leoo.utils.common.file;
+package me.leoo.utils.bungee.config;
 
 import lombok.Getter;
-import me.leoo.utils.common.compatibility.SoftwareManager;
-import me.leoo.utils.common.compatibility.SoftwareUtils;
-import me.leoo.utils.common.config.Configuration;
-import me.leoo.utils.common.config.YamlConfiguration;
+import me.leoo.utils.bungee.Utils;
+import me.leoo.utils.bungee.chat.CC;
+import me.leoo.utils.common.file.FileUtil;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,24 +17,27 @@ import java.util.stream.Collectors;
 @Getter
 public class ConfigManager {
 
-    private YamlConfiguration configuration;
     private Configuration yml;
-    private final File config;
-    private final String name;
+    private File config;
+    private String name;
 
-    private static final SoftwareUtils utils = SoftwareManager.getUtils();
+    public ConfigManager(String name, String dir) {
+        config = FileUtil.generateFile(name + ".yml", dir);
 
-    public ConfigManager(String name, String directory) {
-        this.name = name;
-
-        config = FileUtil.generateFile(name + ".yml", directory);
         if (config == null) return;
 
         try {
-            configuration = new YamlConfiguration(config);
+            yml = ConfigurationProvider.getProvider(YamlConfiguration.class).load(config);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
 
-            yml = configuration.load();
-            configuration.save(yml);
+        this.name = name;
+    }
+
+    public void reload() {
+        try {
+            yml = ConfigurationProvider.getProvider(YamlConfiguration.class).load(config);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -40,7 +45,7 @@ public class ConfigManager {
 
     public void save() {
         try {
-            configuration.save(yml);
+            ConfigurationProvider.getProvider(YamlConfiguration.class).save(yml, config);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -62,15 +67,15 @@ public class ConfigManager {
         String string = yml.getString(path);
 
         if (string == null) {
-            SoftwareManager.getUtils().info("String " + path + " not found in " + name + ".yml");
+            Utils.get().getLogger().info("String " + path + " not found in " + name + ".yml");
             return "StringNotFound";
         }
 
-        return SoftwareManager.getUtils().color(string);
+        return CC.color(string);
     }
 
     public List<String> getList(String path) {
-        return yml.getStringList(path).stream().map(SoftwareManager.getUtils()::color).collect(Collectors.toList());
+        return yml.getStringList(path).stream().map(CC::color).collect(Collectors.toList());
     }
 
     public List<Integer> getIntegerSplitList(String path) {
@@ -78,6 +83,5 @@ public class ConfigManager {
                 .map(Integer::valueOf)
                 .collect(Collectors.toList());
     }
-
 
 }

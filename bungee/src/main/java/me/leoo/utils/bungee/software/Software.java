@@ -1,7 +1,6 @@
 package me.leoo.utils.bungee.software;
 
 import me.leoo.utils.bungee.chat.CC;
-import me.leoo.utils.common.compatibility.SoftwareManager;
 import me.leoo.utils.common.compatibility.SoftwareUtils;
 import net.md_5.bungee.api.ProxyServer;
 

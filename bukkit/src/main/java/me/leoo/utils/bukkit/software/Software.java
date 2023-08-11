@@ -1,7 +1,6 @@
 package me.leoo.utils.bukkit.software;
 
 import me.leoo.utils.bukkit.chat.CC;
-import me.leoo.utils.common.compatibility.SoftwareManager;
 import me.leoo.utils.common.compatibility.SoftwareUtils;
 import org.bukkit.Bukkit;
 

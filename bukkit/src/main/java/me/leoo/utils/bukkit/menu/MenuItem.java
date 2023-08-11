@@ -2,8 +2,8 @@ package me.leoo.utils.bukkit.menu;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import me.leoo.utils.bukkit.config.ConfigManager;
 import me.leoo.utils.bukkit.items.ItemBuilder;
-import me.leoo.utils.common.file.ConfigManager;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
