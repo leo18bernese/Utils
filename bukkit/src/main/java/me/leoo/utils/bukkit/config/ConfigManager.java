@@ -7,6 +7,7 @@ import me.leoo.utils.bukkit.location.LocationUtil;
 import me.leoo.utils.common.file.FileUtil;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +34,10 @@ public class ConfigManager {
         this.name = name;
     }
 
+    public ConfigManager(Plugin plugin, String name) {
+        this(name, String.valueOf(plugin.getDataFolder()));
+    }
+
     public void reload() {
         yml = YamlConfiguration.loadConfiguration(config);
     }
@@ -43,6 +48,11 @@ public class ConfigManager {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    public void set(String path, Object value){
+        yml.set(path, value);
+        save();
     }
 
     public boolean getBoolean(String path) {

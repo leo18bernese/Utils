@@ -7,6 +7,7 @@ import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import lombok.Getter;
 import lombok.Setter;
+import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.config.ConfigManager;
 import me.leoo.utils.bukkit.menu.MenuBuilder;
 import me.leoo.utils.bukkit.menu.MenuItem;
@@ -27,6 +28,7 @@ public class ItemBuilder {
     private final ItemStack itemStack;
     private final ItemMeta itemMeta;
     private final Map<String, String> replacements = new HashMap<>();
+
     @Setter
     private int slot = -1;
 
@@ -135,14 +137,14 @@ public class ItemBuilder {
 
     public ItemBuilder setTag(String value) {
         NBT.modify(itemStack, nbt -> {
-            nbt.setString("Guilds", value);
+            nbt.setString(Utils.getInitializedFrom().getDescription().getName(), value);
         });
 
         return this;
     }
 
     public static String getTag(ItemStack itemStack) {
-        return new NBTItem(itemStack).getString("Guilds");
+        return new NBTItem(itemStack).getString(Utils.getInitializedFrom().getDescription().getName());
     }
 
     public static ItemBuilder getFromConfig(String path, ConfigManager config, int data) {
