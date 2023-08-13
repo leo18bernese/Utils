@@ -1,12 +1,16 @@
 package me.leoo.utils.bukkit.config;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import lombok.Getter;
 import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.chat.CC;
 import me.leoo.utils.bukkit.location.LocationUtil;
 import me.leoo.utils.common.file.FileUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -50,7 +54,7 @@ public class ConfigManager {
         }
     }
 
-    public void set(String path, Object value){
+    public void set(String path, Object value) {
         yml.set(path, value);
         save();
     }
@@ -111,6 +115,31 @@ public class ConfigManager {
 
         yml.set(path, strings);
         save();
+    }
+
+    //action method from config
+    public void executeAction(String path, Player player) {
+        String string = getString(path);
+
+        String type = string.substring(string.indexOf('[') + 1, string.indexOf(']'));
+        String value = string.substring(string.indexOf(']') + 1);
+
+        switch (type) {
+            case "command":
+                player.performCommand(value);
+                break;
+            case "console":
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), value);
+                break;
+            case "server":
+                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+
+                out.writeUTF("Connect");
+                out.writeUTF(value);
+
+                player.sendPluginMessage(Utils.get(), "BungeeCord", out.toByteArray());
+                break;
+        }
     }
 
     //group methods
