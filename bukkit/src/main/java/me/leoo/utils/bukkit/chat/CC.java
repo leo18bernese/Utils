@@ -1,14 +1,20 @@
 package me.leoo.utils.bukkit.chat;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 public class CC {
 
     public static String color(String s) {
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            s = PlaceholderAPI.setPlaceholders(null, s);
+        }
+
         return ChatColor.translateAlternateColorCodes('&', s);
     }
 
