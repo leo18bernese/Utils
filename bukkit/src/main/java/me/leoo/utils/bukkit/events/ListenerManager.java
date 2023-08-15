@@ -1,4 +1,4 @@
-package me.leoo.utils.bukkit.listener;
+package me.leoo.utils.bukkit.events;
 
 import me.leoo.utils.bukkit.Utils;
 import org.bukkit.Bukkit;
