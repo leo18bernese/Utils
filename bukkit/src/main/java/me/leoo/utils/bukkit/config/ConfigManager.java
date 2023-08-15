@@ -15,7 +15,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -98,10 +97,9 @@ public class ConfigManager {
     }
 
     public List<Location> getLocations(String path) {
-        List<Location> locations = new ArrayList<>();
-        getList(path).forEach(s -> locations.add(LocationUtil.deserializeLocation(s)));
-
-        return locations;
+        return getList(path).stream()
+                .map(LocationUtil::deserializeLocation)
+                .collect(Collectors.toList());
     }
 
     public void saveLocation(String path, Location location) {
@@ -110,10 +108,7 @@ public class ConfigManager {
     }
 
     public void saveLocations(String path, List<Location> locations) {
-        List<String> strings = new ArrayList<>(getList(path));
-        locations.forEach(location -> strings.add(LocationUtil.serializeLocation(location)));
-
-        yml.set(path, strings);
+        yml.set(path, locations.stream().map(LocationUtil::serializeLocation).collect(Collectors.toList()));
         save();
     }
 
@@ -139,27 +134,33 @@ public class ConfigManager {
 
                 player.sendPluginMessage(Utils.get(), "BungeeCord", out.toByteArray());
                 break;
+            case "no-action":
+                break;
         }
     }
 
     //group methods
-    public String getGroupString(String path, String group) {
-        return getString((yml.get(group + "." + path) == null ? "Default" : group) + "." + path);
+    private String getGroupPath(String prefix, String path, String group) {
+        return (prefix.isEmpty() ? "" : prefix + ".") + (yml.get(group + "." + path) == null ? "Default" : group) + "." + path;
     }
 
-    public List<String> getGroupList(String path, String group) {
-        return getList((yml.get(group + "." + path) == null ? "Default" : group) + "." + path);
+    public String getGroupString(String prefix, String path, String group) {
+        return getString(getGroupPath(prefix, path, group));
     }
 
-    public boolean getGroupBoolean(String path, String group) {
-        return getBoolean((yml.get(group + "." + path) == null ? "Default" : group) + "." + path);
+    public List<String> getGroupList(String prefix, String path, String group) {
+        return getList(getGroupPath(prefix, path, group));
     }
 
-    public int getGroupInt(String path, String group) {
-        return getInt((yml.get(group + "." + path) == null ? "Default" : group) + "." + path);
+    public boolean getGroupBoolean(String prefix, String path, String group) {
+        return getBoolean(getGroupPath(prefix, path, group));
     }
 
-    public double getGroupDouble(String path, String group) {
-        return getDouble((yml.get(group + "." + path) == null ? "Default" : group) + "." + path);
+    public int getGroupInt(String prefix, String path, String group) {
+        return getInt(getGroupPath(prefix, path, group));
+    }
+
+    public double getGroupDouble(String prefix, String path, String group) {
+        return getDouble(getGroupPath(prefix, path, group));
     }
 }
