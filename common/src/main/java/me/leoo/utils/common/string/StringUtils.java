@@ -2,7 +2,21 @@ package me.leoo.utils.common.string;
 
 import me.leoo.utils.common.compatibility.SoftwareManager;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 public class StringUtils {
+
+    public static String getCurrentDate(String format) {
+        return getDate(format, Instant.now());
+    }
+
+    public static String getDate(String format, Instant instant) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(formatter);
+    }
 
     public static String getCenteredMessage(String message) {
         if (message == null || message.isEmpty()) return "";
