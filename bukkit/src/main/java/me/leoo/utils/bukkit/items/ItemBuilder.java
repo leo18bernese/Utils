@@ -10,7 +10,7 @@ import lombok.Setter;
 import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.config.ConfigManager;
 import me.leoo.utils.bukkit.menu.MenuBuilder;
-import me.leoo.utils.bukkit.menu.MenuItem;
+import me.leoo.utils.bukkit.task.Tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -29,7 +29,15 @@ public class ItemBuilder {
     private final ItemMeta itemMeta;
     private final Map<String, String> replacements = new HashMap<>();
 
+    private Callback<InventoryClickEvent> eventCallBack;
+
     @Setter
+    private ConfigManager config;
+    @Setter
+    private ConfigManager language;
+    @Setter
+    private String configPath;
+
     private int slot = -1;
 
     public ItemBuilder(Material material) {
@@ -89,7 +97,7 @@ public class ItemBuilder {
             itemStack.setType(XMaterial.PLAYER_HEAD.parseMaterial());
         }
         if (itemStack.getType().equals(XMaterial.PLAYER_HEAD.parseMaterial())) {
-            SkullUtils.applySkin(itemMeta, string);
+            Tasks.runAsync(() -> SkullUtils.applySkin(itemMeta, string));
         }
 
         return this;
@@ -97,6 +105,11 @@ public class ItemBuilder {
 
     public ItemBuilder setOwner(String owner) {
         setOwner(owner, false);
+        return this;
+    }
+
+    public ItemBuilder setAmount(int amount){
+        itemStack.setAmount(amount);
         return this;
     }
 
@@ -109,7 +122,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setEnchanted() {
-        addEnchant("DURABILITY", 1);
+        addEnchant(XEnchantment.DURABILITY.name(), 1);
         return this;
     }
 
@@ -147,8 +160,69 @@ public class ItemBuilder {
         return new NBTItem(itemStack).getString(Utils.getInitializedFrom().getDescription().getName());
     }
 
-    public static ItemBuilder getFromConfig(String path, ConfigManager config, int data) {
+    public ItemBuilder setSlot(int slot) {
+        this.slot = slot;
+        return this;
+    }
+
+    public ItemBuilder setEventCallBack(Callback<InventoryClickEvent> eventCallBack) {
+        this.eventCallBack = eventCallBack;
+        return this;
+    }
+
+    public void saveIntoConfig(String path, ConfigManager config, ConfigManager language) {
+        config.set(path + ".material", itemStack.getType().name() + (itemStack.getDurability() == 0 ? "" : ":" + itemStack.getDurability()));
+        config.set(path + ".amount", itemStack.getAmount());
+        config.set(path + ".enchanted", itemMeta.hasEnchant(XEnchantment.DURABILITY.getEnchant()));
+
+        language.set(path + ".name", itemMeta.getDisplayName());
+        language.set(path + ".lore", itemMeta.getLore());
+    }
+
+    public void saveIntoConfig(String path, ConfigManager config) {
+        saveIntoConfig(path, config, config);
+    }
+
+    public static ItemBuilder parseFromConfig(String path, ConfigManager config, ConfigManager language) {
+        String[] material = config.getString(path + ".material").split(":");
+        int materialData = material.length == 2 ? Integer.parseInt(material[1]) : 0;
+
+        ItemBuilder builder;
+        if (material[0].equals("texture")) {
+            builder = new ItemBuilder(Material.SKULL_ITEM.name(), 3);
+            builder.setData(3);
+            builder.applySkin(material[1]);
+        } else {
+            builder = new ItemBuilder(material[0], materialData);
+        }
+
+        builder.setConfigPath(path);
+        builder.setConfig(config);
+        builder.setLanguage(language);
+
+        builder.setDisplayName(language.getString(path + ".name"));
+        builder.setLore(language.getList(path + ".lore"));
+        builder.setData(materialData);
+
+        if (config.getBoolean(path + ".enchanted")) {
+            builder.setEnchanted();
+        }
+
+        builder.getItemStack().setAmount(config.getInt(path + ".amount"));
+        builder.setSlot(config.getInt(path + ".slot"));
+
+        return builder;
+    }
+
+    public static ItemBuilder parseFromConfig(String path, ConfigManager config) {
+        return parseFromConfig(path, config, config);
+    }
+
+    public static ItemBuilder getFromConfigOld(String path, ConfigManager config, int data) {
         ItemBuilder builder = new ItemBuilder(config.getString(path + ".material"), data);
+
+        builder.setConfigPath(path);
+        builder.setConfig(config);
 
         builder.setDisplayName(config.getString(path + ".name"));
         builder.setLore(config.getList(path + ".lore"));
@@ -162,8 +236,8 @@ public class ItemBuilder {
         return builder;
     }
 
-    public static ItemBuilder getFromConfig(String path, ConfigManager config) {
-        return getFromConfig(path, config, config.getInt(path + ".data"));
+    public static ItemBuilder getFromConfigOld(String path, ConfigManager config) {
+        return getFromConfigOld(path, config, config.getInt(path + ".data"));
     }
 
     public ItemStack get() {
@@ -184,19 +258,26 @@ public class ItemBuilder {
         return itemStack;
     }
 
-    public void setInInventory(MenuBuilder menu, int slot, MenuItem.Callback<InventoryClickEvent> eventCallBack) {
-        menu.getItems().add(new MenuItem(slot, get(), eventCallBack));
+    public void setInInventory(MenuBuilder menu) {
+        menu.getItems().add(this);
     }
 
-    public void setInInventory(Player player, MenuBuilder menu, MenuItem.Callback<InventoryClickEvent> eventCallBack) {
+    public void setInInventory(Player player, MenuBuilder menu, int slot) {
+        setSlot(slot);
+
         if (getSlot() == -1) {
             Bukkit.getLogger().severe(
                     "Slot not set for item: " + itemMeta.getDisplayName() + " in menu: " + menu.getTitle(player) + "." +
                             "\nUsing first slot.");
 
-            setInInventory(menu, 0, eventCallBack);
+            setInInventory(menu);
         } else {
-            setInInventory(menu, getSlot(), eventCallBack);
+            setInInventory(menu);
         }
+    }
+
+
+    public interface Callback<T> {
+        boolean accept(T t);
     }
 }
