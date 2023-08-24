@@ -58,6 +58,12 @@ public class ConfigManager {
         save();
     }
 
+    public void addIfNotExists(String path, Object value) {
+        if (yml.get(path) == null) {
+            set(path, value);
+        }
+    }
+
     public boolean getBoolean(String path) {
         return yml.getBoolean(path);
     }
@@ -108,40 +114,56 @@ public class ConfigManager {
     }
 
     public void saveLocations(String path, List<Location> locations) {
-        yml.set(path, locations.stream().map(LocationUtil::serializeLocation).collect(Collectors.toList()));
+        List<String> list = getList(path);
+        list.addAll(locations.stream().map(LocationUtil::serializeLocation).collect(Collectors.toList()));
+
+        yml.set(path, list);
         save();
     }
 
     //action method from config
-    public void executeAction(String path, Player player) {
-        String string = getString(path);
+    public boolean executeAction(String path, Player player) {
+        if (getYml().get(path + ".command") == null) return false;
+
+        String string = getString(path + ".command");
+
+        if (!string.contains("[") && !string.contains("]")) return false;
 
         String type = string.substring(string.indexOf('[') + 1, string.indexOf(']'));
         String value = string.substring(string.indexOf(']') + 1);
 
-        switch (type) {
-            case "command":
-                player.performCommand(value);
-                break;
-            case "console":
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), value);
-                break;
-            case "server":
-                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        if (type.equals("default")) {
+            return false;
+        } else {
+            switch (type) {
+                case "command":
+                    player.performCommand(value);
+                    break;
+                case "console":
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), value);
+                    break;
+                case "server":
+                    ByteArrayDataOutput out = ByteStreams.newDataOutput();
 
-                out.writeUTF("Connect");
-                out.writeUTF(value);
+                    out.writeUTF("Connect");
+                    out.writeUTF(value);
 
-                player.sendPluginMessage(Utils.get(), "BungeeCord", out.toByteArray());
-                break;
-            case "no-action":
-                break;
+                    player.sendPluginMessage(Utils.get(), "BungeeCord", out.toByteArray());
+                    break;
+                case "no-action":
+                    break;
+            }
+
+            return true;
         }
     }
 
     //group methods
     private String getGroupPath(String prefix, String path, String group) {
-        return (prefix.isEmpty() ? "" : prefix + ".") + (yml.get(group + "." + path) == null ? "Default" : group) + "." + path;
+        String prefixPath = prefix.isEmpty() ? "" : prefix + ".";
+        String pathPath = path.isEmpty() ? "" : "." + path;
+
+        return prefixPath + (yml.get(prefixPath + group + pathPath) == null ? "Default" : group) + path;
     }
 
     public String getGroupString(String prefix, String path, String group) {

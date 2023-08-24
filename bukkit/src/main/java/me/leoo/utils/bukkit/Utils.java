@@ -1,6 +1,7 @@
 package me.leoo.utils.bukkit;
 
 import lombok.Getter;
+import me.leoo.utils.bukkit.config.ConfigManager;
 import me.leoo.utils.bukkit.software.Software;
 import me.leoo.utils.common.compatibility.SoftwareManager;
 import org.bukkit.Bukkit;

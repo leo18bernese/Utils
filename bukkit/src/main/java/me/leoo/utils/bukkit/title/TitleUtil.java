@@ -13,7 +13,7 @@ public class TitleUtil {
             player.sendMessage(message);
         }
 
-        new Titles(config.getString(path + ".title"), config.getString(path + ".subtitle"), fadeIn, stay, fadeOut).send(player);
+        new Titles(config.getString(path + ".title"), config.getString(path + ".sub-title"), fadeIn, stay, fadeOut).send(player);
     }
 
     public static void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {

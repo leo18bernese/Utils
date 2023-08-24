@@ -7,6 +7,8 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 
 public class CC {
 
@@ -46,5 +48,14 @@ public class CC {
         component.setClickEvent(new ClickEvent(action, command));
 
         return component;
+    }
+
+    public static String translatePluginInfo(Plugin plugin, String s) {
+        PluginDescriptionFile info = plugin.getDescription();
+
+        return s.replace("{name}", info.getName())
+                .replace("{version}", info.getVersion())
+                .replace("{author}", info.getAuthors().toString().replace("[", "").replace("]", ""))
+                .replace("{description}", info.getDescription());
     }
 }

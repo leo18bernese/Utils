@@ -13,18 +13,19 @@ public class ArmorStandBuilder {
     public ArmorStandBuilder(Location location) {
         this.location = location;
         this.armorStand = location.getWorld().spawn(location, ArmorStand.class);
+        System.out.println("spawned armor stand on " + location);
     }
 
     public ArmorStandBuilder setName(String name) {
-        armorStand.setCustomNameVisible(true);
         armorStand.setCustomName(name);
+        armorStand.setCustomNameVisible(true);
 
         return this;
     }
 
     public ArmorStandBuilder addDefault() {
         armorStand.setGravity(false);
-        armorStand.setMarker(false);
+        armorStand.setMarker(true);
         armorStand.setCanPickupItems(false);
 
         return this;
@@ -32,7 +33,6 @@ public class ArmorStandBuilder {
 
     public ArmorStandBuilder makeInvisible() {
         armorStand.setVisible(false);
-        armorStand.setCustomNameVisible(false);
 
         return this;
     }
