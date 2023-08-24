@@ -2,76 +2,107 @@ package me.leoo.utils.bukkit.commands;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.leoo.utils.bukkit.task.Tasks;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
 @Setter
 public abstract class Command extends BukkitCommand {
 
-    private final List<SubCommand> subCommands = new ArrayList<>();
+    private CommandBuilder mainCommand;
 
-    private String permission;
-    private boolean forPlayersOnly;
-    private boolean async;
+    private final List<CommandBuilder> subCommands = new ArrayList<>();
 
     public Command(String name) {
         super(name);
     }
 
+    public Command initialize() {
+        setAliases(Arrays.asList(mainCommand.getAliases()));
+
+        return this;
+    }
+
     @Override
-    public boolean execute(CommandSender sender, String alias, String[] args) {
-        if (!(sender instanceof Player) && this.forPlayersOnly) {
+    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+        if (mainCommand == null) return false;
+
+        if (!(sender instanceof Player) && mainCommand.isPlayersOnly()) {
             sender.sendMessage("This command is for players!");
             return false;
         }
 
-        if (!checkPermission(sender, this.permission)) {
-            sender.sendMessage(getNoPermissionMessage());
+        if (!checkPermission(sender, mainCommand.getPermission())) {
+            sender.sendMessage(mainCommand.getNoPermissionMessage() == null ? getNoPermissionMessage() : mainCommand.getNoPermissionMessage());
             return false;
         }
 
-        /*if (args.length > 0) {
-            SubCommand subCommand = getSubCommandByName(args[0]);
+        if (args.length > 0) {
+            CommandBuilder subCommand = getSubCommandByName(args[0]);
 
-            if(subCommand != null){
-                if (subCommand.isForPlayersOnly() && !(sender instanceof Player)) {
-                    sender.sendMessage("This command is for players!");
+            if (subCommand != null) {
+                if (!(sender instanceof Player) && subCommand.isPlayersOnly()) {
+                    sender.sendMessage("This sub command is for players!");
                     return false;
                 }
 
-                if (subCommand.getPermission() != null && !sender.hasPermission(subCommand.getPermission())) {
-                    sender.sendMessage(getNoPermissionMessage());
+                if (!checkPermission(sender, subCommand.getPermission())) {
+                    sender.sendMessage(subCommand.getNoPermissionMessage() == null ? getNoPermissionMessage() : subCommand.getNoPermissionMessage());
                     return false;
                 }
 
-                subCommand.execute(sender, Arrays.copyOfRange(args, 1, args.length));
+                String[] subArgs = Arrays.copyOfRange(args, 1, args.length);
+
+                if (sender instanceof Player && subCommand.isPlayersOnly()) {
+                    subCommand.getPlayerExecutor().accept((Player) sender, subArgs);
+                } else {
+                    subCommand.getExecutor().accept(sender, subArgs);
+                }
+
                 return true;
             }
-        }*/
+        }
 
-        if (this.async) {
-            Tasks.run(() -> this.execute(sender, args));
+        if (sender instanceof Player && mainCommand.isPlayersOnly()) {
+            mainCommand.getPlayerExecutor().accept((Player) sender, args);
         } else {
-            this.execute(sender, args);
+            mainCommand.getExecutor().accept(sender, args);
         }
 
         return true;
     }
 
-    public abstract void execute(CommandSender sender, String[] args);
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
+        List<String> tab = new ArrayList<>();
 
-    public static boolean checkPermission(CommandSender sender, String permission) {
-        if (sender.hasPermission("*")) {
-            return true;
+        if (args.length == 1) {
+            for (CommandBuilder subCommand : subCommands) {
+                if (!subCommand.canSee(sender)) continue;
+
+                tab.add(subCommand.getName());
+            }
+
+            return tab;
         }
 
-        if (permission != null) {
+        CommandBuilder subCommand = getSubCommandByName(args[0]);
+        if (subCommand != null && subCommand.canSee(sender)) {
+            return subCommand.getTabComplete() == null ? tab : subCommand.getTabComplete().apply(sender, args);
+
+        }
+
+        return tab;
+    }
+
+    public static boolean checkPermission(CommandSender sender, String permission) {
+        if (!sender.hasPermission("*") && permission != null) {
             return sender.hasPermission(permission);
         }
 
@@ -80,8 +111,7 @@ public abstract class Command extends BukkitCommand {
 
     public abstract String getNoPermissionMessage();
 
-    public SubCommand getSubCommandByName(String name) {
-        return null;
-        //return subCommands.stream().filter(subCommand -> subCommand.getName().equals(name)).findAny().orElse(null);
+    public CommandBuilder getSubCommandByName(String name) {
+        return subCommands.stream().filter(subCommand -> subCommand.getName().equals(name)).findAny().orElse(null);
     }
 }
