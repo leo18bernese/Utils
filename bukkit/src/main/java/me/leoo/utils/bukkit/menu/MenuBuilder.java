@@ -2,6 +2,7 @@ package me.leoo.utils.bukkit.menu;
 
 import lombok.Data;
 import lombok.Getter;
+import me.leoo.utils.bukkit.items.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -14,12 +15,12 @@ public abstract class MenuBuilder {
 
     @Getter
     private static Map<UUID, MenuBuilder> openedInventories = new ConcurrentHashMap<>();
-    private final List<MenuItem> items = new ArrayList<>();
+    private final List<ItemBuilder> items = new ArrayList<>();
 
     private static String title;
     private final int rows;
 
-    public abstract List<MenuItem> getItems(Player player);
+    public abstract List<ItemBuilder> getItems(Player player);
 
     public abstract String getTitle(Player player);
 
@@ -31,13 +32,13 @@ public abstract class MenuBuilder {
         getItems().clear();
         getItems().addAll(getItems(player));
 
-        getItems().forEach(item -> {
-            int slot = item.getSlot();
+        getItems().forEach(itemBuilder -> {
+            int slot = itemBuilder.getSlot();
             if (slot < 0 || slot > getSlots()) {
                 slot = 0;
             }
 
-            inventory.setItem(slot, item.getItemStack());
+            inventory.setItem(slot, itemBuilder.get());
         });
 
         return inventory;
@@ -47,7 +48,7 @@ public abstract class MenuBuilder {
         return 9 * getRows();
     }
 
-    public Optional<MenuItem> getItem(int slot) {
+    public Optional<ItemBuilder> getItem(int slot) {
         return items.stream().filter(menuItem -> menuItem.getSlot() == slot).findAny();
     }
 

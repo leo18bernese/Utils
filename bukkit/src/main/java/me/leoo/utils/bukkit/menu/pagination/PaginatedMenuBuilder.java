@@ -1,8 +1,8 @@
 package me.leoo.utils.bukkit.menu.pagination;
 
 import lombok.Getter;
+import me.leoo.utils.bukkit.items.ItemBuilder;
 import me.leoo.utils.bukkit.menu.MenuBuilder;
-import me.leoo.utils.bukkit.menu.MenuItem;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -17,13 +17,13 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
 
     public abstract String getPaginationTitle(Player player);
 
-    public abstract List<MenuItem> getAllPageItems(Player player);
+    public abstract List<ItemBuilder> getAllPageItems(Player player);
 
-    public abstract MenuItem getNextPageItem(Player player);
+    public abstract ItemBuilder getNextPageItem(Player player);
 
-    public abstract MenuItem getPreviousPageItem(Player player);
+    public abstract ItemBuilder getPreviousPageItem(Player player);
 
-    public List<MenuItem> getGlobalItems(Player player) {
+    public List<ItemBuilder> getGlobalItems(Player player) {
         return null;
     }
 
@@ -32,20 +32,17 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
     }
 
     @Override
-    public List<MenuItem> getItems(Player player) {
-        List<MenuItem> items = new ArrayList<>();
-
-        List<MenuItem> i = new ArrayList<>(getAllPageItems(player));
+    public List<ItemBuilder> getItems(Player player) {
+        List<ItemBuilder> items = new ArrayList<>();
+        List<ItemBuilder> builders = new ArrayList<>(getAllPageItems(player));
 
         int index = (getPage() - 1) * getPaginatedSlots().size();
         for (Integer slot : getPaginatedSlots()) {
-            if (index >= i.size()) {
+            if (index >= builders.size()) {
                 continue;
             }
 
-            MenuItem menuItem = i.get(index);
-
-            items.add(new MenuItem(slot, menuItem.getItemStack(), menuItem.getEventCallBack()));
+            items.add(builders.get(index).setSlot(slot));
 
             index++;
         }
@@ -55,21 +52,17 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
         }
 
         if (page > 1 && getPreviousPageItem(player) != null) {
-            items.add(/*((pageLine * 9) - 9*/
-                    new MenuItem(getPreviousPageItem(player).getSlot(),
-                            getPreviousPageItem(player).getItemStack(), event -> {
-                        openNewPage(player, -1);
-                        return true;
-                    }));
+            items.add(getPreviousPageItem(player).setEventCallBack(event -> {
+                openNewPage(player, -1);
+                return true;
+            }));
         }
 
         if (page < getPages(player) && getNextPageItem(player) != null) {
-            items.add(/*((pageLine * 9) - 1*/
-                    new MenuItem(getNextPageItem(player).getSlot(),
-                            getNextPageItem(player).getItemStack(), event -> {
-                        openNewPage(player, +1);
-                        return true;
-                    }));
+            items.add(getNextPageItem(player).setEventCallBack(event -> {
+                openNewPage(player, +1);
+                return true;
+            }));
         }
 
         return items;

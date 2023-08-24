@@ -1,6 +1,7 @@
 package me.leoo.utils.bukkit.menu;
 
 import me.leoo.utils.bukkit.Utils;
+import me.leoo.utils.bukkit.items.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,8 +38,14 @@ public class MenuListeners implements Listener {
 
         if (rawSlot < gui.getSlots()) {
             int slot = event.getSlot();
-            Optional<MenuItem> item = gui.getItem(slot);
-            item.ifPresent(menuItem -> event.setCancelled(menuItem.getEventCallBack().accept(event)));
+
+            Optional<ItemBuilder> item = gui.getItem(slot);
+
+            item.ifPresent(menuItem -> {
+                if (!menuItem.getConfig().executeAction(menuItem.getConfigPath(), whoClicked.getPlayer())) {
+                    event.setCancelled(menuItem.getEventCallBack().accept(event));
+                }
+            });
         }
     }
 
