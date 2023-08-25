@@ -60,7 +60,7 @@ public class ItemBuilder {
         itemMeta = itemStack.getItemMeta();
     }
 
-    public ItemBuilder setDisplayName(String name) {
+    public ItemBuilder setName(String name) {
         itemMeta.setDisplayName(name);
         return this;
     }
@@ -108,7 +108,7 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder setAmount(int amount){
+    public ItemBuilder setAmount(int amount) {
         itemStack.setAmount(amount);
         return this;
     }
@@ -200,16 +200,25 @@ public class ItemBuilder {
         builder.setConfig(config);
         builder.setLanguage(language);
 
-        builder.setDisplayName(language.getString(path + ".name"));
-        builder.setLore(language.getList(path + ".lore"));
+        if (language.getYml().get(path + ".name") != null) {
+            builder.setName(language.getString(path + ".name"));
+        }
+        if (language.getYml().get(path + ".lore") != null) {
+            builder.setLore(language.getList(path + ".lore"));
+        }
+
         builder.setData(materialData);
 
         if (config.getBoolean(path + ".enchanted")) {
             builder.setEnchanted();
         }
 
-        builder.getItemStack().setAmount(config.getInt(path + ".amount"));
-        builder.setSlot(config.getInt(path + ".slot"));
+        if (config.getYml().get(path + ".amount") != null) {
+            builder.setAmount(config.getInt(path + ".amount"));
+        }
+        if (config.getYml().get(path + ".slot") != null) {
+            builder.setSlot(config.getInt(path + ".slot"));
+        }
 
         return builder;
     }
@@ -224,7 +233,7 @@ public class ItemBuilder {
         builder.setConfigPath(path);
         builder.setConfig(config);
 
-        builder.setDisplayName(config.getString(path + ".name"));
+        builder.setName(config.getString(path + ".name"));
         builder.setLore(config.getList(path + ".lore"));
         builder.setData(data);
         if (config.getBoolean(path + ".enchanted")) {
@@ -245,7 +254,7 @@ public class ItemBuilder {
 
         for (Map.Entry<String, String> entry : replacements.entrySet()) {
             String displayName = itemMeta.getDisplayName();
-            setDisplayName(displayName.replace(entry.getKey(), entry.getValue()));
+            setName(displayName.replace(entry.getKey(), entry.getValue()));
 
             if (itemMeta.getLore() != null) {
                 List<String> lore = itemMeta.getLore();

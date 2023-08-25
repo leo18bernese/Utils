@@ -9,6 +9,7 @@ import me.leoo.utils.bukkit.location.LocationUtil;
 import me.leoo.utils.common.file.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -16,7 +17,9 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -80,7 +83,7 @@ public class ConfigManager {
         String string = yml.getString(path);
 
         if (string == null) {
-            Utils.get().getLogger().info("String " + path + " not found in " + name + ".yml");
+            Utils.get().getLogger().severe("String " + path + " not found in " + name + ".yml");
             return "StringNotFound";
         }
 
@@ -89,6 +92,17 @@ public class ConfigManager {
 
     public List<String> getList(String path) {
         return yml.getStringList(path).stream().map(CC::color).collect(Collectors.toList());
+    }
+
+    public Set<String> getSection(String path) {
+        ConfigurationSection section = yml.getConfigurationSection(path);
+
+        if (section == null) {
+            Utils.get().getLogger().severe("Configuration section " + path + " not found in " + name + ".yml");
+            return new HashSet<>();
+        }
+
+        return section.getKeys(false);
     }
 
     public List<Integer> getIntegerSplitList(String path) {
