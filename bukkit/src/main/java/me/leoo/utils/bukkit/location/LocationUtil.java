@@ -10,6 +10,18 @@ import java.util.Properties;
 
 public class LocationUtil {
 
+    public static boolean compareLocations(Location location1, Location location2, boolean block) {
+        if (block) {
+            return location1.getBlockX() == location2.getBlockX() &&
+                    location1.getBlockY() == location2.getBlockY() &&
+                    location1.getBlockZ() == location2.getBlockZ();
+        } else {
+            return location1.getX() == location2.getX() &&
+                    location1.getY() == location2.getY() &&
+                    location1.getZ() == location2.getZ();
+        }
+    }
+
     public static Location deserializeLocation(String string) {
         if (string == null || string.isEmpty()) return null;
 
