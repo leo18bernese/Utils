@@ -28,12 +28,12 @@ public class MenuListeners implements Listener {
         if (openedInventories.isEmpty())
             return;
 
-        Player whoClicked = (Player) event.getWhoClicked();
-        if (!openedInventories.containsKey(whoClicked.getUniqueId())) {
+        Player player = (Player) event.getWhoClicked();
+        if (!openedInventories.containsKey(player.getUniqueId())) {
             return;
         }
 
-        MenuBuilder gui = openedInventories.get(whoClicked.getUniqueId());
+        MenuBuilder gui = openedInventories.get(player.getUniqueId());
         int rawSlot = event.getRawSlot();
 
         if (rawSlot < gui.getSlots()) {
@@ -42,7 +42,7 @@ public class MenuListeners implements Listener {
             Optional<ItemBuilder> item = gui.getItem(slot);
 
             item.ifPresent(menuItem -> {
-                if (!menuItem.getConfig().executeAction(menuItem.getConfigPath(), whoClicked.getPlayer())) {
+                if (!menuItem.getConfig().executeAction(menuItem.getConfigPath(), player.getPlayer())) {
                     event.setCancelled(menuItem.getEventCallBack().accept(event));
                 }
             });

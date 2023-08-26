@@ -20,7 +20,10 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 public class ItemBuilder {
@@ -41,7 +44,8 @@ public class ItemBuilder {
     private int slot = -1;
 
     public ItemBuilder(Material material) {
-        if (material.equals(Material.AIR)) material = Material.STONE;
+        if (material == Material.AIR) material = Material.STONE;
+
         XMaterial xMaterial = XMaterial.matchXMaterial(material);
 
         itemStack = xMaterial.parseItem();
@@ -49,12 +53,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder(String material, int data) {
-        Optional<XMaterial> optionalMaterial = XMaterial.matchXMaterial(material + ":" + data);
-        if (!optionalMaterial.isPresent()) {
-            throw new IllegalArgumentException("Material not found: " + material);
-        }
-
-        XMaterial xMaterial = optionalMaterial.get();
+        XMaterial xMaterial = XMaterial.matchXMaterial(material + ":" + data).orElse(XMaterial.STONE);
 
         itemStack = xMaterial.parseItem();
         itemMeta = itemStack.getItemMeta();
@@ -174,6 +173,10 @@ public class ItemBuilder {
         config.set(path + ".material", itemStack.getType().name() + (itemStack.getDurability() == 0 ? "" : ":" + itemStack.getDurability()));
         config.set(path + ".amount", itemStack.getAmount());
         config.set(path + ".enchanted", itemMeta.hasEnchant(XEnchantment.DURABILITY.getEnchant()));
+
+        if (slot >= 0) {
+            config.set(path + ".slot", slot);
+        }
 
         language.set(path + ".name", itemMeta.getDisplayName());
         language.set(path + ".lore", itemMeta.getLore());

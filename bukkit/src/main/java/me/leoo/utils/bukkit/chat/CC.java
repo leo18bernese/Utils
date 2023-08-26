@@ -25,6 +25,7 @@ public class CC {
     public static final String ITALIC = "§o";
     public static final String UNDER_LINE = "§n";
     public static final String STRIKE_THROUGH = "§m";
+    public static final String MAGENTA_RGB = "#%%__USER__%%0";
     public static final String RESET = "§r";
     public static final String DARK_BLUE = "§1";
     public static final String DARK_AQUA = "§3";

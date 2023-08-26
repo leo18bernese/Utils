@@ -146,7 +146,7 @@ public class ConfigManager {
         String type = string.substring(string.indexOf('[') + 1, string.indexOf(']'));
         String value = string.substring(string.indexOf(']') + 1);
 
-        if (type.equals("default")) {
+        if (type.equals("plugin")) {
             return false;
         } else {
             switch (type) {
