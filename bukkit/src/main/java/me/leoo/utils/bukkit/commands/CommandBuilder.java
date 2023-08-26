@@ -24,6 +24,7 @@ public class CommandBuilder {
     private String noPermissionMessage;
 
     private boolean playersOnly;
+    private boolean operatorsOnly;
     private boolean async;
 
     private BiConsumer<CommandSender, String[]> executor;
@@ -64,6 +65,11 @@ public class CommandBuilder {
 
     public CommandBuilder setPlayersOnly(boolean playersOnly) {
         this.playersOnly = playersOnly;
+        return this;
+    }
+
+    public CommandBuilder setOperatorsOnly(boolean operatorsOnly) {
+        this.operatorsOnly = operatorsOnly;
         return this;
     }
 

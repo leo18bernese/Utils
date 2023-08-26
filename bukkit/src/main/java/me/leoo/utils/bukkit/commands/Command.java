@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -38,7 +37,7 @@ public abstract class Command extends BukkitCommand {
             return false;
         }
 
-        if (!checkPermission(sender, mainCommand.getPermission())) {
+        if (!checkPermission(sender, mainCommand)) {
             sender.sendMessage(mainCommand.getNoPermissionMessage() == null ? getNoPermissionMessage() : mainCommand.getNoPermissionMessage());
             return false;
         }
@@ -52,7 +51,7 @@ public abstract class Command extends BukkitCommand {
                     return false;
                 }
 
-                if (!checkPermission(sender, subCommand.getPermission())) {
+                if (!checkPermission(sender, subCommand)) {
                     sender.sendMessage(subCommand.getNoPermissionMessage() == null ? getNoPermissionMessage() : subCommand.getNoPermissionMessage());
                     return false;
                 }
@@ -101,9 +100,14 @@ public abstract class Command extends BukkitCommand {
         return tab;
     }
 
-    public static boolean checkPermission(CommandSender sender, String permission) {
-        if (!sender.hasPermission("*") && permission != null) {
-            return sender.hasPermission(permission);
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean checkPermission(CommandSender sender, CommandBuilder command) {
+        if (sender.isOp() && command.isOperatorsOnly()) {
+            return true;
+        }
+
+        if (!sender.hasPermission("*") && command.getPermission() != null) {
+            return sender.hasPermission(command.getPermission());
         }
 
         return true;
