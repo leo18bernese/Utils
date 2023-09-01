@@ -81,6 +81,8 @@ public abstract class Command extends BukkitCommand {
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
         List<String> tab = new ArrayList<>();
 
+        System.out.println(Arrays.toString(args));
+
         if (args.length == 1) {
             for (CommandBuilder subCommand : subCommands) {
                 if (!subCommand.canSee(sender)) continue;
@@ -93,11 +95,12 @@ public abstract class Command extends BukkitCommand {
 
         CommandBuilder subCommand = getSubCommandByName(args[0]);
         if (subCommand != null && subCommand.canSee(sender)) {
-            return subCommand.getTabComplete() == null ? tab : subCommand.getTabComplete().apply(sender, args);
-
+            if(subCommand.getTabComplete() != null){
+                return subCommand.getTabComplete().apply(sender, args);
+            }
         }
 
-        return tab;
+        return mainCommand.getTabComplete() == null ? tab : mainCommand.getTabComplete().apply(sender, args);
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

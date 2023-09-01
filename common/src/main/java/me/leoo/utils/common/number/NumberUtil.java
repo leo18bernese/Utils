@@ -31,6 +31,7 @@ public class NumberUtil {
             return Integer.parseInt(object.toString());
         } catch (NumberFormatException | NullPointerException ignored) {
         }
+
         return 0;
     }
 
@@ -43,6 +44,7 @@ public class NumberUtil {
             return Float.parseFloat(object.toString());
         } catch (NumberFormatException | NullPointerException ignored) {
         }
+
         return 0;
     }
 

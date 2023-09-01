@@ -11,14 +11,18 @@ import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.config.ConfigManager;
 import me.leoo.utils.bukkit.menu.MenuBuilder;
 import me.leoo.utils.bukkit.task.Tasks;
+import me.leoo.utils.common.number.NumberUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,37 +30,50 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-public class ItemBuilder {
+@Setter
+public class ItemBuilder implements Cloneable {
 
-    private final ItemStack itemStack;
-    private final ItemMeta itemMeta;
+    private ItemStack itemStack;
+    private ItemMeta itemMeta;
     private final Map<String, String> replacements = new HashMap<>();
 
+    private String toSaveString;
     private Callback<InventoryClickEvent> eventCallBack;
-
-    @Setter
     private ConfigManager config;
-    @Setter
     private ConfigManager language;
-    @Setter
     private String configPath;
 
     private int slot = -1;
 
+    public ItemBuilder(XMaterial xMaterial, int data) {
+        this(xMaterial.name(), data);
+    }
+
     public ItemBuilder(Material material) {
-        if (material == Material.AIR) material = Material.STONE;
+        this(material, 0);
+    }
 
-        XMaterial xMaterial = XMaterial.matchXMaterial(material);
+    public ItemBuilder(Material material, int data) {
+        this(material.name(), data);
+    }
 
-        itemStack = xMaterial.parseItem();
+
+    public ItemBuilder(String material, int data) {
+        this(XMaterial.matchXMaterial(material + ":" + data).orElse(XMaterial.STONE));
+    }
+
+    public ItemBuilder(XMaterial xMaterial) {
+        this(xMaterial.parseItem());
+    }
+
+    public ItemBuilder(ItemStack stack) {
+        itemStack = stack;
         itemMeta = itemStack.getItemMeta();
     }
 
-    public ItemBuilder(String material, int data) {
-        XMaterial xMaterial = XMaterial.matchXMaterial(material + ":" + data).orElse(XMaterial.STONE);
-
-        itemStack = xMaterial.parseItem();
-        itemMeta = itemStack.getItemMeta();
+    public ItemBuilder(ItemStack stack, ItemMeta meta) {
+        itemStack = stack;
+        itemMeta = meta;
     }
 
     public ItemBuilder setName(String name) {
@@ -132,6 +149,11 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder addEffects(PotionEffect effect) {
+        ((PotionMeta) itemMeta).addCustomEffect(effect, true);
+        return this;
+    }
+
     public ItemBuilder addFlags(ItemFlag... itemFlags) {
         itemMeta.addItemFlags(itemFlags);
         return this;
@@ -159,6 +181,11 @@ public class ItemBuilder {
         return new NBTItem(itemStack).getString(Utils.getInitializedFrom().getDescription().getName());
     }
 
+    public ItemBuilder setToSaveString(String toSaveString) {
+        this.toSaveString = toSaveString;
+        return this;
+    }
+
     public ItemBuilder setSlot(int slot) {
         this.slot = slot;
         return this;
@@ -170,16 +197,19 @@ public class ItemBuilder {
     }
 
     public void saveIntoConfig(String path, ConfigManager config, ConfigManager language) {
-        config.set(path + ".material", itemStack.getType().name() + (itemStack.getDurability() == 0 ? "" : ":" + itemStack.getDurability()));
-        config.set(path + ".amount", itemStack.getAmount());
-        config.set(path + ".enchanted", itemMeta.hasEnchant(XEnchantment.DURABILITY.getEnchant()));
+        YamlConfiguration yml = config.getYml();
+        YamlConfiguration languageYml = language.getYml();
+
+        yml.addDefault(path + ".material", itemStack.getType().name() + (toSaveString == null ? (itemStack.getDurability() == 0 ? "" : ":" + itemStack.getDurability()) : ":" + toSaveString));
+        yml.addDefault(path + ".amount", itemStack.getAmount());
+        yml.addDefault(path + ".enchanted", itemMeta.hasEnchant(XEnchantment.DURABILITY.getEnchant()));
 
         if (slot >= 0) {
-            config.set(path + ".slot", slot);
+            yml.addDefault(path + ".slot", slot);
         }
 
-        language.set(path + ".name", itemMeta.getDisplayName());
-        language.set(path + ".lore", itemMeta.getLore());
+        languageYml.addDefault(path + ".name", itemMeta.getDisplayName());
+        languageYml.addDefault(path + ".lore", itemMeta.getLore());
     }
 
     public void saveIntoConfig(String path, ConfigManager config) {
@@ -188,15 +218,20 @@ public class ItemBuilder {
 
     public static ItemBuilder parseFromConfig(String path, ConfigManager config, ConfigManager language) {
         String[] material = config.getString(path + ".material").split(":");
-        int materialData = material.length == 2 ? Integer.parseInt(material[1]) : 0;
+
+        String name = material[0];
+        int data = material.length == 2 ? NumberUtil.toInt(material[1]) : 0;
 
         ItemBuilder builder;
-        if (material[0].equals("texture")) {
-            builder = new ItemBuilder(Material.SKULL_ITEM.name(), 3);
+
+        if (name.equals("texture")) {
+            builder = new ItemBuilder(Material.SKULL_ITEM, 3);
             builder.setData(3);
             builder.applySkin(material[1]);
+        } else if (name.equalsIgnoreCase("potion")) {
+            builder = new ItemBuilder(new ItemStack(Material.POTION, 1, (short) data));
         } else {
-            builder = new ItemBuilder(material[0], materialData);
+            builder = new ItemBuilder(name, data);
         }
 
         builder.setConfigPath(path);
@@ -210,7 +245,7 @@ public class ItemBuilder {
             builder.setLore(language.getList(path + ".lore"));
         }
 
-        builder.setData(materialData);
+        builder.setData(data);
 
         if (config.getBoolean(path + ".enchanted")) {
             builder.setEnchanted();
@@ -230,6 +265,7 @@ public class ItemBuilder {
         return parseFromConfig(path, config, config);
     }
 
+    @Deprecated
     public static ItemBuilder getFromConfigOld(String path, ConfigManager config, int data) {
         ItemBuilder builder = new ItemBuilder(config.getString(path + ".material"), data);
 
@@ -239,6 +275,7 @@ public class ItemBuilder {
         builder.setName(config.getString(path + ".name"));
         builder.setLore(config.getList(path + ".lore"));
         builder.setData(data);
+
         if (config.getBoolean(path + ".enchanted")) {
             builder.setEnchanted();
         }
@@ -248,6 +285,7 @@ public class ItemBuilder {
         return builder;
     }
 
+    @Deprecated
     public static ItemBuilder getFromConfigOld(String path, ConfigManager config) {
         return getFromConfigOld(path, config, config.getInt(path + ".data"));
     }
@@ -256,8 +294,7 @@ public class ItemBuilder {
         setDefaultFlags();
 
         for (Map.Entry<String, String> entry : replacements.entrySet()) {
-            String displayName = itemMeta.getDisplayName();
-            setName(displayName.replace(entry.getKey(), entry.getValue()));
+            setName(itemMeta.getDisplayName().replace(entry.getKey(), entry.getValue()));
 
             if (itemMeta.getLore() != null) {
                 List<String> lore = itemMeta.getLore();
@@ -285,6 +322,16 @@ public class ItemBuilder {
             setInInventory(menu);
         } else {
             setInInventory(menu);
+        }
+    }
+
+    @Override
+    public ItemBuilder clone() {
+        try {
+            return (ItemBuilder) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

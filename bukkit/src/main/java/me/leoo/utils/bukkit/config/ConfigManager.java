@@ -29,13 +29,15 @@ public class ConfigManager {
     private final File config;
     private String name;
 
+    private final boolean firstTime;
+
     public ConfigManager(String name, String dir) {
+        firstTime = !new File(dir, name).exists();
         config = FileUtil.generateFile(name + ".yml", dir);
 
         if (config == null) return;
 
-        yml = YamlConfiguration.loadConfiguration(config);
-        yml.options().copyDefaults(true);
+        yml = YamlConfiguration.loadConfiguration(config).options().copyDefaults(true).configuration();
 
         this.name = name;
     }
@@ -144,13 +146,17 @@ public class ConfigManager {
         if (!string.contains("[") && !string.contains("]")) return false;
 
         String type = string.substring(string.indexOf('[') + 1, string.indexOf(']'));
-        String value = string.substring(string.indexOf(']') + 1);
+        String value = string.substring(string.indexOf(']') + 2);
+
+        value = value.replace("%player%", player.getName());
+
+        System.out.println(type + ": " + value);
 
         if (type.equals("plugin")) {
             return false;
         } else {
             switch (type) {
-                case "command":
+                case "player":
                     player.performCommand(value);
                     break;
                 case "console":

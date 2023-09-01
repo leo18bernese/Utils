@@ -42,9 +42,12 @@ public class MenuListeners implements Listener {
             Optional<ItemBuilder> item = gui.getItem(slot);
 
             item.ifPresent(menuItem -> {
-                if (!menuItem.getConfig().executeAction(menuItem.getConfigPath(), player.getPlayer())) {
-                    event.setCancelled(menuItem.getEventCallBack().accept(event));
+                if (menuItem.getConfig() != null && menuItem.getConfigPath() != null && menuItem.getConfig().executeAction(menuItem.getConfigPath(), player.getPlayer())) {
+                    event.setCancelled(true);
+                    return;
                 }
+
+                event.setCancelled(menuItem.getEventCallBack().accept(event));
             });
         }
     }
