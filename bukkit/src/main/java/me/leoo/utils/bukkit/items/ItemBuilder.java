@@ -170,11 +170,15 @@ public class ItemBuilder implements Cloneable {
     }
 
     public ItemBuilder setTag(String value) {
+        setTag(itemStack, value);
+
+        return this;
+    }
+
+    public static void setTag(ItemStack itemStack, String value) {
         NBT.modify(itemStack, nbt -> {
             nbt.setString(Utils.getInitializedFrom().getDescription().getName(), value);
         });
-
-        return this;
     }
 
     public static String getTag(ItemStack itemStack) {
