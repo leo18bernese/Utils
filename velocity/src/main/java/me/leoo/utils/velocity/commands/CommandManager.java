@@ -11,6 +11,6 @@ public class CommandManager {
     }
 
     public static void registerCommand(Command command) {
-        Utils.get().getServer().getCommandManager().register(command.getName(), command, command.getAliases());
+        Utils.getInstance().getServer().getCommandManager().register(command.getName(), command, command.getAliases());
     }
 }

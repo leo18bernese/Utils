@@ -4,6 +4,7 @@ import lombok.Getter;
 import me.leoo.utils.bungee.Utils;
 import me.leoo.utils.bungee.chat.CC;
 import me.leoo.utils.common.file.FileUtil;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -67,7 +68,7 @@ public class ConfigManager {
         String string = yml.getString(path);
 
         if (string == null) {
-            Utils.get().getLogger().info("String " + path + " not found in " + name + ".yml");
+            ProxyServer.getInstance().getLogger().info("String " + path + " not found in " + name + ".yml");
             return "StringNotFound";
         }
 

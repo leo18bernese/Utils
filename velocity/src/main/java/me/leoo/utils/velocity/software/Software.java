@@ -8,17 +8,17 @@ public class Software extends SoftwareUtils {
 
     @Override
     public void info(String text) {
-        Utils.get().getLogger().info(text);
+        Utils.getInstance().getLogger().info(text);
     }
 
     @Override
     public void warning(String text) {
-        Utils.get().getLogger().warn(text);
+        Utils.getInstance().getLogger().warn(text);
     }
 
     @Override
     public void severe(String text) {
-        Utils.get().getLogger().error(text);
+        Utils.getInstance().getLogger().error(text);
     }
 
     @Override

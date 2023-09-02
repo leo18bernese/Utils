@@ -81,8 +81,6 @@ public abstract class Command extends BukkitCommand {
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
         List<String> tab = new ArrayList<>();
 
-        System.out.println(Arrays.toString(args));
-
         if (args.length == 1) {
             for (CommandBuilder subCommand : subCommands) {
                 if (!subCommand.canSee(sender)) continue;

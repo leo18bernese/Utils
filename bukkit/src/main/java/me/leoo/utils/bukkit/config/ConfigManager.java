@@ -146,16 +146,16 @@ public class ConfigManager {
         if (!string.contains("[") && !string.contains("]")) return false;
 
         String type = string.substring(string.indexOf('[') + 1, string.indexOf(']'));
-        String value = string.substring(string.indexOf(']') + 2);
-
-        value = value.replace("%player%", player.getName());
-
-        System.out.println(type + ": " + value);
+        String value = string.substring(string.indexOf(']') + 2)
+                .replace("{player}", player.getName());
 
         if (type.equals("plugin")) {
             return false;
         } else {
             switch (type) {
+                case "chat":
+                    player.chat(value);
+                    break;
                 case "player":
                     player.performCommand(value);
                     break;
