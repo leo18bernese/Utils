@@ -47,7 +47,11 @@ public class MenuListeners implements Listener {
                     return;
                 }
 
-                event.setCancelled(menuItem.getEventCallBack() == null || menuItem.getEventCallBack().accept(event));
+                if (menuItem.getEventCallBack() == null) {
+                    event.setCancelled(true);
+                } else {
+                    event.setCancelled(menuItem.getEventCallBack().accept(event));
+                }
             });
         }
     }
