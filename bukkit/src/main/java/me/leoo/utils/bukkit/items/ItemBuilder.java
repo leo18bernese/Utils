@@ -4,7 +4,6 @@ import com.cryptomorin.xseries.SkullUtils;
 import com.cryptomorin.xseries.XEnchantment;
 import com.cryptomorin.xseries.XMaterial;
 import de.tr7zw.changeme.nbtapi.NBT;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import lombok.Getter;
 import lombok.Setter;
 import me.leoo.utils.bukkit.Utils;
@@ -168,12 +167,6 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder setTag(String value) {
-        setTag(itemStack, value);
-
-        return this;
-    }
-
     public static void setTag(ItemStack itemStack, String value) {
         NBT.modify(itemStack, nbt -> {
             nbt.setString(Utils.getInitializedFrom().getDescription().getName(), value);
@@ -181,7 +174,7 @@ public class ItemBuilder implements Cloneable {
     }
 
     public static String getTag(ItemStack itemStack) {
-        return new NBTItem(itemStack).getString(Utils.getInitializedFrom().getDescription().getName());
+        return NBT.get(itemStack, nbt -> nbt.getString(Utils.getInitializedFrom().getDescription().getName()));
     }
 
     public ItemBuilder setToSaveString(String toSaveString) {
