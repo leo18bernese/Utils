@@ -115,7 +115,7 @@ public class ConfigManager {
 
     //locations
     public Location getLocation(String path) {
-        return LocationUtil.deserializeLocation(yml.getString(path));
+        return LocationUtil.deserializeLocation(getString(path));
     }
 
     public List<Location> getLocations(String path) {
@@ -183,7 +183,7 @@ public class ConfigManager {
         String prefixPath = prefix.isEmpty() ? "" : prefix + ".";
         String pathPath = path.isEmpty() ? "" : "." + path;
 
-        return prefixPath + (yml.get(prefixPath + group + pathPath) == null ? "Default" : group) + path;
+        return prefixPath + (yml.get(prefixPath + group + pathPath) == null ? "Default" : group) + pathPath;
     }
 
     public String getGroupString(String prefix, String path, String group) {

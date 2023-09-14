@@ -8,6 +8,12 @@ import java.lang.reflect.Field;
 
 public class CommandManager {
 
+    public static void registerCommands(me.leoo.utils.bukkit.commands.Command... commands) {
+        for (me.leoo.utils.bukkit.commands.Command command : commands) {
+            registerCommand(command.initialize());
+        }
+    }
+
     public static void registerCommands(Command... commands) {
         for (Command command : commands) {
             registerCommand(command);

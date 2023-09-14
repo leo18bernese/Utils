@@ -24,6 +24,7 @@ public class LocationUtil {
 
     public static Location deserializeLocation(String string) {
         if (string == null || string.isEmpty()) return null;
+        if (!string.contains(":")) return null;
 
         String[] split = string.split(":");
         return new Location(

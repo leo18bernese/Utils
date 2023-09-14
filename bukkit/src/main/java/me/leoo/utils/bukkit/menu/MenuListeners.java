@@ -25,8 +25,7 @@ public class MenuListeners implements Listener {
 
         Map<UUID, MenuBuilder> openedInventories = new HashMap<>(MenuBuilder.getOpenedInventories());
 
-        if (openedInventories.isEmpty())
-            return;
+        if (openedInventories.isEmpty()) return;
 
         Player player = (Player) event.getWhoClicked();
         if (!openedInventories.containsKey(player.getUniqueId())) {

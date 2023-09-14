@@ -13,7 +13,6 @@ public class ArmorStandBuilder {
     public ArmorStandBuilder(Location location) {
         this.location = location;
         this.armorStand = location.getWorld().spawn(location, ArmorStand.class);
-        System.out.println("spawned armor stand on " + location);
     }
 
     public ArmorStandBuilder setName(String name) {
