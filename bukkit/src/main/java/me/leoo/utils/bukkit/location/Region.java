@@ -2,6 +2,7 @@ package me.leoo.utils.bukkit.location;
 
 import lombok.Data;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
@@ -21,7 +22,7 @@ public class Region {
     private int maxZ;
 
     public Region(Location location, int radius) {
-        new Region(location.clone().subtract(radius, radius, radius), location.clone().add(radius, radius, radius));
+        this(location.clone().subtract(radius, radius, radius), location.clone().add(radius, radius, radius));
     }
 
     public Region(Location loc1, Location loc2) {
@@ -49,7 +50,11 @@ public class Region {
         for (int x = minX; x <= maxX; ++x) {
             for (int y = minY; y <= maxY; ++y) {
                 for (int z = minZ; z <= maxZ; ++z) {
-                    blocks.add(world.getBlockAt(x, y, z));
+                    Block block = world.getBlockAt(x, y, z);
+
+                    if (block.getType() != Material.AIR) {
+                        blocks.add(block);
+                    }
                 }
             }
         }

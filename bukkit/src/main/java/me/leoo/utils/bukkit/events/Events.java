@@ -44,7 +44,6 @@ public class Events<T extends Event> implements EventExecutor, Listener {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(Listener listener, Event event) {
         handler.accept((T) event);

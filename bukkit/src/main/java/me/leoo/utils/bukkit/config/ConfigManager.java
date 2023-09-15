@@ -179,7 +179,7 @@ public class ConfigManager {
     }
 
     //group methods
-    private String getGroupPath(String prefix, String path, String group) {
+    public String getGroupPath(String prefix, String path, String group) {
         String prefixPath = prefix.isEmpty() ? "" : prefix + ".";
         String pathPath = path.isEmpty() ? "" : "." + path;
 
@@ -192,6 +192,10 @@ public class ConfigManager {
 
     public List<String> getGroupList(String prefix, String path, String group) {
         return getList(getGroupPath(prefix, path, group));
+    }
+
+    public Set<String> getGroupSection(String prefix, String path, String group) {
+        return getSection(getGroupPath(prefix, path, group));
     }
 
     public boolean getGroupBoolean(String prefix, String path, String group) {
