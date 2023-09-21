@@ -135,6 +135,14 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder addEnchants(String... enchantments) {
+        for (String enchantment : enchantments) {
+            addEnchant(enchantment, 1);
+        }
+
+        return this;
+    }
+
     public ItemBuilder setEnchanted() {
         addEnchant(XEnchantment.DURABILITY.name(), 1);
         return this;
