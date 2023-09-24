@@ -12,6 +12,7 @@ import me.leoo.utils.bukkit.menu.MenuBuilder;
 import me.leoo.utils.bukkit.task.Tasks;
 import me.leoo.utils.common.number.NumberUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -20,6 +21,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 
@@ -143,6 +145,14 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder addEnchants(List<String> enchantments) {
+        for (String enchantment : enchantments) {
+            addEnchant(enchantment, 1);
+        }
+
+        return this;
+    }
+
     public ItemBuilder setEnchanted() {
         addEnchant(XEnchantment.DURABILITY.name(), 1);
         return this;
@@ -157,6 +167,11 @@ public class ItemBuilder implements Cloneable {
 
     public ItemBuilder addEffects(PotionEffect effect) {
         ((PotionMeta) itemMeta).addCustomEffect(effect, true);
+        return this;
+    }
+
+    public ItemBuilder colorArmor(Color color) {
+        ((LeatherArmorMeta) itemMeta).setColor(color);
         return this;
     }
 
