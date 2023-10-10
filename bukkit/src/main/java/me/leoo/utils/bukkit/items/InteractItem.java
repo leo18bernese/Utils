@@ -22,8 +22,12 @@ public class InteractItem {
         this.item = item;
         this.player = player;
 
-        player.getInventory().setItem(item.getSlot(), item.get());
+        if (items.stream().noneMatch(interact -> interact == this)) {
+            items.add(this);
+        }
+    }
 
-        items.add(this);
+    public void give() {
+        player.getInventory().setItem(item.getSlot(), item.get());
     }
 }
