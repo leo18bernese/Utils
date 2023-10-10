@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.SkullUtils;
 import com.cryptomorin.xseries.XEnchantment;
 import com.cryptomorin.xseries.XMaterial;
 import de.tr7zw.changeme.nbtapi.NBT;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import me.leoo.utils.bukkit.Utils;
@@ -18,6 +19,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -32,14 +34,17 @@ import java.util.Map;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class ItemBuilder implements Cloneable {
 
     private ItemStack itemStack;
     private ItemMeta itemMeta;
-    private final Map<String, String> replacements = new HashMap<>();
+    private Map<String, String> replacements = new HashMap<>();
+
+    private Callback<InventoryClickEvent> eventCallback;
+    private Callback<PlayerInteractEvent> interactCallback;
 
     private String toSaveString;
-    private Callback<InventoryClickEvent> eventCallBack;
     private ConfigManager config;
     private ConfigManager language;
     private String configPath;
@@ -91,6 +96,11 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder removeLore() {
+        itemMeta.setLore(null);
+        return this;
+    }
+
     public ItemBuilder setData(int data) {
         getItemStack().setDurability((short) data);
         return this;
@@ -113,7 +123,7 @@ public class ItemBuilder implements Cloneable {
             itemStack.setType(XMaterial.PLAYER_HEAD.parseMaterial());
         }
         if (itemStack.getType().equals(XMaterial.PLAYER_HEAD.parseMaterial())) {
-            Tasks.runAsync(() -> SkullUtils.applySkin(itemMeta, string));
+            Tasks.runLater(() -> SkullUtils.applySkin(itemMeta, string), 5L);
         }
 
         return this;
@@ -210,8 +220,8 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder setEventCallBack(Callback<InventoryClickEvent> eventCallBack) {
-        this.eventCallBack = eventCallBack;
+    public ItemBuilder setEventCallback(Callback<InventoryClickEvent> eventCallBack) {
+        this.eventCallback = eventCallBack;
         return this;
     }
 
@@ -348,12 +358,12 @@ public class ItemBuilder implements Cloneable {
     public ItemBuilder clone() {
         try {
             return (ItemBuilder) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            return null;
+        }catch (CloneNotSupportedException exception){
+            exception.printStackTrace();
         }
-    }
 
+        return null;
+    }
 
     public interface Callback<T> {
         boolean accept(T t);
