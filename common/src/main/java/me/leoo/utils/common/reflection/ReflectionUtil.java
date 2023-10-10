@@ -17,6 +17,16 @@ public class ReflectionUtil {
         return null;
     }
 
+    public static void setFieldValue(Class<?> clazz, String fieldName, Object object, Object value) {
+        try {
+            Field field = clazz.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(object, value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static Object invokeMethod(Method method, Object instance, Object... args) {
         try {
             method.setAccessible(true);

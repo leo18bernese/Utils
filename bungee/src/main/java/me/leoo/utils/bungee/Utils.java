@@ -22,7 +22,6 @@ public class Utils extends Plugin {
     }
 
     public static Plugin get() {
-        System.out.println("getting plugin");
         if (plugin == null) {
             //    ProxyServer.getInstance().
         }
