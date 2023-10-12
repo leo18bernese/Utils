@@ -2,17 +2,19 @@ package me.leoo.utils.bukkit.config;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import me.leoo.utils.bukkit.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+@Data
+@RequiredArgsConstructor
 public class PlayerAction {
 
-    public static boolean executeAction(ConfigManager config, String path, Player player) {
-        if (config.getYml().get(path + ".command") == null) return false;
+    private final String string;
 
-        String string = config.getString(path + ".command");
-
+    public boolean run(Player player) {
         if (!string.contains("[") && !string.contains("]")) return false;
 
         String type = string.substring(string.indexOf('[') + 1, string.indexOf(']'));
@@ -46,5 +48,9 @@ public class PlayerAction {
 
             return true;
         }
+    }
+
+    public static PlayerAction fromConfig(ConfigManager config, String path) {
+        return new PlayerAction(config.getYml().get(path + ".command") == null ? "" : config.getString(path + ".command"));
     }
 }
