@@ -1,13 +1,10 @@
 package me.leoo.utils.bukkit.config;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import lombok.Getter;
 import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.chat.CC;
 import me.leoo.utils.bukkit.location.LocationUtil;
 import me.leoo.utils.common.file.FileUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -139,43 +136,7 @@ public class ConfigManager {
 
     //action method from config
     public boolean executeAction(String path, Player player) {
-        if (getYml().get(path + ".command") == null) return false;
-
-        String string = getString(path + ".command");
-
-        if (!string.contains("[") && !string.contains("]")) return false;
-
-        String type = string.substring(string.indexOf('[') + 1, string.indexOf(']'));
-        String value = string.substring(string.indexOf(']') + 2)
-                .replace("{player}", player.getName());
-
-        if (type.equals("plugin")) {
-            return false;
-        } else {
-            switch (type) {
-                case "chat":
-                    player.chat(value);
-                    break;
-                case "player":
-                    player.performCommand(value);
-                    break;
-                case "console":
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), value);
-                    break;
-                case "server":
-                    ByteArrayDataOutput out = ByteStreams.newDataOutput();
-
-                    out.writeUTF("Connect");
-                    out.writeUTF(value);
-
-                    player.sendPluginMessage(Utils.get(), "BungeeCord", out.toByteArray());
-                    break;
-                case "no-action":
-                    break;
-            }
-
-            return true;
-        }
+       return PlayerAction.executeAction(this, path, player);
     }
 
     //group methods
