@@ -359,8 +359,10 @@ public class ItemBuilder implements Cloneable {
             }
         }
 
-        replaceFunction.apply(itemMeta.getDisplayName());
-        itemMeta.getLore().forEach(string -> replaceFunction.apply(string));
+        if (replaceFunction != null) {
+            itemMeta.setDisplayName(replaceFunction.apply(itemMeta.getDisplayName()));
+            itemMeta.getLore().replaceAll(string -> replaceFunction.apply(string));
+        }
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
