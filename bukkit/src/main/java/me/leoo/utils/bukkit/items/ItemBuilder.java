@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @Getter
 @Setter
@@ -40,9 +41,12 @@ public class ItemBuilder implements Cloneable {
     private ItemStack itemStack;
     private ItemMeta itemMeta;
     private Map<String, String> replacements = new HashMap<>();
+    private Function<String, String> replaceFunction;
 
     private Callback<InventoryClickEvent> eventCallback;
     private Callback<PlayerInteractEvent> interactCallback;
+
+    private String permission;
 
     private String toSaveString;
     private ConfigManager config;
@@ -200,6 +204,11 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder setReplaceFunction(Function<String, String> replaceFunction) {
+        this.replaceFunction = replaceFunction;
+        return this;
+    }
+
     public static void setTag(ItemStack itemStack, String value) {
         NBT.modify(itemStack, nbt -> {
             nbt.setString(Utils.getInitializedFrom().getDescription().getName(), value);
@@ -220,6 +229,11 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder setPermission(String permission) {
+        this.permission = permission;
+        return this;
+    }
+
     public ItemBuilder setEventCallback(Callback<InventoryClickEvent> eventCallBack) {
         this.eventCallback = eventCallBack;
         return this;
@@ -227,7 +241,6 @@ public class ItemBuilder implements Cloneable {
 
     public void saveIntoConfig(String path, ConfigManager config, ConfigManager language) {
         YamlConfiguration yml = config.getYml();
-        YamlConfiguration languageYml = language.getYml();
 
         yml.addDefault(path + ".material", itemStack.getType().name() + (toSaveString == null ? (itemStack.getDurability() == 0 ? "" : ":" + itemStack.getDurability()) : ":" + toSaveString));
         yml.addDefault(path + ".amount", itemStack.getAmount());
@@ -237,8 +250,16 @@ public class ItemBuilder implements Cloneable {
             yml.addDefault(path + ".slot", slot);
         }
 
-        languageYml.addDefault(path + ".name", itemMeta.getDisplayName());
-        languageYml.addDefault(path + ".lore", itemMeta.getLore());
+        if (permission != null) {
+            yml.addDefault(path + ".permission", permission);
+        }
+
+        if (language != null) {
+            YamlConfiguration languageYml = language.getYml();
+
+            languageYml.addDefault(path + ".name", itemMeta.getDisplayName());
+            languageYml.addDefault(path + ".lore", itemMeta.getLore());
+        }
     }
 
     public void saveIntoConfig(String path, ConfigManager config) {
@@ -265,13 +286,16 @@ public class ItemBuilder implements Cloneable {
 
         builder.setConfigPath(path);
         builder.setConfig(config);
-        builder.setLanguage(language);
 
-        if (language.getYml().get(path + ".name") != null) {
-            builder.setName(language.getString(path + ".name"));
-        }
-        if (language.getYml().get(path + ".lore") != null) {
-            builder.setLore(language.getList(path + ".lore"));
+        if (language != null) {
+            builder.setLanguage(language);
+
+            if (language.getYml().get(path + ".name") != null) {
+                builder.setName(language.getString(path + ".name"));
+            }
+            if (language.getYml().get(path + ".lore") != null) {
+                builder.setLore(language.getList(path + ".lore"));
+            }
         }
 
         builder.setData(data);
@@ -285,6 +309,9 @@ public class ItemBuilder implements Cloneable {
         }
         if (config.getYml().get(path + ".slot") != null) {
             builder.setSlot(config.getInt(path + ".slot"));
+        }
+        if (config.getYml().get(path + ".permission") != null) {
+            builder.setPermission(config.getString(path + ".permission"));
         }
 
         return builder;
@@ -332,6 +359,9 @@ public class ItemBuilder implements Cloneable {
             }
         }
 
+        replaceFunction.apply(itemMeta.getDisplayName());
+        itemMeta.getLore().forEach(string -> replaceFunction.apply(string));
+
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
@@ -358,7 +388,7 @@ public class ItemBuilder implements Cloneable {
     public ItemBuilder clone() {
         try {
             return (ItemBuilder) super.clone();
-        }catch (CloneNotSupportedException exception){
+        } catch (CloneNotSupportedException exception) {
             exception.printStackTrace();
         }
 
