@@ -30,7 +30,12 @@ public class InteractListeners implements Listener {
 
         ItemBuilder builder = item.getItem();
 
-        if (item.getItem().getInteractCallback() != null && builder.getConfig() != null && builder.getConfigPath() != null && builder.getConfig().executeAction(builder.getConfigPath(), player.getPlayer())) {
+        if (item.getItem().getInteractCallback() == null || builder.getConfig() != null && builder.getConfigPath() != null && builder.getConfig().executeAction(builder.getConfigPath(), player.getPlayer())) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (builder.getPermission() != null && !player.hasPermission(builder.getPermission())) {
             event.setCancelled(true);
             return;
         }
