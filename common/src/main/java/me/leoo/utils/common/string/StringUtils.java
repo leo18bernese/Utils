@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class StringUtils {
 
@@ -52,5 +53,24 @@ public class StringUtils {
         }
 
         return builder + message;
+    }
+
+    /**
+     * @param list  to edit
+     * @param key   placeholder to replace
+     * @param value string that replace the placeholder
+     */
+    public static List<String> replaceWithList(List<String> list, String key, List<String> value) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).contains(key)) {
+                for (int n = 1; n < value.size(); n++) {
+                    list.add(i + n, n == value.size() - 1 ? list.get(i).replace(key, value.get(n)) : value.get(n));
+                }
+
+                list.set(i, value.size() == 1 ? list.get(i).replace(key, value.get(0)) : value.get(0));
+            }
+        }
+
+        return list;
     }
 }

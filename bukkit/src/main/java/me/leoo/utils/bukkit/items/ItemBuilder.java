@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Getter
@@ -44,7 +45,7 @@ public class ItemBuilder implements Cloneable {
     private Function<String, String> replaceFunction;
 
     private Callback<InventoryClickEvent> eventCallback;
-    private Callback<PlayerInteractEvent> interactCallback;
+    private Consumer<PlayerInteractEvent> interactCallback;
 
     private String permission;
 
@@ -236,6 +237,11 @@ public class ItemBuilder implements Cloneable {
 
     public ItemBuilder setEventCallback(Callback<InventoryClickEvent> eventCallBack) {
         this.eventCallback = eventCallBack;
+        return this;
+    }
+
+    public ItemBuilder setInteractCallback(Consumer<PlayerInteractEvent> interactCallback) {
+        this.interactCallback = interactCallback;
         return this;
     }
 
