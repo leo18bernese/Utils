@@ -104,6 +104,10 @@ public class ConfigManager {
         return section.getKeys(false);
     }
 
+    public List<String> getSectionValues(String path) {
+        return getSection(path).stream().map(string -> yml.getString(path + "." + string)).collect(Collectors.toList());
+    }
+
     public List<Integer> getIntegerSplitList(String path) {
         return Arrays.stream(getString(path).split(","))
                 .map(Integer::valueOf)
