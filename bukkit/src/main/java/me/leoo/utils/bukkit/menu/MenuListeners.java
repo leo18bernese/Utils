@@ -1,6 +1,7 @@
 package me.leoo.utils.bukkit.menu;
 
 import me.leoo.utils.bukkit.Utils;
+import me.leoo.utils.bukkit.events.Events;
 import me.leoo.utils.bukkit.items.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -63,7 +64,8 @@ public class MenuListeners implements Listener {
     public static void register() {
         if (instance == null) {
             instance = new MenuListeners();
-            Bukkit.getPluginManager().registerEvents(instance, Utils.get());
+            Events.register(instance);
+            //Bukkit.getPluginManager().registerEvents(instance, Utils.get());
         }
     }
 }

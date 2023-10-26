@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -48,6 +49,7 @@ public class ItemBuilder implements Cloneable {
     private Consumer<PlayerInteractEvent> interactCallback;
 
     private String permission;
+    private String command;
 
     private String toSaveString;
     private ConfigManager config;
@@ -235,6 +237,11 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder setCommand(String command) {
+        this.command = command;
+        return this;
+    }
+
     public ItemBuilder setEventCallback(Callback<InventoryClickEvent> eventCallBack) {
         this.eventCallback = eventCallBack;
         return this;
@@ -258,6 +265,10 @@ public class ItemBuilder implements Cloneable {
 
         if (permission != null) {
             yml.addDefault(path + ".permission", permission);
+        }
+
+        if (command != null) {
+            yml.addDefault(path + ".command", command);
         }
 
         if (language != null) {
@@ -327,31 +338,6 @@ public class ItemBuilder implements Cloneable {
         return parseFromConfig(path, config, config);
     }
 
-    @Deprecated
-    public static ItemBuilder getFromConfigOld(String path, ConfigManager config, int data) {
-        ItemBuilder builder = new ItemBuilder(config.getString(path + ".material"), data);
-
-        builder.setConfigPath(path);
-        builder.setConfig(config);
-
-        builder.setName(config.getString(path + ".name"));
-        builder.setLore(config.getList(path + ".lore"));
-        builder.setData(data);
-
-        if (config.getBoolean(path + ".enchanted")) {
-            builder.setEnchanted();
-        }
-
-        builder.setSlot(config.getInt(path + ".slot"));
-
-        return builder;
-    }
-
-    @Deprecated
-    public static ItemBuilder getFromConfigOld(String path, ConfigManager config) {
-        return getFromConfigOld(path, config, config.getInt(path + ".data"));
-    }
-
     public ItemStack get() {
         setDefaultFlags();
 
@@ -366,8 +352,8 @@ public class ItemBuilder implements Cloneable {
         }
 
         if (replaceFunction != null) {
-            itemMeta.setDisplayName(replaceFunction.apply(itemMeta.getDisplayName()));
-            itemMeta.getLore().replaceAll(string -> replaceFunction.apply(string));
+            setName(replaceFunction.apply(itemMeta.getDisplayName()));
+            setLore(itemMeta.getLore().stream().map(string -> replaceFunction.apply(string)).collect(Collectors.toList()));
         }
 
         itemStack.setItemMeta(itemMeta);
