@@ -93,7 +93,7 @@ public abstract class Command extends BukkitCommand {
 
         CommandBuilder subCommand = getSubCommandByName(args[0]);
         if (subCommand != null && subCommand.canSee(sender)) {
-            if(subCommand.getTabComplete() != null){
+            if (subCommand.getTabComplete() != null) {
                 return subCommand.getTabComplete().apply(sender, args);
             }
         }
@@ -117,6 +117,6 @@ public abstract class Command extends BukkitCommand {
     public abstract String getNoPermissionMessage();
 
     public CommandBuilder getSubCommandByName(String name) {
-        return subCommands.stream().filter(subCommand -> subCommand.getName().equals(name)).findAny().orElse(null);
+        return subCommands.stream().filter(subCommand -> subCommand.getName().equals(name) || (subCommand.getAliases() != null && Arrays.asList(subCommand.getAliases()).contains(name))).findAny().orElse(null);
     }
 }
