@@ -97,7 +97,7 @@ public class ConfigManager {
         ConfigurationSection section = yml.getConfigurationSection(path);
 
         if (section == null) {
-            Utils.get().getLogger().severe("Configuration section " + path + " not found in " + name + ".yml");
+            //Utils.get().getLogger().severe("Configuration section " + path + " not found in " + name + ".yml");
             return new HashSet<>();
         }
 
@@ -105,7 +105,7 @@ public class ConfigManager {
     }
 
     public List<String> getSectionValues(String path) {
-        return getSection(path).stream().map(string -> yml.getString(path + "." + string)).collect(Collectors.toList());
+        return getSection(path).stream().map(string -> getString(path + "." + string)).collect(Collectors.toList());
     }
 
     public List<Integer> getIntegerSplitList(String path) {
