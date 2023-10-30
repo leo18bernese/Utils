@@ -198,7 +198,7 @@ public class ItemBuilder implements Cloneable {
     }
 
     public ItemBuilder setDefaultFlags() {
-        addFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
+        addFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS);
         return this;
     }
 
@@ -339,7 +339,7 @@ public class ItemBuilder implements Cloneable {
     }
 
     public ItemStack get() {
-        setDefaultFlags();
+        //setDefaultFlags();
 
         for (Map.Entry<String, String> entry : replacements.entrySet()) {
             setName(itemMeta.getDisplayName().replace(entry.getKey(), entry.getValue()));

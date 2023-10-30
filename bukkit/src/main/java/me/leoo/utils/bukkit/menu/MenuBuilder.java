@@ -38,7 +38,7 @@ public abstract class MenuBuilder {
                 slot = 0;
             }
 
-            inventory.setItem(slot, itemBuilder.get());
+            inventory.setItem(slot, itemBuilder.setDefaultFlags().get());
         });
 
         return inventory;
