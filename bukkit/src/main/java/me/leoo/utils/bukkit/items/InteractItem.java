@@ -28,6 +28,8 @@ public class InteractItem {
     }
 
     public void give() {
+        if (item.getSlot() < 0) return;
+
         player.getInventory().setItem(item.getSlot(), item.get());
     }
 }
