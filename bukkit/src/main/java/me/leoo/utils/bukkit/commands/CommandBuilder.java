@@ -48,6 +48,13 @@ public class CommandBuilder {
         return this;
     }
 
+    public CommandBuilder setInfoFromConfig(ConfigManager config) {
+        setDisplay(config.getString("commands." + name + ".display"));
+        setUsage(config.getString("commands." + name + ".usage"));
+
+        return this;
+    }
+
     public CommandBuilder setAliases(String... aliases) {
         this.aliases = aliases;
         return this;
