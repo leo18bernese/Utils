@@ -1,16 +1,18 @@
 package me.leoo.utils.bungee.config;
 
 import lombok.Getter;
-import me.leoo.utils.bungee.Utils;
 import me.leoo.utils.bungee.chat.CC;
 import me.leoo.utils.common.file.FileUtil;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,15 +21,20 @@ import java.util.stream.Collectors;
 public class ConfigManager {
 
     private Configuration yml;
-    private File config;
-    private String name;
+    private final File config;
+    private final String name;
 
-    public ConfigManager(String name, String dir) {
-        config = FileUtil.generateFile(name + ".yml", dir);
+    public ConfigManager(Plugin plugin, String name, String dir) {
+        FileUtil.generateFolder(dir);
 
-        if (config == null) return;
+        config = new File(dir, name + ".yml");
 
         try {
+            if (!config.exists()) {
+                InputStream inputStream = plugin.getResourceAsStream(config.getName());
+                Files.copy(inputStream, config.toPath());
+            }
+
             yml = ConfigurationProvider.getProvider(YamlConfiguration.class).load(config);
         } catch (IOException exception) {
             exception.printStackTrace();
