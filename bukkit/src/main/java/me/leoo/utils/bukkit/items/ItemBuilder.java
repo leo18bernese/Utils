@@ -14,6 +14,7 @@ import me.leoo.utils.bukkit.task.Tasks;
 import me.leoo.utils.common.number.NumberUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -22,6 +23,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -129,8 +131,11 @@ public class ItemBuilder implements Cloneable {
         if (overrideItem) {
             itemStack.setType(XMaterial.PLAYER_HEAD.parseMaterial());
         }
+
         if (itemStack.getType().equals(XMaterial.PLAYER_HEAD.parseMaterial())) {
-            Tasks.runLater(() -> SkullUtils.applySkin(itemMeta, string), 5L);
+            SkullUtils.applySkin(itemMeta, string);
+
+        /*Tasks.runLater(() -> SkullUtils.applySkin(itemMeta, string), 5L);*/
         }
 
         return this;
@@ -189,6 +194,11 @@ public class ItemBuilder implements Cloneable {
 
     public ItemBuilder colorArmor(Color color) {
         ((LeatherArmorMeta) itemMeta).setColor(color);
+        return this;
+    }
+
+    public ItemBuilder colorFirework(Color color) {
+        ((FireworkEffectMeta) itemMeta).setEffect(FireworkEffect.builder().withColor(color).build());
         return this;
     }
 
