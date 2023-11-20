@@ -11,10 +11,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class MenuListeners implements Listener {
 
@@ -24,14 +23,12 @@ public class MenuListeners implements Listener {
     public void onDrag(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
 
-        Map<UUID, MenuBuilder> openedInventories = new HashMap<>(MenuBuilder.getOpenedInventories());
+        Map<UUID, MenuBuilder> openedInventories = MenuBuilder.getOpenedInventories();
 
         if (openedInventories.isEmpty()) return;
 
         Player player = (Player) event.getWhoClicked();
-        if (!openedInventories.containsKey(player.getUniqueId())) {
-            return;
-        }
+        if (!openedInventories.containsKey(player.getUniqueId())) return;
 
         MenuBuilder gui = openedInventories.get(player.getUniqueId());
         int rawSlot = event.getRawSlot();
@@ -39,20 +36,19 @@ public class MenuListeners implements Listener {
         if (rawSlot < gui.getSlots()) {
             int slot = event.getSlot();
 
-            Optional<ItemBuilder> item = gui.getItem(slot);
+            ItemBuilder item = gui.getItem(rawSlot).orElse(null);
+            if (item == null) return;
 
-            item.ifPresent(menuItem -> {
-                if (menuItem.getConfig() != null && menuItem.getConfigPath() != null && menuItem.getConfig().executeAction(menuItem.getConfigPath(), player.getPlayer())) {
-                    event.setCancelled(true);
-                    return;
-                }
+            if (item.getConfig() != null && item.getConfigPath() != null && item.getConfig().executeAction(item.getConfigPath(), player.getPlayer())) {
+                event.setCancelled(true);
+                return;
+            }
 
-                if (menuItem.getEventCallback() == null) {
-                    event.setCancelled(true);
-                } else {
-                    event.setCancelled(menuItem.getEventCallback().accept(event));
-                }
-            });
+            if (item.getEventCallback() == null) {
+                event.setCancelled(true);
+            } else {
+                event.setCancelled(item.getEventCallback().test(event));
+            }
         }
     }
 
@@ -65,7 +61,6 @@ public class MenuListeners implements Listener {
         if (instance == null) {
             instance = new MenuListeners();
             Events.register(instance);
-            //Bukkit.getPluginManager().registerEvents(instance, Utils.get());
         }
     }
 }

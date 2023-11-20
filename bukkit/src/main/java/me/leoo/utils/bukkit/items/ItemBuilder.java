@@ -10,7 +10,6 @@ import lombok.Setter;
 import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.config.ConfigManager;
 import me.leoo.utils.bukkit.menu.MenuBuilder;
-import me.leoo.utils.bukkit.task.Tasks;
 import me.leoo.utils.common.number.NumberUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -35,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Getter
@@ -47,7 +47,7 @@ public class ItemBuilder implements Cloneable {
     private Map<String, String> replacements = new HashMap<>();
     private Function<String, String> replaceFunction;
 
-    private Callback<InventoryClickEvent> eventCallback;
+    private Predicate<InventoryClickEvent> eventCallback;
     private Consumer<PlayerInteractEvent> interactCallback;
 
     private String permission;
@@ -110,6 +110,16 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder setItemStack(ItemStack itemStack) {
+        this.itemStack = itemStack;
+        return this;
+    }
+
+    public ItemBuilder setType(Material material) {
+        itemStack.setType(material);
+        return this;
+    }
+
     public ItemBuilder setData(int data) {
         getItemStack().setDurability((short) data);
         return this;
@@ -135,7 +145,7 @@ public class ItemBuilder implements Cloneable {
         if (itemStack.getType().equals(XMaterial.PLAYER_HEAD.parseMaterial())) {
             SkullUtils.applySkin(itemMeta, string);
 
-        /*Tasks.runLater(() -> SkullUtils.applySkin(itemMeta, string), 5L);*/
+            /*Tasks.runLater(() -> SkullUtils.applySkin(itemMeta, string), 5L);*/
         }
 
         return this;
@@ -222,6 +232,11 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder replaceLore(Function<List<String>, List<String>> replaceFunction) {
+        setLore(replaceFunction.apply(itemMeta.getLore()));
+        return this;
+    }
+
     public static void setTag(ItemStack itemStack, String value) {
         NBT.modify(itemStack, nbt -> {
             nbt.setString(Utils.getInitializedFrom().getDescription().getName(), value);
@@ -252,7 +267,7 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder setEventCallback(Callback<InventoryClickEvent> eventCallBack) {
+    public ItemBuilder setEventCallback(Predicate<InventoryClickEvent> eventCallBack) {
         this.eventCallback = eventCallBack;
         return this;
     }
@@ -311,6 +326,10 @@ public class ItemBuilder implements Cloneable {
             builder = new ItemBuilder(name, data);
         }
 
+        if (builder.getItemStack().getType() == XMaterial.FIREWORK_STAR.parseMaterial()) {
+            if (material.length == 2) builder.colorFirework(Color.fromRGB(data));
+        }
+
         builder.setConfigPath(path);
         builder.setConfig(config);
 
@@ -349,8 +368,6 @@ public class ItemBuilder implements Cloneable {
     }
 
     public ItemStack get() {
-        //setDefaultFlags();
-
         for (Map.Entry<String, String> entry : replacements.entrySet()) {
             setName(itemMeta.getDisplayName().replace(entry.getKey(), entry.getValue()));
 
@@ -363,7 +380,9 @@ public class ItemBuilder implements Cloneable {
 
         if (replaceFunction != null) {
             setName(replaceFunction.apply(itemMeta.getDisplayName()));
-            setLore(itemMeta.getLore().stream().map(string -> replaceFunction.apply(string)).collect(Collectors.toList()));
+
+            if (itemMeta.getLore() != null)
+                setLore(itemMeta.getLore().stream().map(string -> replaceFunction.apply(string)).collect(Collectors.toList()));
         }
 
         itemStack.setItemMeta(itemMeta);
@@ -397,9 +416,5 @@ public class ItemBuilder implements Cloneable {
         }
 
         return null;
-    }
-
-    public interface Callback<T> {
-        boolean accept(T t);
     }
 }

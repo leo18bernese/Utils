@@ -16,7 +16,7 @@ public class BukkitUtils {
         return VERSION >= version;
     }
 
-    public static List<ItemStack> getInventoryAndArmor(Player player){
+    public static List<ItemStack> getInventoryAndArmor(Player player) {
         List<ItemStack> items = new ArrayList<>(Arrays.asList(player.getInventory().getContents()));
         items.addAll(Arrays.asList(player.getInventory().getArmorContents()));
 

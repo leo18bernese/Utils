@@ -1,7 +1,9 @@
 package me.leoo.utils.bukkit.items;
 
 import com.google.common.annotations.Beta;
+import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.events.Events;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -46,7 +48,6 @@ public class InteractListeners implements Listener {
         if (instance == null) {
             instance = new InteractListeners();
             Events.register(instance);
-            //Bukkit.getPluginManager().registerEvents(instance, Utils.get());
         }
     }
 }

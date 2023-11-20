@@ -8,13 +8,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 public abstract class MenuBuilder {
 
     @Getter
-    private static Map<UUID, MenuBuilder> openedInventories = new ConcurrentHashMap<>();
+    private static Map<UUID, MenuBuilder> openedInventories = new HashMap<>();
+
     private final List<ItemBuilder> items = new ArrayList<>();
 
     private static String title;
@@ -27,25 +27,20 @@ public abstract class MenuBuilder {
     public Inventory get(Player player) {
         MenuListeners.register();
 
-        Inventory inventory = Bukkit.createInventory(null, getSlots(), getTitle(player));
+        Inventory inventory = Bukkit.createInventory(null, getSlots(), getTitle(player) == null ? "" : getTitle(player));
 
-        getItems().clear();
-        getItems().addAll(getItems(player));
-
-        getItems().forEach(itemBuilder -> {
+        items.clear();
+        items.addAll(getItems(player));
+        items.forEach(itemBuilder -> {
             int slot = itemBuilder.getSlot();
-            if (slot < 0 || slot > getSlots()) {
-                slot = 0;
-            }
-
-            inventory.setItem(slot, itemBuilder.setDefaultFlags().get());
+            if (slot >= 0 && slot <= getSlots()) inventory.setItem(slot, itemBuilder.setDefaultFlags().get());
         });
 
         return inventory;
     }
 
     public int getSlots() {
-        return 9 * getRows();
+        return 9 * rows;
     }
 
     public Optional<ItemBuilder> getItem(int slot) {
@@ -54,6 +49,7 @@ public abstract class MenuBuilder {
 
     public void open(Player player) {
         player.openInventory(get(player));
+
         openedInventories.put(player.getUniqueId(), this);
     }
 
