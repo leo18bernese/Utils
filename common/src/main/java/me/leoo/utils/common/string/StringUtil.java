@@ -1,5 +1,6 @@
 package me.leoo.utils.common.string;
 
+import lombok.experimental.UtilityClass;
 import me.leoo.utils.common.compatibility.SoftwareManager;
 
 import java.time.Instant;
@@ -8,18 +9,19 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class StringUtils {
+@UtilityClass
+public class StringUtil {
 
-    public static String getCurrentDate(String format) {
+    public String getCurrentDate(String format) {
         return getDate(format, Instant.now());
     }
 
-    public static String getDate(String format, Instant instant) {
+    public String getDate(String format, Instant instant) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(formatter);
     }
 
-    public static String getCenteredMessage(String message) {
+    public String getCenteredMessage(String message) {
         if (message == null || message.isEmpty()) return "";
 
         message = SoftwareManager.getUtils().color(message);
@@ -60,7 +62,7 @@ public class StringUtils {
      * @param key   placeholder to replace
      * @param value string that replace the placeholder
      */
-    public static List<String> replaceWithList(List<String> list, String key, List<String> value) {
+    public List<String> replaceWithList(List<String> list, String key, List<String> value) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).contains(key)) {
                 for (int n = 1; n < value.size(); n++) {

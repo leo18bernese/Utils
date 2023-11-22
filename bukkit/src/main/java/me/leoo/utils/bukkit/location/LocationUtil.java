@@ -1,5 +1,6 @@
 package me.leoo.utils.bukkit.location;
 
+import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -8,9 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+@UtilityClass
 public class LocationUtil {
 
-    public static boolean compareLocations(Location location1, Location location2, boolean block) {
+    public boolean compareLocations(Location location1, Location location2, boolean block) {
         if (block) {
             return location1.getBlockX() == location2.getBlockX() &&
                     location1.getBlockY() == location2.getBlockY() &&
@@ -22,7 +24,7 @@ public class LocationUtil {
         }
     }
 
-    public static Location deserializeLocation(String string) {
+    public Location deserializeLocation(String string) {
         if (string == null || string.isEmpty()) return null;
         if (!string.contains(":")) return null;
 
@@ -37,12 +39,12 @@ public class LocationUtil {
         );
     }
 
-    public static String serializeLocation(Location location) {
+    public String serializeLocation(Location location) {
         if (location == null) return null;
         return location.getWorld().getName() + ":" + location.getX() + ":" + location.getY() + ":" + location.getZ() + ":" + location.getYaw() + ":" + location.getPitch();
     }
 
-    public static String getDefaultWorldName() {
+    public String getDefaultWorldName() {
         Properties props = new Properties();
 
         try {

@@ -105,8 +105,4 @@ public class CommandBuilder {
 
         return sender.hasPermission(permission);
     }
-
-    public interface Callback<T> {
-        boolean accept(T t);
-    }
 }

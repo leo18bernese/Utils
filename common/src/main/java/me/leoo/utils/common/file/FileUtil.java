@@ -1,13 +1,15 @@
 package me.leoo.utils.common.file;
 
+import lombok.experimental.UtilityClass;
 import me.leoo.utils.common.compatibility.SoftwareManager;
 
 import java.io.File;
 import java.io.IOException;
 
+@UtilityClass
 public class FileUtil {
 
-    public static File generateFile(String name, String directory) {
+    public  File generateFile(String name, String directory) {
         File file = new File(generateFolder(directory), name);
 
         if (!file.exists()) {
@@ -25,7 +27,7 @@ public class FileUtil {
         return file;
     }
 
-    public static File generateFolder(String name) {
+    public  File generateFolder(String name) {
         File folder = new File(name);
 
         if (!folder.exists()) {

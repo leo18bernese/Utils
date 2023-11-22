@@ -1,10 +1,13 @@
 package me.leoo.utils.common.time;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.HashMap;
 
+@UtilityClass
 public class TimeUtil {
 
-    public static int secondsByTimeString(String time) {
+    public  int secondsByTimeString(String time) {
         HashMap<String, Integer> values = new HashMap<>();
 
         for (String s : new String[]{"s", "second", "seconds"}) {

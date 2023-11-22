@@ -1,12 +1,15 @@
 package me.leoo.utils.common.reflection;
 
+import lombok.experimental.UtilityClass;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+@UtilityClass
 public class ReflectionUtil {
 
-    public static Object getFieldValue(Class<?> clazz, String fieldName, Object instance) {
+    public  Object getFieldValue(Class<?> clazz, String fieldName, Object instance) {
         try {
             Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);
@@ -17,7 +20,7 @@ public class ReflectionUtil {
         return null;
     }
 
-    public static void setFieldValue(Class<?> clazz, String fieldName, Object object, Object value) {
+    public  void setFieldValue(Class<?> clazz, String fieldName, Object object, Object value) {
         try {
             Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);
@@ -27,7 +30,7 @@ public class ReflectionUtil {
         }
     }
 
-    public static Object invokeMethod(Method method, Object instance, Object... args) {
+    public  Object invokeMethod(Method method, Object instance, Object... args) {
         try {
             method.setAccessible(true);
             return method.invoke(instance, args);
@@ -37,7 +40,7 @@ public class ReflectionUtil {
         return null;
     }
 
-    public static Method getMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
+    public  Method getMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
         try {
             Method method = clazz.getDeclaredMethod(methodName, parameterTypes);
             method.setAccessible(true);
@@ -48,13 +51,13 @@ public class ReflectionUtil {
         return null;
     }
 
-    public static boolean isGetter(Method method) {
+    public  boolean isGetter(Method method) {
         if (!method.getName().startsWith("get")) return false;
         if (method.getParameterTypes().length != 0) return false;
         return !void.class.equals(method.getReturnType());
     }
 
-    public static boolean isSetter(Method method) {
+    public  boolean isSetter(Method method) {
         if (!method.getName().startsWith("set")) return false;
         return method.getParameterTypes().length == 1;
     }

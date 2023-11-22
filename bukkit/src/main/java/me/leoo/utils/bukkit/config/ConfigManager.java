@@ -13,10 +13,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -104,8 +101,15 @@ public class ConfigManager {
         return section.getKeys(false);
     }
 
-    public List<String> getSectionValues(String path) {
-        return getSection(path).stream().map(string -> getString(path + "." + string)).collect(Collectors.toList());
+    @SuppressWarnings("bug")
+    public List<String> getSectionPaths(String path) {
+        List<String> strings = new ArrayList<>();
+
+        for (String string : getSection(path)) {
+            strings.add(yml.getString(path + "." + string));
+        }
+
+        return strings;
     }
 
     public List<Integer> getIntegerSplitList(String path) {
@@ -140,7 +144,7 @@ public class ConfigManager {
 
     //action method from config
     public boolean executeAction(String path, Player player) {
-       return PlayerAction.fromConfig(this, path).run(player);
+        return PlayerAction.fromConfig(this, path).run(player);
     }
 
     //group methods

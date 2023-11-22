@@ -1,10 +1,9 @@
 package me.leoo.utils.bukkit.commands;
 
+import me.leoo.utils.common.reflection.ReflectionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
-
-import java.lang.reflect.Field;
 
 public class CommandManager {
 
@@ -21,14 +20,9 @@ public class CommandManager {
     }
 
     public static void registerCommand(Command command) {
-        try {
-            Field field = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-            field.setAccessible(true);
+        CommandMap commandMap = (CommandMap) ReflectionUtil.getFieldValue(Bukkit.getServer().getClass(), "commandMap", Bukkit.getServer());
+        if (commandMap == null) return;
 
-            CommandMap commandMap = (CommandMap) field.get(Bukkit.getServer());
-            commandMap.register(command.getName(), command);
-        } catch (NoSuchFieldException | IllegalAccessException exception) {
-            exception.printStackTrace();
-        }
+        commandMap.register(command.getName(), command);
     }
 }
