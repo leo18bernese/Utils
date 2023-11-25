@@ -2,6 +2,7 @@ package me.leoo.utils.bukkit.menu;
 
 import lombok.Data;
 import lombok.Getter;
+import me.leoo.utils.bukkit.chat.CC;
 import me.leoo.utils.bukkit.items.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -20,6 +21,9 @@ public abstract class MenuBuilder {
     private static String title;
     private final int rows;
 
+    private boolean autoUpdate;
+    private boolean updateOnClick;
+
     public abstract List<ItemBuilder> getItems(Player player);
 
     public abstract String getTitle(Player player);
@@ -27,7 +31,7 @@ public abstract class MenuBuilder {
     public Inventory get(Player player) {
         MenuListeners.register();
 
-        Inventory inventory = Bukkit.createInventory(null, getSlots(), getTitle(player) == null ? "" : getTitle(player));
+        Inventory inventory = Bukkit.createInventory(null, getSlots(), getTitle(player) == null ? "" : CC.color(getTitle(player)));
 
         items.clear();
         items.addAll(getItems(player));

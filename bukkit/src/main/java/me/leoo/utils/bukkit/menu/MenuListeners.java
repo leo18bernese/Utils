@@ -1,9 +1,7 @@
 package me.leoo.utils.bukkit.menu;
 
-import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.events.Events;
 import me.leoo.utils.bukkit.items.ItemBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,7 +11,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class MenuListeners implements Listener {
 
@@ -49,6 +46,8 @@ public class MenuListeners implements Listener {
             } else {
                 event.setCancelled(item.getEventCallback().test(event));
             }
+
+            if (gui.isUpdateOnClick()) gui.update(player);
         }
     }
 
