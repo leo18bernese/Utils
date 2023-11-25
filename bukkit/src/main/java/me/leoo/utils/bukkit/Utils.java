@@ -1,6 +1,7 @@
 package me.leoo.utils.bukkit;
 
 import lombok.Getter;
+import me.leoo.utils.bukkit.menu.MenuTask;
 import me.leoo.utils.bukkit.software.Software;
 import me.leoo.utils.common.compatibility.SoftwareManager;
 import org.bukkit.Bukkit;
@@ -29,6 +30,8 @@ public class Utils extends JavaPlugin {
         SoftwareManager.setUtils(new Software());
 
         Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(get(), "BungeeCord");
+
+        new MenuTask();
     }
 
     public static Plugin get() {
