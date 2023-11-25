@@ -272,6 +272,16 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder setEventCallback(Consumer<InventoryClickEvent> eventConsumer) {
+        this.eventCallback = event -> {
+            eventConsumer.accept(event);
+            return true;
+        };
+        
+        return this;
+    }
+
+
     public ItemBuilder setInteractCallback(Consumer<PlayerInteractEvent> interactCallback) {
         this.interactCallback = interactCallback;
         return this;
