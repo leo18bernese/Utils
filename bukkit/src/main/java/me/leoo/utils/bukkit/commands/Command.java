@@ -23,7 +23,7 @@ public abstract class Command extends BukkitCommand {
     }
 
     public Command initialize() {
-        setAliases(Arrays.asList(mainCommand.getAliases()));
+        if (mainCommand.getAliases() != null) setAliases(Arrays.asList(mainCommand.getAliases()));
 
         return this;
     }
