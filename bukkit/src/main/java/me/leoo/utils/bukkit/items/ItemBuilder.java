@@ -44,11 +44,13 @@ public class ItemBuilder implements Cloneable {
 
     private ItemStack itemStack;
     private ItemMeta itemMeta;
+
     private Map<String, String> replacements = new HashMap<>();
     private Function<String, String> replaceFunction;
 
     private Predicate<InventoryClickEvent> eventCallback;
     private Consumer<PlayerInteractEvent> interactCallback;
+    private boolean interactRequire = true;
 
     private String permission;
     private String command;
@@ -236,6 +238,11 @@ public class ItemBuilder implements Cloneable {
         setLore(replaceFunction.apply(itemMeta.getLore()));
         return this;
     }
+    
+    public ItemBuilder setTag(String value) {
+        setTag(itemStack, value);
+        return this;
+    }
 
     public static void setTag(ItemStack itemStack, String value) {
         NBT.modify(itemStack, nbt -> {
@@ -277,13 +284,18 @@ public class ItemBuilder implements Cloneable {
             eventConsumer.accept(event);
             return true;
         };
-        
+
         return this;
     }
 
 
     public ItemBuilder setInteractCallback(Consumer<PlayerInteractEvent> interactCallback) {
         this.interactCallback = interactCallback;
+        return this;
+    }
+
+    public ItemBuilder setInteractRequire(boolean interactRequire) {
+        this.interactRequire = interactRequire;
         return this;
     }
 

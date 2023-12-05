@@ -20,7 +20,7 @@ public class CommandManager {
     }
 
     public static void registerCommand(Command command) {
-        CommandMap commandMap = (CommandMap) ReflectionUtil.getFieldValue(Bukkit.getServer().getClass(), "commandMap", Bukkit.getServer());
+        CommandMap commandMap = (CommandMap) ReflectionUtil.getFieldValue( "commandMap", Bukkit.getServer());
         if (commandMap == null) return;
 
         commandMap.register(command.getName(), command);

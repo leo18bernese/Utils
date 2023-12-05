@@ -9,7 +9,7 @@ import java.io.IOException;
 @UtilityClass
 public class FileUtil {
 
-    public  File generateFile(String name, String directory) {
+    public File generateFile(String name, String directory) {
         File file = new File(generateFolder(directory), name);
 
         if (!file.exists()) {
@@ -27,7 +27,7 @@ public class FileUtil {
         return file;
     }
 
-    public  File generateFolder(String name) {
+    public File generateFolder(String name) {
         File folder = new File(name);
 
         if (!folder.exists()) {

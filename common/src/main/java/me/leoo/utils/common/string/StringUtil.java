@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class StringUtil {
@@ -64,12 +65,19 @@ public class StringUtil {
      */
     public List<String> replaceWithList(List<String> list, String key, List<String> value) {
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).contains(key)) {
-                for (int n = 1; n < value.size(); n++) {
-                    list.add(i + n, n == value.size() - 1 ? list.get(i).replace(key, value.get(n)) : value.get(n));
+            String line = list.get(i);
+
+            if (line.contains(key)) {
+                if (value.isEmpty() || String.join("", value).isEmpty()) {
+                    list.remove(line);
+                    continue;
                 }
 
-                list.set(i, value.size() == 1 ? list.get(i).replace(key, value.get(0)) : value.get(0));
+                for (int n = 1; n < value.size(); n++) {
+                    list.add(i + n, n == value.size() - 1 ? line.replace(key, value.get(n)) : value.get(n));
+                }
+
+                list.set(i, value.size() == 1 ? line.replace(key, value.get(0)) : value.get(0));
             }
         }
 

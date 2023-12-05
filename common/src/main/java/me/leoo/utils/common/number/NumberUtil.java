@@ -9,7 +9,7 @@ public class NumberUtil {
 
     private static final TreeMap<Integer, String> romanNumbers = new TreeMap<>();
 
-     static {
+    static {
         romanNumbers.put(1000, "M");
         romanNumbers.put(900, "CM");
         romanNumbers.put(500, "D");
@@ -25,7 +25,7 @@ public class NumberUtil {
         romanNumbers.put(1, "I");
     }
 
-    public  int toInt(Object object) {
+    public int toInt(Object object) {
         if (object instanceof Number) {
             return ((Number) object).intValue();
         }
@@ -38,7 +38,7 @@ public class NumberUtil {
         return 0;
     }
 
-    public  float toFloat(Object object) {
+    public float toFloat(Object object) {
         if (object instanceof Number) {
             return ((Number) object).floatValue();
         }
@@ -51,7 +51,7 @@ public class NumberUtil {
         return 0;
     }
 
-    public  double toDouble(Object object) {
+    public double toDouble(Object object) {
         if (object instanceof Number) {
             return ((Number) object).doubleValue();
         }
@@ -63,7 +63,7 @@ public class NumberUtil {
         return 0;
     }
 
-    public  long toLong(Object object) {
+    public long toLong(Object object) {
         if (object instanceof Number) {
             return ((Number) object).longValue();
         }
@@ -75,7 +75,7 @@ public class NumberUtil {
         return 0;
     }
 
-    public  short toShort(Object object) {
+    public short toShort(Object object) {
         if (object instanceof Number) {
             return ((Number) object).shortValue();
         }
@@ -87,7 +87,7 @@ public class NumberUtil {
         return 0;
     }
 
-    public  byte toByte(Object object) {
+    public byte toByte(Object object) {
         if (object instanceof Number) {
             return ((Number) object).byteValue();
         }
@@ -99,7 +99,7 @@ public class NumberUtil {
         return 0;
     }
 
-    public  String convertToRomanNumeral(int number) {
+    public String convertToRomanNumeral(int number) {
         int l = romanNumbers.floorKey(number);
         if (number == l) {
             return romanNumbers.get(number);

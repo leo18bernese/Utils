@@ -1,13 +1,12 @@
 package me.leoo.utils.bukkit.items;
 
 import com.google.common.annotations.Beta;
-import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.events.Events;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,10 +22,7 @@ public class InteractListeners implements Listener {
 
         if (itemStack == null || itemStack.getType() == Material.AIR) return;
 
-        InteractItem item = InteractItem.getItems().stream()
-                .filter(item1 -> item1.getItem().get().getType() == itemStack.getType())
-                .filter(item1 -> item1.getItem().get().getItemMeta().getDisplayName().equals(itemStack.getItemMeta().getDisplayName()))
-                .findAny().orElse(null);
+        InteractItem item = InteractItem.getByItem(itemStack);
         if (item == null) return;
 
         ItemBuilder builder = item.getItem();
@@ -42,6 +38,18 @@ public class InteractListeners implements Listener {
         }
 
         item.getItem().getInteractCallback().accept(event);
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        ItemStack itemStack = event.getCurrentItem();
+
+        if (itemStack == null || itemStack.getType() == Material.AIR) return;
+
+        InteractItem item = InteractItem.getByItem(itemStack);
+        if (item == null) return;
+
+        event.setCancelled(true);
     }
 
     public static void register() {
