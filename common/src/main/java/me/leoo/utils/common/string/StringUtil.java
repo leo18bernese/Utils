@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @UtilityClass
 public class StringUtil {
@@ -68,7 +67,9 @@ public class StringUtil {
             String line = list.get(i);
 
             if (line.contains(key)) {
+                System.out.println("value = " + value.toString());
                 if (value.isEmpty() || String.join("", value).isEmpty()) {
+                    System.out.println("removing line " + line);
                     list.remove(line);
                     continue;
                 }

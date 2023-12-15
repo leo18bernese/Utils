@@ -142,6 +142,7 @@ public class ItemBuilder implements Cloneable {
     public ItemBuilder setOwner(String string, boolean overrideItem) {
         if (overrideItem) {
             itemStack.setType(XMaterial.PLAYER_HEAD.parseMaterial());
+            itemStack.setDurability((short) 3);
         }
 
         if (itemStack.getType().equals(XMaterial.PLAYER_HEAD.parseMaterial())) {
@@ -238,7 +239,7 @@ public class ItemBuilder implements Cloneable {
         setLore(replaceFunction.apply(itemMeta.getLore()));
         return this;
     }
-    
+
     public ItemBuilder setTag(String value) {
         setTag(itemStack, value);
         return this;
@@ -338,10 +339,11 @@ public class ItemBuilder implements Cloneable {
 
         ItemBuilder builder;
 
-        if (name.equals("texture")) {
+        if (name.equals("texture") || (material.length == 2 && name.equals(XMaterial.PLAYER_HEAD.parseMaterial().name()))) {
             builder = new ItemBuilder(Material.SKULL_ITEM, 3);
             builder.setData(3);
-            builder.applySkin(material[1]);
+            builder.setOwner(material[1]);
+            System.out.println("settings skull item " + material[1]);
         } else if (name.equalsIgnoreCase("potion")) {
             builder = new ItemBuilder(new ItemStack(Material.POTION, 1, (short) data));
         } else {

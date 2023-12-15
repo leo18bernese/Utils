@@ -12,11 +12,11 @@ import java.util.function.Function;
 @UtilityClass
 public class TitleUtil {
 
-    public  void sendTitleFromConfig(Player player, ConfigManager config, String path, int fadeIn, int stay, int fadeOut) {
+    public void sendTitleFromConfig(Player player, ConfigManager config, String path, int fadeIn, int stay, int fadeOut) {
         sendTitleFromConfig(player, config, path, fadeIn, stay, fadeOut, string -> string);
     }
 
-    public  void sendTitleFromConfig(Player player, ConfigManager config, String path, int fadeIn, int stay, int fadeOut, Function<String, String> replace) {
+    public void sendTitleFromConfig(Player player, ConfigManager config, String path, int fadeIn, int stay, int fadeOut, Function<String, String> replace) {
         Object messageObject = config.getYml().get(path + ".message");
 
         if (messageObject != null) {
@@ -35,11 +35,11 @@ public class TitleUtil {
         new Titles(title, subTitle, fadeIn, stay, fadeOut).send(player);
     }
 
-    public  void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+    public void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
         new Titles(title, subtitle, fadeIn, stay, fadeOut).send(player);
     }
 
-    public  void sendActionBar(Player player, String text) {
+    public void sendActionBar(Player player, String text) {
         ActionBar.sendActionBar(player, text);
     }
 }

@@ -16,7 +16,7 @@ public class Utils {
     @Getter
     private static final Utils instance = new Utils();
 
-    private ProxyServer server;
+    private ProxyServer proxy;
     private Logger logger;
 
     /**
@@ -24,7 +24,7 @@ public class Utils {
      * Must be executed before running anything related to this plugin.
      */
     public static void initialize(ProxyServer proxyServer, Logger proxyLogger) {
-        instance.setServer(proxyServer);
+        instance.setProxy(proxyServer);
         instance.setLogger(proxyLogger);
 
         SoftwareManager.setUtils(new Software());

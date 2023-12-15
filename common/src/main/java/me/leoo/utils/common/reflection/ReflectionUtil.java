@@ -19,7 +19,7 @@ public class ReflectionUtil {
         return null;
     }
 
-    public Object getFieldValue( String fieldName, Object instance) {
+    public Object getFieldValue(String fieldName, Object instance) {
         try {
             return getFieldValue(instance.getClass().getDeclaredField(fieldName), instance);
         } catch (NoSuchFieldException e) {

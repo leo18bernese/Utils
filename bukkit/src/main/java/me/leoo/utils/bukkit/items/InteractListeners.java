@@ -8,7 +8,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.stream.Collectors;
 
 @Beta
 public class InteractListeners implements Listener {
@@ -50,6 +53,13 @@ public class InteractListeners implements Listener {
         if (item == null) return;
 
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onLeave(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+
+        InteractItem.getItems().stream().filter(item -> item.getPlayer().equals(player)).collect(Collectors.toList()).clear();
     }
 
     public static void register() {
