@@ -23,6 +23,7 @@ public abstract class MenuBuilder {
 
     private boolean autoUpdate;
     private boolean updateOnClick;
+    private boolean doubleClick = true;
 
     public abstract List<ItemBuilder> getItems(Player player);
 

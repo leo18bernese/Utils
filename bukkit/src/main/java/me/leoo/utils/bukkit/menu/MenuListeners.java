@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
@@ -17,7 +18,7 @@ public class MenuListeners implements Listener {
     private static MenuListeners instance;
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onDrag(InventoryClickEvent event) {
+    public void onClick(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
 
         Map<UUID, MenuBuilder> openedInventories = MenuBuilder.getOpenedInventories();
@@ -27,14 +28,19 @@ public class MenuListeners implements Listener {
         Player player = (Player) event.getWhoClicked();
         if (!openedInventories.containsKey(player.getUniqueId())) return;
 
-        MenuBuilder gui = openedInventories.get(player.getUniqueId());
+        MenuBuilder menu = openedInventories.get(player.getUniqueId());
         int rawSlot = event.getRawSlot();
 
-        if (rawSlot < gui.getSlots()) {
+        if (rawSlot < menu.getSlots()) {
             int slot = event.getSlot();
 
-            ItemBuilder item = gui.getItem(rawSlot).orElse(null);
+            ItemBuilder item = menu.getItem(rawSlot).orElse(null);
             if (item == null) return;
+
+            if(!menu.isDoubleClick() && event.getClick() == ClickType.DOUBLE_CLICK) {
+                event.setCancelled(true);
+                return;
+            }
 
             if (item.getConfig() != null && item.getConfigPath() != null && item.getConfig().executeAction(item.getConfigPath(), player.getPlayer())) {
                 event.setCancelled(true);
@@ -47,7 +53,7 @@ public class MenuListeners implements Listener {
                 event.setCancelled(item.getEventCallback().test(event));
             }
 
-            if (gui.isUpdateOnClick()) gui.update(player);
+            if (menu.isUpdateOnClick()) menu.update(player);
         }
     }
 
