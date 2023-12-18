@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.SkullUtils;
 import com.cryptomorin.xseries.XEnchantment;
 import com.cryptomorin.xseries.XMaterial;
 import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadableItemNBT;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -235,6 +236,11 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder replaceName(Function<String, String> replaceFunction) {
+        setName(replaceFunction.apply(itemMeta.getDisplayName()));
+        return this;
+    }
+
     public ItemBuilder replaceLore(Function<List<String>, List<String>> replaceFunction) {
         setLore(replaceFunction.apply(itemMeta.getLore()));
         return this;
@@ -252,7 +258,7 @@ public class ItemBuilder implements Cloneable {
     }
 
     public static String getTag(ItemStack itemStack) {
-        return NBT.get(itemStack, nbt -> nbt.getString(Utils.getInitializedFrom().getDescription().getName()));
+        return NBT.get(itemStack, (Function<ReadableItemNBT, String>) nbt -> nbt.getString(Utils.getInitializedFrom().getDescription().getName()));
     }
 
     public ItemBuilder setToSaveString(String toSaveString) {
@@ -343,7 +349,6 @@ public class ItemBuilder implements Cloneable {
             builder = new ItemBuilder(Material.SKULL_ITEM, 3);
             builder.setData(3);
             builder.setOwner(material[1]);
-            System.out.println("settings skull item " + material[1]);
         } else if (name.equalsIgnoreCase("potion")) {
             builder = new ItemBuilder(new ItemStack(Material.POTION, 1, (short) data));
         } else {

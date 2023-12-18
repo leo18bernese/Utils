@@ -67,9 +67,7 @@ public class StringUtil {
             String line = list.get(i);
 
             if (line.contains(key)) {
-                System.out.println("value = " + value.toString());
                 if (value.isEmpty() || String.join("", value).isEmpty()) {
-                    System.out.println("removing line " + line);
                     list.remove(line);
                     continue;
                 }
