@@ -1,8 +1,8 @@
 package me.leoo.utils.bukkit.items;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.google.common.annotations.Beta;
 import me.leoo.utils.bukkit.events.Events;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,7 +23,7 @@ public class InteractListeners implements Listener {
         Player player = event.getPlayer();
         ItemStack itemStack = event.getItem();
 
-        if (itemStack == null || itemStack.getType() == Material.AIR) return;
+        if (itemStack == null || itemStack.getType() == XMaterial.AIR.parseMaterial()) return;
 
         InteractItem item = InteractItem.getByItem(itemStack);
         if (item == null) return;
@@ -47,7 +47,7 @@ public class InteractListeners implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         ItemStack itemStack = event.getCurrentItem();
 
-        if (itemStack == null || itemStack.getType() == Material.AIR) return;
+        if (itemStack == null || itemStack.getType() == XMaterial.AIR.parseMaterial()) return;
 
         InteractItem item = InteractItem.getByItem(itemStack);
         if (item == null) return;

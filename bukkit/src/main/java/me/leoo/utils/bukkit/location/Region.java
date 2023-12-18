@@ -1,5 +1,6 @@
 package me.leoo.utils.bukkit.location;
 
+import com.cryptomorin.xseries.XMaterial;
 import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -52,7 +53,7 @@ public class Region {
                 for (int z = minZ; z <= maxZ; ++z) {
                     Block block = world.getBlockAt(x, y, z);
 
-                    if (block.getType() != Material.AIR) {
+                    if (block.getType() != XMaterial.AIR.parseMaterial()) {
                         blocks.add(block);
                     }
                 }
