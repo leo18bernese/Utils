@@ -8,6 +8,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 
@@ -40,6 +41,14 @@ public class CC {
     public String color(String string) {
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             string = PlaceholderAPI.setPlaceholders(null, string);
+        }
+
+        return ChatColor.translateAlternateColorCodes('&', string);
+    }
+
+    public String color(String string, Player player) {
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            string = PlaceholderAPI.setPlaceholders(player, string);
         }
 
         return ChatColor.translateAlternateColorCodes('&', string);
