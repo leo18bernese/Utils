@@ -62,7 +62,4 @@ public class Tasks {
             }
         }.runTaskTimer(Utils.get(), delay, interval);
     }
-
-
-
 }

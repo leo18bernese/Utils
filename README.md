@@ -7,6 +7,7 @@
 ## Developers API
 
 ### Maven
+
 ```xml
 <repositories>
     <repository>
@@ -15,6 +16,7 @@
     </repository>
 </repositories>
 ```
+
 ```xml
 <dependency>
     <groupId>com.github.leo18bernese</groupId>
@@ -22,12 +24,15 @@
     <version>Tag</version>
 </dependency>
 ```
+
 ### Gradle
+
 ```groovy
 repositories {
     maven { url 'https://jitpack.io' }
 }
 ```
+
 ```groovy
 dependencies {
     implementation 'com.github.leo18bernese:Utils:Tag'

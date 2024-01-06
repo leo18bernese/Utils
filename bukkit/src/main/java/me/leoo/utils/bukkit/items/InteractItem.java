@@ -32,8 +32,8 @@ public class InteractItem {
         give(item.getSlot());
     }
 
-    public void give(int slot){
-        if(slot < 0) return;
+    public void give(int slot) {
+        if (slot < 0) return;
 
         player.getInventory().setItem(slot, item.get());
     }
