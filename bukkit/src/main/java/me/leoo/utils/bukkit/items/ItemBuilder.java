@@ -23,10 +23,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.FireworkEffectMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.Arrays;
@@ -64,7 +61,7 @@ public class ItemBuilder implements Cloneable {
     private int slot = -1;
 
     public ItemBuilder(XMaterial xMaterial, int data) {
-        this(xMaterial.name(), data);
+        this(xMaterial.parseMaterial(), data);
     }
 
     public ItemBuilder(Material material) {
@@ -72,9 +69,8 @@ public class ItemBuilder implements Cloneable {
     }
 
     public ItemBuilder(Material material, int data) {
-        this(material.name(), data);
+        this(material == null ? "" : material.name(), data);
     }
-
 
     public ItemBuilder(String material, int data) {
         this(XMaterial.matchXMaterial(material + ":" + data).orElse(XMaterial.STONE));
@@ -144,9 +140,11 @@ public class ItemBuilder implements Cloneable {
         if (overrideItem) {
             itemStack.setType(XMaterial.PLAYER_HEAD.parseMaterial());
             itemStack.setDurability((short) 3);
+
+            itemMeta = itemStack.getItemMeta();
         }
 
-        if (itemStack.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
+        if (itemMeta instanceof SkullMeta) {
             SkullUtils.applySkin(itemMeta, string);
 
             /*Tasks.runLater(() -> SkullUtils.applySkin(itemMeta, string), 5L);*/
@@ -155,8 +153,8 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder setOwner(String owner) {
-        setOwner(owner, false);
+    public ItemBuilder setOwner(String string) {
+        setOwner(string, false);
         return this;
     }
 
@@ -251,10 +249,12 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public static void setTag(ItemStack itemStack, String value) {
+    public static ItemStack setTag(ItemStack itemStack, String value) {
         NBT.modify(itemStack, nbt -> {
             nbt.setString(Utils.getInitializedFrom().getDescription().getName(), value);
         });
+
+        return itemStack;
     }
 
     public static String getTag(ItemStack itemStack) {
@@ -287,10 +287,10 @@ public class ItemBuilder implements Cloneable {
     }
 
     public ItemBuilder setEventCallback(Consumer<InventoryClickEvent> eventConsumer) {
-        this.eventCallback = event -> {
+        setEventCallback(event -> {
             eventConsumer.accept(event);
             return true;
-        };
+        });
 
         return this;
     }
@@ -345,12 +345,12 @@ public class ItemBuilder implements Cloneable {
 
         ItemBuilder builder;
 
-        if (name.equals("texture") || (material.length == 2 && name.equals(XMaterial.PLAYER_HEAD.parseMaterial().name()))) {
+        if (name.equals("texture") || (material.length == 2 && XMaterial.matchXMaterial(name + ":" + 3).orElse(XMaterial.STONE) == XMaterial.PLAYER_HEAD)) {
             builder = new ItemBuilder(XMaterial.PLAYER_HEAD, 3);
-            builder.setData(3);
             builder.setOwner(material[1]);
         } else if (name.equalsIgnoreCase("potion")) {
-            builder = new ItemBuilder(XMaterial.POTION, data);
+            builder = new ItemBuilder(XMaterial.POTION);
+            builder.setData(data);
         } else {
             builder = new ItemBuilder(name, data);
         }
@@ -372,8 +372,6 @@ public class ItemBuilder implements Cloneable {
                 builder.setLore(language.getList(path + ".lore"));
             }
         }
-
-        builder.setData(data);
 
         if (config.getBoolean(path + ".enchanted")) {
             builder.setEnchanted();
