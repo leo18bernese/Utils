@@ -3,7 +3,10 @@ package me.leoo.utils.bukkit.task;
 import lombok.experimental.UtilityClass;
 import me.leoo.utils.bukkit.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.util.function.Supplier;
 
 @UtilityClass
 public class Tasks {
@@ -31,5 +34,35 @@ public class Tasks {
     public BukkitTask runAsyncTimer(Runnable task, long delay, long interval) {
         return Bukkit.getScheduler().runTaskTimerAsynchronously(Utils.get(), task, delay, interval);
     }
+
+    public void repeatTimes(Runnable task, long delay, long interval, int times) {
+        new BukkitRunnable() {
+            int remaining = times;
+
+            @Override
+            public void run() {
+                task.run();
+
+                if (--remaining == 0) {
+                    cancel();
+                }
+            }
+        }.runTaskTimer(Utils.get(), delay, interval);
+    }
+
+    public void repeatTimes(Runnable task, long delay, long interval, Supplier<Boolean> condition) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!condition.get()) {
+                    cancel();
+                    return;
+                }
+                task.run();
+            }
+        }.runTaskTimer(Utils.get(), delay, interval);
+    }
+
+
 
 }
