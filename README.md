@@ -1,5 +1,3 @@
-![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/leo18bernese/Utils)
-
 ![JitPack](https://img.shields.io/jitpack/version/com.github.leo18bernese/Utils?label=Utils)
 
 # Utils
