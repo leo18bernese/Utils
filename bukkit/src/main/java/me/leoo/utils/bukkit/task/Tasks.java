@@ -62,4 +62,19 @@ public class Tasks {
             }
         }.runTaskTimer(Utils.get(), delay, interval);
     }
+
+    public void repeatTimes(Runnable task, long delay, long interval, Supplier<Boolean> condition, Runnable onEnd) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!condition.get()) {
+                    onEnd.run();
+
+                    cancel();
+                    return;
+                }
+                task.run();
+            }
+        }.runTaskTimer(Utils.get(), delay, interval);
+    }
 }
