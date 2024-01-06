@@ -2,6 +2,7 @@ package me.leoo.utils.common.time;
 
 import lombok.experimental.UtilityClass;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,5 +43,23 @@ public class TimeUtil {
         }
 
         return 0;
+    }
+
+    public boolean compareDate(long date1, int compareType) {
+        return compareDate(date1, System.currentTimeMillis(), compareType);
+    }
+
+    public boolean compareDate(long date1, long date2, int compareType) {
+        Calendar calendar1 = getCalendar(date1);
+        Calendar calendar2 = getCalendar(date2);
+
+        return calendar1.get(compareType) == calendar2.get(compareType);
+    }
+
+    public Calendar getCalendar(long millis) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(millis);
+
+        return calendar;
     }
 }
