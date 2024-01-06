@@ -6,7 +6,7 @@
 
     <groupId>me.leoo.utils</groupId>
     <artifactId>Utils</artifactId>
-    <version>1.7.3</version>
+    <version>1.7.4</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -16,9 +16,9 @@
         <module>common</module>
     </modules>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <properties>
+            <maven.compiler.source>8</maven.compiler.source>
+            <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
