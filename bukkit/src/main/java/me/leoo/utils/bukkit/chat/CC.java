@@ -8,6 +8,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -73,5 +74,9 @@ public class CC {
                 .replace("{version}", info.getVersion())
                 .replace("{author}", info.getAuthors().toString().replace("[", "").replace("]", ""))
                 .replace("{description}", info.getDescription());
+    }
+
+    public Color getColor(java.awt.Color javaColor){
+        return Color.fromRGB(javaColor.getRed(),javaColor.getGreen(), javaColor.getBlue());
     }
 }
