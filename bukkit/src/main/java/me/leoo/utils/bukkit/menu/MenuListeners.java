@@ -37,7 +37,12 @@ public class MenuListeners implements Listener {
             ItemBuilder item = menu.getItem(rawSlot).orElse(null);
             if (item == null) return;
 
-            if(!menu.isDoubleClick() && event.getClick() == ClickType.DOUBLE_CLICK) {
+            if (item.getPermission() != null && !player.hasPermission(item.getPermission())) {
+                event.setCancelled(true);
+                return;
+            }
+
+            if (!menu.isDoubleClick() && event.getClick() == ClickType.DOUBLE_CLICK) {
                 event.setCancelled(true);
                 return;
             }
