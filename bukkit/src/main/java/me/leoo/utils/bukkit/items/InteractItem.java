@@ -29,9 +29,13 @@ public class InteractItem {
     }
 
     public void give() {
-        if (item.getSlot() < 0) return;
+        give(item.getSlot());
+    }
 
-        player.getInventory().setItem(item.getSlot(), item.get());
+    public void give(int slot){
+        if(slot < 0) return;
+
+        player.getInventory().setItem(slot, item.get());
     }
 
     public static InteractItem getByItem(ItemStack itemStack) {
