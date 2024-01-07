@@ -20,6 +20,11 @@ public class Utils extends JavaPlugin {
         plugin = this;
     }
 
+    @Override
+    public void onDisable() {
+        disable();
+    }
+
     /**
      * Initialize utils.
      * Must be executed before running anything related to this plugin.
@@ -33,6 +38,13 @@ public class Utils extends JavaPlugin {
 
         new MenuTask();
     }
+
+    public static void disable() {
+        if (plugin == null) return;
+
+        Bukkit.getScheduler().cancelTasks(plugin);
+    }
+
 
     public static Plugin get() {
         if (plugin == null) {
