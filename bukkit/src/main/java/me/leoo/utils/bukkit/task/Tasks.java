@@ -50,6 +50,23 @@ public class Tasks {
         }.runTaskTimer(Utils.get(), delay, interval);
     }
 
+    public void repeatTimes(Runnable task, long delay, long interval, int times, Runnable onEnd) {
+        new BukkitRunnable() {
+            int remaining = times;
+
+            @Override
+            public void run() {
+                task.run();
+
+                if (--remaining == 0) {
+                    onEnd.run();
+
+                    cancel();
+                }
+            }
+        }.runTaskTimer(Utils.get(), delay, interval);
+    }
+
     public void repeatTimes(Runnable task, long delay, long interval, Supplier<Boolean> condition) {
         new BukkitRunnable() {
             @Override
