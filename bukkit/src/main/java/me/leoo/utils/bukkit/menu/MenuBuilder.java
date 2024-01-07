@@ -61,4 +61,10 @@ public abstract class MenuBuilder {
     public void update(Player player) {
         player.getOpenInventory().getTopInventory().setContents(get(player).getContents());
     }
+
+    public void close(Player player) {
+        player.closeInventory();
+    }
+
+    public void onClose(Player player) {};
 }
