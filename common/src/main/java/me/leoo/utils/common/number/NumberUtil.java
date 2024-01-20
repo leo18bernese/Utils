@@ -99,6 +99,19 @@ public class NumberUtil {
         return 0;
     }
 
+    public String toAlphabet(int number) {
+        StringBuilder builder = new StringBuilder();
+
+        while (number-- != 0) {
+            int remainder = number % 26;
+            builder.insert(0, (char) (65 + remainder));
+
+            number /= 26;
+        }
+
+        return builder.toString();
+    }
+
     public String convertToRomanNumeral(int number) {
         int l = romanNumbers.floorKey(number);
         if (number == l) {
