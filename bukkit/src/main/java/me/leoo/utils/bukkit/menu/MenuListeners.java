@@ -65,7 +65,11 @@ public class MenuListeners implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
+
+        if (!MenuBuilder.getOpenedInventories().containsKey(player.getUniqueId())) return;
+
         MenuBuilder menu = MenuBuilder.getOpenedInventories().get(player.getUniqueId());
+        if (menu == null) return;
 
         menu.onClose(player);
 
