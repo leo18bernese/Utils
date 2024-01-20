@@ -62,4 +62,15 @@ public class TimeUtil {
 
         return calendar;
     }
+
+    public String yearDay() {
+        Calendar calendar = Calendar.getInstance();
+
+        int year = calendar.get(Calendar.YEAR);
+        int day = calendar.get(Calendar.DAY_OF_YEAR);
+
+        int yearLastNumber = year % 10;
+
+        return String.valueOf(day + yearLastNumber);
+    }
 }
