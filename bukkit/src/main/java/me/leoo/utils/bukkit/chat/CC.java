@@ -13,6 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @UtilityClass
 public class CC {
 
@@ -55,6 +58,10 @@ public class CC {
         return ChatColor.translateAlternateColorCodes('&', string);
     }
 
+    public List<String> color(List<String> strings) {
+        return strings.stream().map(CC::color).collect(Collectors.toList());
+    }
+
     public String strip(String string) {
         return ChatColor.stripColor(string);
     }
@@ -76,7 +83,7 @@ public class CC {
                 .replace("{description}", info.getDescription());
     }
 
-    public Color getColor(java.awt.Color javaColor){
-        return Color.fromRGB(javaColor.getRed(),javaColor.getGreen(), javaColor.getBlue());
+    public Color getColor(java.awt.Color javaColor) {
+        return Color.fromRGB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue());
     }
 }
