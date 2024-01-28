@@ -16,8 +16,13 @@ public class StringUtil {
         return getDate(format, Instant.now());
     }
 
+    public String getDate(String format, long millis) {
+        return getDate(format, Instant.ofEpochMilli(millis));
+    }
+
     public String getDate(String format, Instant instant) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(formatter);
     }
 
