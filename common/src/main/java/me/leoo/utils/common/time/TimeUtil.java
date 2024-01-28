@@ -63,14 +63,20 @@ public class TimeUtil {
         return calendar;
     }
 
-    public String yearDay() {
+    public int getDayOfYear() {
+        Calendar calendar = Calendar.getInstance();
+
+        return calendar.get(Calendar.DAY_OF_YEAR);
+    }
+
+    /**
+     * example: current year 2024 -> return 4
+     */
+    public int getYearLatestNumber() {
         Calendar calendar = Calendar.getInstance();
 
         int year = calendar.get(Calendar.YEAR);
-        int day = calendar.get(Calendar.DAY_OF_YEAR);
 
-        int yearLastNumber = year % 10;
-
-        return String.valueOf(day + yearLastNumber);
+        return year % 10;
     }
 }
