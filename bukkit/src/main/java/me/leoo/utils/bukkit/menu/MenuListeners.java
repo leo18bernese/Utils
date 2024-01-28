@@ -31,35 +31,38 @@ public class MenuListeners implements Listener {
         MenuBuilder menu = openedInventories.get(player.getUniqueId());
         int rawSlot = event.getRawSlot();
 
-        if (rawSlot < menu.getSlots()) {
-            int slot = event.getSlot();
-
-            ItemBuilder item = menu.getItem(rawSlot).orElse(null);
-            if (item == null) return;
-
-            if (item.getPermission() != null && !player.hasPermission(item.getPermission())) {
-                event.setCancelled(true);
-                return;
-            }
-
-            if (!menu.isDoubleClick() && event.getClick() == ClickType.DOUBLE_CLICK) {
-                event.setCancelled(true);
-                return;
-            }
-
-            if (item.getConfig() != null && item.getConfigPath() != null && item.getConfig().executeAction(item.getConfigPath(), player.getPlayer())) {
-                event.setCancelled(true);
-                return;
-            }
-
-            if (item.getEventCallback() == null) {
-                event.setCancelled(true);
-            } else {
-                event.setCancelled(item.getEventCallback().test(event));
-            }
-
-            if (menu.isUpdateOnClick()) menu.update(player);
+        if (rawSlot >= menu.getSlots()) {
+            event.setCancelled(true);
+            return;
         }
+
+        int slot = event.getSlot();
+
+        ItemBuilder item = menu.getItem(rawSlot).orElse(null);
+        if (item == null) return;
+
+        if (item.getPermission() != null && !player.hasPermission(item.getPermission())) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (event.getClick() == ClickType.DOUBLE_CLICK && !menu.isDoubleClick()) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (item.getConfig() != null && item.getConfigPath() != null && item.getConfig().executeAction(item.getConfigPath(), player.getPlayer())) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (item.getEventCallback() == null) {
+            event.setCancelled(true);
+        } else {
+            event.setCancelled(item.getEventCallback().test(event));
+        }
+
+        if (menu.isUpdateOnClick()) menu.update(player);
     }
 
     @EventHandler
