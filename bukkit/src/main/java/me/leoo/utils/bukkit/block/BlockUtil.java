@@ -32,7 +32,7 @@ public class BlockUtil {
     public BlockFace getYawFace(float yaw, boolean opposite) {
         BlockFace face = faces.get(Math.round(yaw / 45f) & 0x7);
 
-        if(opposite){
+        if (opposite) {
             return face.getOppositeFace();
         }
 

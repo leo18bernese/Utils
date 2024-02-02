@@ -66,5 +66,6 @@ public abstract class MenuBuilder {
         player.closeInventory();
     }
 
-    public void onClose(Player player) {}
+    public void onClose(Player player) {
+    }
 }
