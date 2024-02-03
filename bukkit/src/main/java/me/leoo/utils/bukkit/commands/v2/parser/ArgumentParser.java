@@ -95,6 +95,7 @@ public class ArgumentParser {
             if (!args.hasNext()) {
                 if (parameter.isAnnotationPresent(Optional.class)) {
                     arg = parameter.getAnnotation(Optional.class).value();
+
                     if (arg.isEmpty()) {
                         parameters[i] = null;
                         continue;

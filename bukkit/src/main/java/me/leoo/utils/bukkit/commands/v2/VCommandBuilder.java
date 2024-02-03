@@ -5,6 +5,8 @@ import lombok.Data;
 import me.leoo.utils.bukkit.chat.CC;
 import me.leoo.utils.bukkit.commands.CommandManager;
 import me.leoo.utils.bukkit.commands.v2.annotation.*;
+import me.leoo.utils.bukkit.commands.v2.cache.VCommandCache;
+import me.leoo.utils.bukkit.commands.v2.tabcomplete.VTabComplete;
 import me.leoo.utils.common.reflection.ReflectionUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -69,6 +71,13 @@ public class VCommandBuilder {
             String subUsage = parseUsage(method);
 
             subCommands.add(new VCommandBuilder(subName, subAliases, subExecutor, subPermission, subUsage, method));
+        } else if (method.getAnnotation(TabComplete.class) != null) {
+            TabComplete tabComplete = method.getAnnotation(TabComplete.class);
+
+            String main = tabComplete.value();
+            String[] alias = tabComplete.aliases();
+
+            VCommandCache.getTabComplete().put(main, new VTabComplete(name, alias, method));
         }
     }
 
@@ -92,6 +101,24 @@ public class VCommandBuilder {
         return null;
     }
 
+    //getter
+    public VCommandBuilder getParent(String name) {
+        //make it recursive
+        for (VCommandBuilder subCommand : subCommands) {
+            System.out.println("checking " + subCommand.getName() + " for " + name);
+
+            if (subCommand.getName().equals(name)/* || getFromAlias(name) != null*/) return subCommand;
+
+            VCommandBuilder parent = subCommand.getParent(name);
+            if (parent != null) return parent;
+        }
+
+        return null;
+    }
+
+    public VCommandBuilder getFromAlias(String alias) {
+        return subCommands.stream().filter(subCommand -> Arrays.asList(subCommand.getAliases()).contains(alias)).findFirst().orElse(null);
+    }
 
     //execute command
     public void execute(String main, CommandSender sender, Object[] args) {

@@ -5,13 +5,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Optional {
+@Target(ElementType.METHOD)
+public @interface TabComplete {
 
-    /**
-     * Can be the default value only for strings, otherwise it need a specific value
-     */
-    String value() default "";
-
+    String value();
+    String[] aliases() default {};
 }
