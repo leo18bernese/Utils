@@ -13,13 +13,15 @@ import java.util.List;
 @AllArgsConstructor
 public class VTabComplete {
 
+    private String mainCommand;
+
     private String name;
     private String[] aliases;
 
     private Method method;
 
     public List<String> execute(CommandSender sender, String alias, String[] args) {
-        return (List<String>) ReflectionUtil.invokeMethod(method, CommandManager.getVInstances().get(name), sender, alias, args);
+        return (List<String>) ReflectionUtil.invokeMethod(method, CommandManager.getVInstances().get(mainCommand), sender, alias, args);
     }
 
 }
