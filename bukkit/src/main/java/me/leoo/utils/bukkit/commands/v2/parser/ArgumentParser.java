@@ -79,14 +79,16 @@ public class ArgumentParser {
                 while (args.hasNext()) {
                     builder.append(args.next()).append(" ");
                 }
-                parameters[i] = builder.toString().trim();
+
+                String toTrim = builder.toString().trim();
+                parameters[i] = toTrim.isEmpty() ? null : toTrim;
 
                 continue;
             }
 
             Function<String, ?> provider = providers.get(type);
             if (provider == null) {
-                Bukkit.getLogger().severe(VCommandManager.getError().getInvalidArgumentMessage().replace("{class}", type.getName()));
+                Bukkit.getLogger().severe(VCommandManager.get().getError().getInvalidArgumentMessage().replace("{class}", type.getName()));
                 return null;
             }
 
@@ -116,6 +118,30 @@ public class ArgumentParser {
         }
 
         return parameters;
+    }
+
+    public String parseArgumentsString(Method method) {
+        StringBuilder builder = new StringBuilder();
+
+        for (Parameter parameter : method.getParameters()) {
+            if (parameter.isAnnotationPresent(Sender.class)) {
+                continue;
+            }
+
+            if (parameter.isAnnotationPresent(Text.class)) {
+                builder.append("<text> ");
+                continue;
+            }
+
+            if (parameter.isAnnotationPresent(Optional.class)) {
+                builder.append("[").append(parameter.getAnnotation(Optional.class).value()).append("] ");
+                continue;
+            }
+
+            builder.append("<").append(parameter.getName()).append("> ");
+        }
+
+        return builder.toString().trim();
     }
 
     public <T> void addProvider(Class<T> clazz, Function<String, T> provider) {
