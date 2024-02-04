@@ -35,7 +35,7 @@ public abstract class VCommand extends BukkitCommand {
         }
 
         if (!mainCommand.checkPermission(sender)) {
-            sender.sendMessage(CC.color(VCommandManager.getError().getNoPermissionMessage()));
+            sender.sendMessage(CC.color(VCommandManager.get().getError().getNoPermissionMessage()));
             return false;
         }
 
@@ -49,7 +49,7 @@ public abstract class VCommand extends BukkitCommand {
                 }
 
                 if (!subCommand.checkPermission(sender)) {
-                    sender.sendMessage(CC.color(VCommandManager.getError().getNoPermissionMessage()));
+                    sender.sendMessage(CC.color(VCommandManager.get().getError().getNoPermissionMessage()));
                     return false;
                 }
 
