@@ -341,7 +341,6 @@ public class ItemBuilder implements Cloneable {
         String[] material = config.getString(path + ".material").split(":");
 
         String name = material[0];
-        int data = material.length == 2 ? NumberUtil.toInt(material[1]) : 0;
 
         ItemBuilder builder;
 
@@ -350,13 +349,13 @@ public class ItemBuilder implements Cloneable {
             builder.setOwner(material[1]);
         } else if (name.equalsIgnoreCase("potion")) {
             builder = new ItemBuilder(XMaterial.POTION);
-            builder.setData(data);
+            builder.setData(getData(material));
         } else {
-            builder = new ItemBuilder(name, data);
+            builder = new ItemBuilder(name, getData(material));
         }
 
         if (builder.getItemStack().getType() == XMaterial.FIREWORK_STAR.parseMaterial()) {
-            if (material.length == 2) builder.colorFirework(Color.fromRGB(data));
+            if (material.length == 2) builder.colorFirework(Color.fromRGB(getData(material)));
         }
 
         builder.setConfigPath(path);
@@ -392,6 +391,10 @@ public class ItemBuilder implements Cloneable {
 
     public static ItemBuilder parseFromConfig(String path, ConfigManager config) {
         return parseFromConfig(path, config, config);
+    }
+
+    private static int getData(String[] material) {
+        return material.length == 2 ? NumberUtil.toInt(material[1]) : 0;
     }
 
     public ItemStack get() {
