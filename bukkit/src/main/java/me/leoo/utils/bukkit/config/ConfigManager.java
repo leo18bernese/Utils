@@ -87,14 +87,12 @@ public class ConfigManager {
     }
 
     public List<String> getList(String path) {
-        List<String> strings = yml.getStringList(path);
-
-        if (strings.isEmpty()) {
+        if (yml.get(path) == null) {
             Utils.get().getLogger().severe("List " + path + " not found in " + name + ".yml");
-            return strings;
+            return Collections.emptyList();
         }
 
-        return strings.stream().map(CC::color).collect(Collectors.toList());
+        return yml.getStringList(path).stream().map(CC::color).collect(Collectors.toList());
     }
 
     public Set<String> getSection(String path) {
