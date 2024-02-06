@@ -86,12 +86,6 @@ public abstract class VCommand extends BukkitCommand {
 
         VTabComplete tabComplete = getTabComplete(args[0]);
 
-        if(tabComplete == null) {
-            System.out.println("tabComplete is null");
-        }else{
-            System.out.println("tab complete for " + tabComplete.getMainCommand() + "  " + tabComplete.getName() + " with args " + String.join(", ", args));
-        }
-
         if (tabComplete != null) {
             return tabComplete.execute(sender, alias, args);
         }
