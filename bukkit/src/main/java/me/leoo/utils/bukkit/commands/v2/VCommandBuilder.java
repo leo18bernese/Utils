@@ -29,6 +29,7 @@ public class VCommandBuilder {
     private String permission;
 
     private String usage;
+    private String display;
 
     private Method method;
 
@@ -38,6 +39,8 @@ public class VCommandBuilder {
 
     public VCommandBuilder(Class<?> clazz) {
         for (Method method : clazz.getMethods()) {
+            if (method.getReturnType() != void.class) continue;
+
             parseCommand(method);
         }
     }
@@ -55,6 +58,7 @@ public class VCommandBuilder {
             this.permission = parsePermission(method);
 
             this.usage = parseUsage(this.name, method);
+            this.display = parseDisplay(this.name, method);
 
             this.method = method;
 
@@ -72,9 +76,10 @@ public class VCommandBuilder {
             CommandExecutor subExecutor = subCommand.executor();
             String subPermission = parsePermission(method);
 
-            String subUsage = parseUsage(this.name + " " + subName, method);
+            String subUsage = parseUsage(subName, method);
+            String subDisplay = parseDisplay(subName, method);
 
-            subCommands.add(new VCommandBuilder(subName, subAliases, subExecutor, subPermission, subUsage, method));
+            subCommands.add(new VCommandBuilder(subName, subAliases, subExecutor, subPermission, subUsage, subDisplay, method));
         } else if (method.getAnnotation(TabComplete.class) != null) {
             TabComplete tabComplete = method.getAnnotation(TabComplete.class);
 
@@ -100,7 +105,7 @@ public class VCommandBuilder {
         if (method.getAnnotation(CommandUsage.class) != null) {
             CommandUsage commandUsage = method.getAnnotation(CommandUsage.class);
 
-            return commandUsage.value();
+            return commandUsage.usage();
         }
 
         return parseUsageFromSettings(name, method);
@@ -108,14 +113,44 @@ public class VCommandBuilder {
 
     private String parseUsageFromSettings(String name, Method method) {
         ConfigManager config = manager.getConfigManager();
-        String path = manager.getCommandUsagePath();
+        String path = manager.getUsagePath();
 
         if (config != null && path != null) {
-            return config.getString(path + "." + name);
+            String finalPath = path.replace("%name%", name);
+
+            if (config.getYml().getString(finalPath) != null) {
+                return config.getString(finalPath);
+            }
         }
 
         if (manager.isBuildUsageMessage()) {
             return "&cUsage: /" + name + " " + ArgumentParser.parseArgumentsString(method);
+        }
+
+        return null;
+    }
+
+    //display
+    private String parseDisplay(String name, Method method) {
+        if (method.getAnnotation(CommandUsage.class) != null) {
+            CommandUsage commandDisplay = method.getAnnotation(CommandUsage.class);
+
+            return commandDisplay.display();
+        }
+
+        return parseDisplayFromSettings(name, method);
+    }
+
+    private String parseDisplayFromSettings(String name, Method method) {
+        ConfigManager config = manager.getConfigManager();
+        String path = manager.getDisplayPath();
+
+        if (config != null && path != null) {
+            String finalPath = path.replace("%name%", name);
+
+            if (config.getYml().getString(finalPath) != null) {
+                return config.getString(finalPath);
+            }
         }
 
         return null;
@@ -142,7 +177,7 @@ public class VCommandBuilder {
 
     //execute command
     public void execute(String main, CommandSender sender, Object[] args) {
-        ReflectionUtil.invokeMethod(method, CommandManager.getVInstances().get(main), sender, args);
+        ReflectionUtil.invokeMethod(method, CommandManager.getVInstances().get(main), args);
     }
 
     public void execute(String main, Player player, Object[] args) {

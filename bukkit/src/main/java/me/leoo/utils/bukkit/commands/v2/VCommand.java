@@ -93,11 +93,11 @@ public abstract class VCommand extends BukkitCommand {
         return Collections.emptyList();
     }
 
-    private VCommandBuilder getMainCommand() {
+    public VCommandBuilder getMainCommand() {
         return VCommandCache.getCommand(getClass().getName());
     }
 
-    private List<VCommandBuilder> getSubCommands() {
+    public List<VCommandBuilder> getSubCommands() {
         return getMainCommand().getSubCommands();
     }
 

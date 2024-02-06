@@ -1,7 +1,6 @@
 package me.leoo.utils.bukkit.commands.v2;
 
 import lombok.Data;
-import lombok.Getter;
 import me.leoo.utils.bukkit.commands.v2.exception.CommandError;
 import me.leoo.utils.bukkit.commands.v2.exception.VCommandError;
 import me.leoo.utils.bukkit.config.ConfigManager;
@@ -11,7 +10,8 @@ public class VCommandManager {
 
     private final VCommandError error;
 
-    private String commandUsagePath;
+    private String usagePath;
+    private String displayPath;
     private ConfigManager configManager;
 
     private boolean buildUsageMessage = true;
@@ -28,9 +28,10 @@ public class VCommandManager {
         this(new CommandError());
     }
 
-    public void setCommandUsage(ConfigManager configManager, String path) {
+    public void setCommandUsage(ConfigManager configManager, String usagePath, String displayPath) {
         this.configManager = configManager;
-        this.commandUsagePath = path;
+        this.usagePath = usagePath;
+        this.displayPath = displayPath;
     }
 
     public static VCommandManager get() {
