@@ -39,7 +39,7 @@ public class TimeUtil {
         for (String unit : values.keySet()) {
             if (!time.endsWith(unit)) continue;
 
-            return Integer.parseInt(time.replace(unit, "").trim()) * values.get(unit) * 1000;
+            return Integer.parseInt(time.replace(unit, "").trim()) * values.get(unit) * 1000L;
         }
 
         return 0;
