@@ -3,6 +3,7 @@ package me.leoo.utils.bukkit.commands.v2.tabcomplete;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.leoo.utils.bukkit.commands.CommandManager;
+import me.leoo.utils.bukkit.commands.v2.cache.VCommandCache;
 import me.leoo.utils.common.reflection.ReflectionUtil;
 import org.bukkit.command.CommandSender;
 
@@ -21,7 +22,7 @@ public class VTabComplete {
     private Method method;
 
     public List<String> execute(CommandSender sender, String alias, String[] args) {
-        return (List<String>) ReflectionUtil.invokeMethod(method, CommandManager.getVInstances().get(mainCommand), sender, alias, args);
+        return (List<String>) ReflectionUtil.invokeMethod(method, VCommandCache.getVInstances().get(mainCommand), sender, alias, args);
     }
 
 }

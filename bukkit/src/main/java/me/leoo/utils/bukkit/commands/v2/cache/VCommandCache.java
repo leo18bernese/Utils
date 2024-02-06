@@ -15,6 +15,9 @@ public class VCommandCache {
     @Getter
     private static final Map<String, VTabComplete> tabComplete = new HashMap<>();
 
+    @Getter
+    public static final Map<String, Object> vInstances = new HashMap<>();
+
     public static VCommandBuilder getCommand(String name) {
         return commands.get(name);
     }

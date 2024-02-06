@@ -3,7 +3,6 @@ package me.leoo.utils.bukkit.commands.v2;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import me.leoo.utils.bukkit.chat.CC;
-import me.leoo.utils.bukkit.commands.CommandManager;
 import me.leoo.utils.bukkit.commands.v2.annotation.*;
 import me.leoo.utils.bukkit.commands.v2.cache.VCommandCache;
 import me.leoo.utils.bukkit.commands.v2.parser.ArgumentParser;
@@ -39,8 +38,6 @@ public class VCommandBuilder {
 
     public VCommandBuilder(Class<?> clazz) {
         for (Method method : clazz.getMethods()) {
-            if (method.getReturnType() != void.class) continue;
-
             parseCommand(method);
         }
     }
@@ -177,11 +174,11 @@ public class VCommandBuilder {
 
     //execute command
     public void execute(String main, CommandSender sender, Object[] args) {
-        ReflectionUtil.invokeMethod(method, CommandManager.getVInstances().get(main), args);
+        ReflectionUtil.invokeMethod(method, VCommandCache.getVInstances().get(main), args);
     }
 
     public void execute(String main, Player player, Object[] args) {
-        ReflectionUtil.invokeMethod(method, CommandManager.getVInstances().get(main), args);
+        ReflectionUtil.invokeMethod(method, VCommandCache.getVInstances().get(main), args);
     }
 
     public void execute(CommandSender sender, Object[] args) {
