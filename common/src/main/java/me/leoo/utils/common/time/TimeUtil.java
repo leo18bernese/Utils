@@ -9,7 +9,7 @@ import java.util.Map;
 @UtilityClass
 public class TimeUtil {
 
-    public int secondsByTimeString(String time) {
+    public int millisFromTimeString(String time) {
         Map<String, Integer> values = new HashMap<>();
 
         for (String s : new String[]{"s", "second", "seconds"}) {
