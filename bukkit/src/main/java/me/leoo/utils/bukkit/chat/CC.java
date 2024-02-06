@@ -43,6 +43,8 @@ public class CC {
     public final String PINK = "§d";
 
     public String color(String string) {
+        if(string == null) return "";
+
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             string = PlaceholderAPI.setPlaceholders(null, string);
         }
