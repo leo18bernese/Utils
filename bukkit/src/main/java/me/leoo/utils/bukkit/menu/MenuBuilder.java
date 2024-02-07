@@ -34,14 +34,18 @@ public abstract class MenuBuilder {
 
         Inventory inventory = Bukkit.createInventory(null, getSlots(), getTitle(player) == null ? "" : CC.color(getTitle(player)));
 
+        updateContent(player, inventory);
+
+        return inventory;
+    }
+
+    private void updateContent(Player player, Inventory inventory) {
         items.clear();
         items.addAll(getItems(player));
         items.forEach(itemBuilder -> {
             int slot = itemBuilder.getSlot();
             if (slot >= 0 && slot <= getSlots()) inventory.setItem(slot, itemBuilder.setDefaultFlags().get());
         });
-
-        return inventory;
     }
 
     public int getSlots() {
@@ -59,7 +63,8 @@ public abstract class MenuBuilder {
     }
 
     public void update(Player player) {
-        player.getOpenInventory().getTopInventory().setContents(get(player).getContents());
+        Inventory inventory = player.getOpenInventory().getTopInventory();
+        updateContent(player, inventory);
     }
 
     public void close(Player player) {
