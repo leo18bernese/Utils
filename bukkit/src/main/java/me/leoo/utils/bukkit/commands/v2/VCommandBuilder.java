@@ -93,8 +93,6 @@ public class VCommandBuilder {
             String main = tabComplete.value();
             String[] alias = tabComplete.aliases();
 
-            System.out.println("Registering tab complete for " + this.name + "  " + main + "  " + Arrays.toString(alias));
-
             VCommandCache.getTabComplete().put(main, new VTabComplete(this.name, main, alias, method));
         }
     }
