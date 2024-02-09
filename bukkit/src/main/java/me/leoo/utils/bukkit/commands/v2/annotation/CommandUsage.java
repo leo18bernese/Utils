@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface CommandUsage {
 
-    String usage();
+    String[] usage();
+
     String display();
 }
