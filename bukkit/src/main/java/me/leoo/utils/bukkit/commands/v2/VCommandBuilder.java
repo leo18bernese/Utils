@@ -27,7 +27,7 @@ public class VCommandBuilder {
     private CommandExecutor executorType;
     private String permission;
 
-    private String usage;
+    private String[] usage;
     private String display;
 
     private Method method;
@@ -37,29 +37,39 @@ public class VCommandBuilder {
     private static final VCommandManager manager = VCommandManager.get();
 
     public VCommandBuilder(Class<?> clazz) {
+        Arrays.stream(clazz.getMethods()).filter(method -> method.isAnnotationPresent(Command.class)).findFirst().ifPresent(this::parseMain);
+
+        if (this.name == null) {
+            throw new IllegalArgumentException("Main Command not initialized for class " + clazz.getName() + " with @Command annotation");
+        }
+
         for (Method method : clazz.getMethods()) {
             parseCommand(method);
         }
     }
 
-    private void parseCommand(Method method) {
-        if (method.getAnnotation(Command.class) != null) {
-            Command command = method.getAnnotation(Command.class);
+    private void parseMain(Method method) {
+        if (method.isAnnotationPresent(Command.class)) {
+            Command mainCommand = method.getAnnotation(Command.class);
 
-            if (command.value().length == 0) throw new IllegalArgumentException("Command name cannot be empty");
+            if (mainCommand.value().length == 0)
+                throw new IllegalArgumentException("Main Command name cannot be empty");
 
-            this.name = command.value()[0];
-            this.aliases = Arrays.stream(command.value()).skip(1).toArray(String[]::new);
+            this.name = mainCommand.value()[0];
+            this.aliases = Arrays.stream(mainCommand.value()).skip(1).toArray(String[]::new);
 
-            this.executorType = command.executor();
+            this.executorType = mainCommand.executor();
             this.permission = parsePermission(method);
 
             this.usage = parseUsage(this.name, method);
             this.display = parseDisplay(this.name, method);
 
             this.method = method;
+        }
+    }
 
-        } else if (method.getAnnotation(SubCommand.class) != null) {
+    private void parseCommand(Method method) {
+        if (method.isAnnotationPresent(SubCommand.class)) {
             SubCommand subCommand = method.getAnnotation(SubCommand.class);
 
             if (subCommand.parent() != null && !subCommand.parent().isEmpty() && !subCommand.parent().equals(name))
@@ -73,15 +83,17 @@ public class VCommandBuilder {
             CommandExecutor subExecutor = subCommand.executor();
             String subPermission = parsePermission(method);
 
-            String subUsage = parseUsage(subName, method);
+            String[] subUsage = parseUsage(subName, method);
             String subDisplay = parseDisplay(subName, method);
 
             subCommands.add(new VCommandBuilder(subName, subAliases, subExecutor, subPermission, subUsage, subDisplay, method));
-        } else if (method.getAnnotation(TabComplete.class) != null) {
+        } else if (method.isAnnotationPresent(TabComplete.class)) {
             TabComplete tabComplete = method.getAnnotation(TabComplete.class);
 
             String main = tabComplete.value();
             String[] alias = tabComplete.aliases();
+
+            System.out.println("Registering tab complete for " + this.name + "  " + main + "  " + Arrays.toString(alias));
 
             VCommandCache.getTabComplete().put(main, new VTabComplete(this.name, main, alias, method));
         }
@@ -98,7 +110,7 @@ public class VCommandBuilder {
     }
 
     //usage
-    private String parseUsage(String name, Method method) {
+    private String[] parseUsage(String name, Method method) {
         if (method.getAnnotation(CommandUsage.class) != null) {
             CommandUsage commandUsage = method.getAnnotation(CommandUsage.class);
 
@@ -108,20 +120,25 @@ public class VCommandBuilder {
         return parseUsageFromSettings(name, method);
     }
 
-    private String parseUsageFromSettings(String name, Method method) {
+    private String[] parseUsageFromSettings(String name, Method method) {
         ConfigManager config = manager.getConfigManager();
         String path = manager.getUsagePath();
 
         if (config != null && path != null) {
             String finalPath = path.replace("%name%", name);
 
-            if (config.getYml().getString(finalPath) != null) {
-                return config.getString(finalPath);
+            Object object = config.getYml().get(finalPath);
+            if (object == null) return null;
+
+            if (object instanceof List) {
+                return config.getList(finalPath).toArray(new String[0]);
             }
+
+            return new String[]{config.getString(finalPath)};
         }
 
         if (manager.isBuildUsageMessage()) {
-            return "&cUsage: /" + name + " " + ArgumentParser.parseArgumentsString(method);
+            return new String[]{"&cUsage: /" + name + " " + ArgumentParser.parseArgumentsString(method)};
         }
 
         return null;
@@ -225,12 +242,14 @@ public class VCommandBuilder {
 
     //send usage
     public void sendUsage(CommandSender sender) {
-        if (usage == null || usage.isEmpty()) {
+        if (usage == null || usage.length == 0) {
             sender.sendMessage(CC.color(manager.getError().getMissingArgumentsMessage()));
             return;
         }
 
-        sender.sendMessage(CC.color(usage));
+        for (String s : usage) {
+            sender.sendMessage(CC.color(s));
+        }
     }
 
 
