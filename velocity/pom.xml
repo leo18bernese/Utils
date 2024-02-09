@@ -7,7 +7,7 @@
     <parent>
         <groupId>me.leoo.utils</groupId>
         <artifactId>Utils</artifactId>
-        <version>1.7.8</version>
+        <version>1.7.9</version>
     </parent>
 
     <artifactId>velocity</artifactId>
@@ -41,7 +41,7 @@
     </dependencies>
 
     <build>
-        <finalName>Utils-${project.version}</finalName>
+        <finalName>Utils-Velocity-${project.version}</finalName>
         <defaultGoal>clean install</defaultGoal>
         <resources>
             <resource>
