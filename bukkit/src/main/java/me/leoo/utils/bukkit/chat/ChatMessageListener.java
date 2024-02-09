@@ -16,9 +16,9 @@ public class ChatMessageListener implements Listener {
         if (request != null) {
             event.setCancelled(true);
 
-            request.getConsumer().accept(event);
-
             ChatMessage.getRequests().remove(event.getPlayer().getUniqueId());
+
+            request.getConsumer().accept(event);
         }
     }
 
