@@ -15,8 +15,6 @@ import java.util.UUID;
 
 public class MenuListeners implements Listener {
 
-    private static MenuListeners instance;
-
     @EventHandler(priority = EventPriority.MONITOR)
     public void onClick(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
@@ -80,9 +78,6 @@ public class MenuListeners implements Listener {
     }
 
     public static void register() {
-        if (instance == null) {
-            instance = new MenuListeners();
-            Events.register(instance);
-        }
+        Events.register(new MenuListeners());
     }
 }

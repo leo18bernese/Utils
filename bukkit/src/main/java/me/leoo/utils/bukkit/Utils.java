@@ -1,6 +1,9 @@
 package me.leoo.utils.bukkit;
 
 import lombok.Getter;
+import me.leoo.utils.bukkit.chat.ChatMessage;
+import me.leoo.utils.bukkit.items.InteractListeners;
+import me.leoo.utils.bukkit.menu.MenuListeners;
 import me.leoo.utils.bukkit.menu.MenuTask;
 import me.leoo.utils.bukkit.software.Software;
 import me.leoo.utils.common.compatibility.SoftwareManager;
@@ -37,6 +40,10 @@ public class Utils extends JavaPlugin {
         Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(get(), "BungeeCord");
 
         new MenuTask();
+
+        ChatMessage.register();
+        MenuListeners.register();
+        InteractListeners.register();
     }
 
     public static void disable() {

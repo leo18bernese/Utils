@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 @Beta
 public class InteractListeners implements Listener {
 
-    private static InteractListeners instance;
-
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -63,9 +61,6 @@ public class InteractListeners implements Listener {
     }
 
     public static void register() {
-        if (instance == null) {
-            instance = new InteractListeners();
-            Events.register(instance);
-        }
+        Events.register(new InteractListeners());
     }
 }

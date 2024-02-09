@@ -10,5 +10,6 @@ import java.lang.annotation.Target;
 public @interface TabComplete {
 
     String value();
+
     String[] aliases() default {};
 }

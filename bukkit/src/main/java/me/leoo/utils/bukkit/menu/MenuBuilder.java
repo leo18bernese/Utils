@@ -30,8 +30,6 @@ public abstract class MenuBuilder {
     public abstract String getTitle(Player player);
 
     public Inventory get(Player player) {
-        MenuListeners.register();
-
         Inventory inventory = Bukkit.createInventory(null, getSlots(), getTitle(player) == null ? "" : CC.color(getTitle(player)));
 
         updateContent(player, inventory);
