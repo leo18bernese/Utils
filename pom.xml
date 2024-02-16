@@ -6,7 +6,7 @@
 
     <groupId>me.leoo.utils</groupId>
     <artifactId>Utils</artifactId>
-    <version>1.7.9</version>
+    <version>1.7.10</version>
     <packaging>pom</packaging>
 
     <modules>
