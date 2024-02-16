@@ -15,27 +15,27 @@ public class Tasks {
         return Bukkit.getScheduler().runTask(Utils.get(), task);
     }
 
-    public BukkitTask runAsync(Runnable task) {
+    public BukkitTask async(Runnable task) {
         return Bukkit.getScheduler().runTaskAsynchronously(Utils.get(), task);
     }
 
-    public BukkitTask runLater(Runnable task, long delay) {
+    public BukkitTask later(Runnable task, long delay) {
         return Bukkit.getScheduler().runTaskLater(Utils.get(), task, delay);
     }
 
-    public BukkitTask runAsyncLater(Runnable task, long delay) {
+    public BukkitTask asyncLater(Runnable task, long delay) {
         return Bukkit.getScheduler().runTaskLaterAsynchronously(Utils.get(), task, delay);
     }
 
-    public BukkitTask runTimer(Runnable task, long delay, long interval) {
+    public BukkitTask timer(Runnable task, long delay, long interval) {
         return Bukkit.getScheduler().runTaskTimer(Utils.get(), task, delay, interval);
     }
 
-    public BukkitTask runAsyncTimer(Runnable task, long delay, long interval) {
+    public BukkitTask asyncTimer(Runnable task, long delay, long interval) {
         return Bukkit.getScheduler().runTaskTimerAsynchronously(Utils.get(), task, delay, interval);
     }
 
-    public void repeatTimes(Runnable task, long delay, long interval, int times) {
+    public void repeat(Runnable task, long delay, long interval, int times) {
         new BukkitRunnable() {
             int remaining = times;
 
@@ -50,7 +50,7 @@ public class Tasks {
         }.runTaskTimer(Utils.get(), delay, interval);
     }
 
-    public void repeatTimes(Runnable task, long delay, long interval, int times, Runnable onEnd) {
+    public void repeat(Runnable task, long delay, long interval, int times, Runnable onEnd) {
         new BukkitRunnable() {
             int remaining = times;
 
@@ -67,7 +67,7 @@ public class Tasks {
         }.runTaskTimer(Utils.get(), delay, interval);
     }
 
-    public void repeatTimes(Runnable task, long delay, long interval, Supplier<Boolean> condition) {
+    public void repeat(Runnable task, long delay, long interval, Supplier<Boolean> condition) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -80,7 +80,7 @@ public class Tasks {
         }.runTaskTimer(Utils.get(), delay, interval);
     }
 
-    public void repeatTimes(Runnable task, long delay, long interval, Supplier<Boolean> condition, Runnable onEnd) {
+    public void repeat(Runnable task, long delay, long interval, Supplier<Boolean> condition, Runnable onEnd) {
         new BukkitRunnable() {
             @Override
             public void run() {

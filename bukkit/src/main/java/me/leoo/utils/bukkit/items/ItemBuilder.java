@@ -18,7 +18,6 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
@@ -282,7 +281,6 @@ public class ItemBuilder implements Cloneable {
     }
 
 
-
     public ItemBuilder setEvent(Predicate<InventoryClickEvent> eventCallBack) {
         this.eventCallback = eventCallBack;
         return this;
@@ -296,7 +294,6 @@ public class ItemBuilder implements Cloneable {
 
         return this;
     }
-
 
 
     public ItemBuilder setInteract(Consumer<PlayerInteractEvent> interactCallback) {
@@ -414,8 +411,9 @@ public class ItemBuilder implements Cloneable {
         if (replaceFunction != null) {
             setName(replaceFunction.apply(itemMeta.getDisplayName()));
 
-            if (itemMeta.getLore() != null)
+            if (itemMeta.getLore() != null) {
                 setLore(itemMeta.getLore().stream().map(string -> replaceFunction.apply(string)).collect(Collectors.toList()));
+            }
         }
 
         itemStack.setItemMeta(itemMeta);
@@ -426,18 +424,16 @@ public class ItemBuilder implements Cloneable {
         menu.getItems().add(this);
     }
 
-    public void setInInventory(Player player, MenuBuilder menu, int slot) {
-        setSlot(slot);
+    public void setInInventory(MenuBuilder menu, int slot) {
+        this.slot = slot;
 
-        if (getSlot() == -1) {
+        if (slot == -1) {
             Bukkit.getLogger().severe(
-                    "Slot not set for item: " + itemMeta.getDisplayName() + " in menu: " + menu.getTitle(player) + "." +
+                    "Slot not set for item: " + itemMeta.getDisplayName() + " in menu: " + menu.getTitle() + "." +
                             "\nUsing first slot.");
-
-            setInInventory(menu);
-        } else {
-            setInInventory(menu);
         }
+
+        setInInventory(menu);
     }
 
     @Override
