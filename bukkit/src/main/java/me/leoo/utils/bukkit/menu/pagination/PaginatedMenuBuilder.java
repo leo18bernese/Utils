@@ -15,26 +15,26 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
 
     public abstract List<Integer> getPaginatedSlots();
 
-    public abstract String getPaginationTitle(Player player);
+    public abstract String getPaginationTitle();
 
-    public abstract List<ItemBuilder> getAllPageItems(Player player);
+    public abstract List<ItemBuilder> getAllPageItems();
 
-    public abstract ItemBuilder getNextPageItem(Player player);
+    public abstract ItemBuilder getNextPageItem();
 
-    public abstract ItemBuilder getPreviousPageItem(Player player);
+    public abstract ItemBuilder getPreviousPageItem();
 
-    public List<ItemBuilder> getGlobalItems(Player player) {
+    public List<ItemBuilder> getGlobalItems() {
         return null;
     }
 
-    public PaginatedMenuBuilder(int rows) {
-        super(rows);
+    public PaginatedMenuBuilder(Player player, int rows) {
+        super(player, rows);
     }
 
     @Override
-    public List<ItemBuilder> getItems(Player player) {
+    public List<ItemBuilder> getItems() {
         List<ItemBuilder> items = new ArrayList<>();
-        List<ItemBuilder> builders = new ArrayList<>(getAllPageItems(player));
+        List<ItemBuilder> builders = new ArrayList<>(getAllPageItems());
 
         int index = (getPage() - 1) * getPaginatedSlots().size();
         for (Integer slot : getPaginatedSlots()) {
@@ -47,20 +47,20 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
             index++;
         }
 
-        if (getGlobalItems(player) != null) {
-            items.addAll(getGlobalItems(player));
+        if (getGlobalItems() != null) {
+            items.addAll(getGlobalItems());
         }
 
-        if (page > 1 && getPreviousPageItem(player) != null) {
-            items.add(getPreviousPageItem(player).setEvent(event -> {
-                openNewPage(player, -1);
+        if (page > 1 && getPreviousPageItem() != null) {
+            items.add(getPreviousPageItem().setEvent(event -> {
+                openNewPage( -1);
                 return true;
             }));
         }
 
-        if (page < getPages(player) && getNextPageItem(player) != null) {
-            items.add(getNextPageItem(player).setEvent(event -> {
-                openNewPage(player, +1);
+        if (page < getPages() && getNextPageItem() != null) {
+            items.add(getNextPageItem().setEvent(event -> {
+                openNewPage( +1);
                 return true;
             }));
         }
@@ -69,18 +69,18 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
     }
 
     @Override
-    public String getTitle(Player player) {
-        return getPaginationTitle(player) + " #" + getPage();
+    public String getTitle() {
+        return getPaginationTitle() + " #" + getPage();
     }
 
-    public void openNewPage(Player player, int amount) {
+    public void openNewPage(int amount) {
         this.page += amount;
-        getItems(player).clear();
-        open(player);
+        getItems().clear();
+        open();
     }
 
-    public int getPages(Player player) {
-        int itemsAmount = this.getAllPageItems(player).size();
+    public int getPages() {
+        int itemsAmount = this.getAllPageItems().size();
         return itemsAmount == 0 ? 1 : (int) Math.ceil((double) itemsAmount / (double) this.getPaginatedSlots().size());
     }
 

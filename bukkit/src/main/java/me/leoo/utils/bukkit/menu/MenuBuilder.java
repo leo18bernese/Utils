@@ -18,6 +18,8 @@ public abstract class MenuBuilder {
 
     private final List<ItemBuilder> items = new ArrayList<>();
 
+    public final Player player;
+
     private static String title;
     private final int rows;
 
@@ -25,21 +27,21 @@ public abstract class MenuBuilder {
     private boolean updateOnClick;
     private boolean doubleClick = true;
 
-    public abstract List<ItemBuilder> getItems(Player player);
+    public abstract List<ItemBuilder> getItems();
 
-    public abstract String getTitle(Player player);
+    public abstract String getTitle();
 
-    public Inventory get(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, getSlots(), getTitle(player) == null ? "" : CC.color(getTitle(player)));
+    public Inventory get() {
+        Inventory inventory = Bukkit.createInventory(null, getSlots(), getTitle() == null ? "" : CC.color(getTitle()));
 
-        updateContent(player, inventory);
+        updateContent(inventory);
 
         return inventory;
     }
 
-    private void updateContent(Player player, Inventory inventory) {
+    private void updateContent(Inventory inventory) {
         items.clear();
-        items.addAll(getItems(player));
+        items.addAll(getItems());
         items.forEach(itemBuilder -> {
             int slot = itemBuilder.getSlot();
             if (slot >= 0 && slot <= getSlots()) inventory.setItem(slot, itemBuilder.setDefaultFlags().get());
@@ -54,21 +56,21 @@ public abstract class MenuBuilder {
         return items.stream().filter(menuItem -> menuItem.getSlot() == slot).findAny();
     }
 
-    public void open(Player player) {
-        player.openInventory(get(player));
+    public void open() {
+        player.openInventory(get());
 
         openedInventories.put(player.getUniqueId(), this);
     }
 
-    public void update(Player player) {
+    public void update() {
         Inventory inventory = player.getOpenInventory().getTopInventory();
-        updateContent(player, inventory);
+        updateContent(inventory);
     }
 
-    public void close(Player player) {
+    public void close() {
         player.closeInventory();
     }
 
-    public void onClose(Player player) {
+    public void onClose() {
     }
 }

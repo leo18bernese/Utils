@@ -60,7 +60,7 @@ public class MenuListeners implements Listener {
             event.setCancelled(item.getEventCallback().test(event));
         }
 
-        if (menu.isUpdateOnClick()) menu.update(player);
+        if (menu.isUpdateOnClick()) menu.update();
     }
 
     @EventHandler
@@ -72,7 +72,7 @@ public class MenuListeners implements Listener {
         MenuBuilder menu = MenuBuilder.getOpenedInventories().get(player.getUniqueId());
         if (menu == null) return;
 
-        menu.onClose(player);
+        menu.onClose();
 
         MenuBuilder.getOpenedInventories().remove(player.getUniqueId());
     }
