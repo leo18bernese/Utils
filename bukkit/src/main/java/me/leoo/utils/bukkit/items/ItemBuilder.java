@@ -281,13 +281,15 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder setEventCallback(Predicate<InventoryClickEvent> eventCallBack) {
+
+
+    public ItemBuilder setEvent(Predicate<InventoryClickEvent> eventCallBack) {
         this.eventCallback = eventCallBack;
         return this;
     }
 
-    public ItemBuilder setEventCallback(Consumer<InventoryClickEvent> eventConsumer) {
-        setEventCallback(event -> {
+    public ItemBuilder setEvent(Consumer<InventoryClickEvent> eventConsumer) {
+        setEvent(event -> {
             eventConsumer.accept(event);
             return true;
         });
@@ -296,7 +298,8 @@ public class ItemBuilder implements Cloneable {
     }
 
 
-    public ItemBuilder setInteractCallback(Consumer<PlayerInteractEvent> interactCallback) {
+
+    public ItemBuilder setInteract(Consumer<PlayerInteractEvent> interactCallback) {
         this.interactCallback = interactCallback;
         return this;
     }
@@ -337,7 +340,7 @@ public class ItemBuilder implements Cloneable {
         saveIntoConfig(path, config, config);
     }
 
-    public static ItemBuilder parseFromConfig(String path, ConfigManager config, ConfigManager language) {
+    public static ItemBuilder parse(String path, ConfigManager config, ConfigManager language) {
         String[] material = config.getString(path + ".material").split(":");
 
         String name = material[0];
@@ -389,8 +392,8 @@ public class ItemBuilder implements Cloneable {
         return builder;
     }
 
-    public static ItemBuilder parseFromConfig(String path, ConfigManager config) {
-        return parseFromConfig(path, config, config);
+    public static ItemBuilder parse(String path, ConfigManager config) {
+        return parse(path, config, config);
     }
 
     private static int getData(String[] material) {
