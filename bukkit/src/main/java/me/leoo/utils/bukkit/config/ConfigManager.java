@@ -63,6 +63,10 @@ public class ConfigManager {
         }
     }
 
+    public void addDefault(String path, Object value) {
+        yml.addDefault(path, value);
+    }
+
     public boolean getBoolean(String path) {
         return yml.getBoolean(path);
     }
