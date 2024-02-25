@@ -7,22 +7,22 @@ import java.util.TreeMap;
 @UtilityClass
 public class NumberUtil {
 
-    private static final TreeMap<Integer, String> romanNumbers = new TreeMap<>();
+    private static final TreeMap<Integer, String> ROMAN_NUMBERS = new TreeMap<>();
 
     static {
-        romanNumbers.put(1000, "M");
-        romanNumbers.put(900, "CM");
-        romanNumbers.put(500, "D");
-        romanNumbers.put(400, "CD");
-        romanNumbers.put(100, "C");
-        romanNumbers.put(90, "XC");
-        romanNumbers.put(50, "L");
-        romanNumbers.put(40, "XL");
-        romanNumbers.put(10, "X");
-        romanNumbers.put(9, "IX");
-        romanNumbers.put(5, "V");
-        romanNumbers.put(4, "IV");
-        romanNumbers.put(1, "I");
+        ROMAN_NUMBERS.put(1000, "M");
+        ROMAN_NUMBERS.put(900, "CM");
+        ROMAN_NUMBERS.put(500, "D");
+        ROMAN_NUMBERS.put(400, "CD");
+        ROMAN_NUMBERS.put(100, "C");
+        ROMAN_NUMBERS.put(90, "XC");
+        ROMAN_NUMBERS.put(50, "L");
+        ROMAN_NUMBERS.put(40, "XL");
+        ROMAN_NUMBERS.put(10, "X");
+        ROMAN_NUMBERS.put(9, "IX");
+        ROMAN_NUMBERS.put(5, "V");
+        ROMAN_NUMBERS.put(4, "IV");
+        ROMAN_NUMBERS.put(1, "I");
     }
 
     public int toInt(Object object) {
@@ -86,11 +86,18 @@ public class NumberUtil {
         return builder.toString();
     }
 
-    public String convertToRomanNumeral(int number) {
-        int l = romanNumbers.floorKey(number);
+    public String toRoman(int number) {
+        int l = ROMAN_NUMBERS.floorKey(number);
         if (number == l) {
-            return romanNumbers.get(number);
+            return ROMAN_NUMBERS.get(number);
         }
-        return romanNumbers.get(l) + convertToRomanNumeral(number - l);
+
+        return ROMAN_NUMBERS.get(l) + toRoman(number - l);
+    }
+
+    public int getPercentage(int value, int max) {
+        if(max == 0) return 0;
+
+        return (int) ((value * (double) max) * 100);
     }
 }
