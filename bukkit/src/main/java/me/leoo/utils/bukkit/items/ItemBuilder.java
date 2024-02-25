@@ -307,29 +307,25 @@ public class ItemBuilder implements Cloneable {
     }
 
     public void saveIntoConfig(String path, ConfigManager config, ConfigManager language) {
-        YamlConfiguration yml = config.getYml();
-
-        yml.addDefault(path + ".material", itemStack.getType().name() + (toSaveString == null ? (itemStack.getDurability() == 0 ? "" : ":" + itemStack.getDurability()) : ":" + toSaveString));
-        yml.addDefault(path + ".amount", itemStack.getAmount());
-        yml.addDefault(path + ".enchanted", itemMeta.hasEnchant(XEnchantment.DURABILITY.getEnchant()));
+        config.add(path + ".material", itemStack.getType().name() + (toSaveString == null ? (itemStack.getDurability() == 0 ? "" : ":" + itemStack.getDurability()) : ":" + toSaveString));
+        config.add(path + ".amount", itemStack.getAmount());
+        config.add(path + ".enchanted", itemMeta.hasEnchant(XEnchantment.DURABILITY.getEnchant()));
 
         if (slot >= 0) {
-            yml.addDefault(path + ".slot", slot);
+            config.add(path + ".slot", slot);
         }
 
         if (permission != null) {
-            yml.addDefault(path + ".permission", permission);
+            config.add(path + ".permission", permission);
         }
 
         if (command != null) {
-            yml.addDefault(path + ".command", command);
+            config.add(path + ".command", command);
         }
 
         if (language != null) {
-            YamlConfiguration languageYml = language.getYml();
-
-            languageYml.addDefault(path + ".name", itemMeta.getDisplayName());
-            languageYml.addDefault(path + ".lore", itemMeta.getLore());
+            language.add(path + ".name", itemMeta.getDisplayName());
+            language.add(path + ".lore", itemMeta.getLore());
         }
     }
 
