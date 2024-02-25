@@ -9,6 +9,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -68,6 +69,7 @@ public class CC {
         return ChatColor.stripColor(string);
     }
 
+    // TextComponent methods
     public TextComponent getClickableMessage(String text, String hover, String command, ClickEvent.Action action) {
         TextComponent component = new TextComponent(text);
         component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hover).create()));
@@ -76,6 +78,17 @@ public class CC {
         return component;
     }
 
+    public void sendClickableMessage(CommandSender player, String text, String hover, String command, ClickEvent.Action action) {
+        TextComponent component = getClickableMessage(text, hover, command, action);
+
+        if (player instanceof Player) {
+            ((Player) player).spigot().sendMessage(component);
+        } else {
+            player.sendMessage(component.getText());
+        }
+    }
+
+    // Plugin info
     public String translatePluginInfo(Plugin plugin, String s) {
         PluginDescriptionFile info = plugin.getDescription();
 
