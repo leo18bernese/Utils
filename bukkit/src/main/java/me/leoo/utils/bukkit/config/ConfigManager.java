@@ -1,8 +1,10 @@
 package me.leoo.utils.bukkit.config;
 
+import com.cryptomorin.xseries.XMaterial;
 import lombok.Getter;
 import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.chat.CC;
+import me.leoo.utils.bukkit.items.ItemBuilder;
 import me.leoo.utils.bukkit.location.LocationUtil;
 import me.leoo.utils.common.file.FileUtil;
 import org.bukkit.Location;
@@ -37,7 +39,11 @@ public class ConfigManager {
     }
 
     public ConfigManager(Plugin plugin, String name) {
-        this(name, String.valueOf(plugin.getDataFolder()));
+        this(name, plugin.getDataFolder().toString());
+    }
+
+    public ConfigManager(String name) {
+        this(Utils.getInitializedFrom(), name);
     }
 
     public void reload() {
@@ -63,8 +69,12 @@ public class ConfigManager {
         }
     }
 
-    public void addDefault(String path, Object value) {
+    public void add(String path, Object value) {
         yml.addDefault(path, value);
+    }
+
+    public void addList(String path, String... values) {
+        add(path, Arrays.asList(values));
     }
 
     public boolean getBoolean(String path) {
@@ -102,26 +112,10 @@ public class ConfigManager {
     public Set<String> getSection(String path) {
         ConfigurationSection section = yml.getConfigurationSection(path);
 
-        if (section == null) {
-            //Utils.get().getLogger().severe("Configuration section " + path + " not found in " + name + ".yml");
-            return new HashSet<>();
-        }
-
-        return section.getKeys(false);
+        return section == null ? new HashSet<>() : section.getKeys(false);
     }
 
-    @SuppressWarnings("bug")
-    public List<String> getSectionPaths(String path) {
-        List<String> strings = new ArrayList<>();
-
-        for (String string : getSection(path)) {
-            strings.add(yml.getString(path + "." + string));
-        }
-
-        return strings;
-    }
-
-    public List<Integer> getIntegerSplitList(String path) {
+    public List<Integer> getIntegerSplit(String path) {
         return Arrays.stream(getString(path).split(","))
                 .map(Integer::valueOf)
                 .collect(Collectors.toList());
@@ -148,6 +142,30 @@ public class ConfigManager {
         list.addAll(locations.stream().map(LocationUtil::serializeLocation).collect(Collectors.toList()));
 
         yml.set(path, list);
+        save();
+    }
+
+    //titles
+    public void saveTitle(String path, String string, String title, String subTitle) {
+        add(path + ".message", string);
+        add(path + ".title", title);
+        add(path + ".sub-title", subTitle);
+
+        save();
+    }
+
+    public void saveTitle(String path, List<String> strings, String title, String subTitle) {
+        add(path + ".message", strings);
+        add(path + ".title", title);
+        add(path + ".sub-title", subTitle);
+
+        save();
+    }
+
+    //items
+    public void addItem(String path, XMaterial material, String name, String... lore) {
+        new ItemBuilder(material).setName(name).setLore(lore).saveIntoConfig(path, this);
+
         save();
     }
 
