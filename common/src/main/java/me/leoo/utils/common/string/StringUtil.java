@@ -3,15 +3,21 @@ package me.leoo.utils.common.string;
 import lombok.experimental.UtilityClass;
 import me.leoo.utils.common.compatibility.SoftwareManager;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @UtilityClass
 public class StringUtil {
 
+    // Date
     public String getCurrentDate(String format) {
         return getDate(format, Instant.now());
     }
@@ -21,11 +27,18 @@ public class StringUtil {
     }
 
     public String getDate(String format, Instant instant) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-
-        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(formatter);
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern(format));
     }
 
+    public String getSimpleDate(String format, long millis) {
+        return getSimpleDate(format, Instant.ofEpochMilli(millis));
+    }
+
+    public String getSimpleDate(String format, Instant instant) {
+        return DateTimeFormatter.ofPattern(format).format(instant.atZone(ZoneId.systemDefault()));
+    }
+
+    // String manipulation
     public String getCenteredMessage(String message) {
         if (message == null || message.isEmpty()) return "";
 
