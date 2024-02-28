@@ -45,6 +45,49 @@ public class TimeUtil {
         return 0;
     }
 
+    public String timeStringFromMillis(long millis) {
+        long seconds = millis / 1000L;
+
+        if (seconds <= 0) {
+            return "0 seconds";
+        }
+
+        long minutes = seconds / 60;
+        seconds %= 60;
+
+        long hours = minutes / 60;
+        minutes %= 60;
+
+        long days = hours / 24;
+        hours %= 24;
+
+        long years = days / 365;
+        days %= 365;
+
+        StringBuilder builder = new StringBuilder();
+        if (years > 0) {
+            builder.append(years).append(" year").append(years > 1 ? "s" : "").append(" ");
+        }
+
+        if (days > 0) {
+            builder.append(days).append(" day").append(days > 1 ? "s" : "").append(" ");
+        }
+
+        if (hours > 0) {
+            builder.append(hours).append(" hour").append(hours > 1 ? "s" : "").append(" ");
+        }
+
+        if (minutes > 0) {
+            builder.append(minutes).append(" minute").append(minutes > 1 ? "s" : "").append(" ");
+        }
+
+        if (seconds > 0) {
+            builder.append(seconds).append(" second").append(seconds > 1 ? "s" : "").append(" ");
+        }
+
+        return builder.toString().trim();
+    }
+
     public boolean compareDate(long date1, int compareType) {
         return compareDate(date1, System.currentTimeMillis(), compareType);
     }
