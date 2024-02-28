@@ -169,7 +169,7 @@ public abstract class ConfigManager {
         save();
     }
 
-    public void saveItem(String path,XMaterial material, String name, String... lore) {
+    public void saveItem(String path, XMaterial material, String name, String... lore) {
         saveItem(path, -1, material, name, lore);
     }
 

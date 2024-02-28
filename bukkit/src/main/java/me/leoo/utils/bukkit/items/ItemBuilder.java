@@ -37,8 +37,8 @@ public class ItemBuilder implements Cloneable {
     private ItemStack itemStack;
     private ItemMeta itemMeta;
 
-    private Map<String, String> replacements = new HashMap<>();
-    private List<Function<String, String>> replaceFunctions = new ArrayList<>();
+    private final Map<String, String> replacements = new HashMap<>();
+    private final List<Function<String, String>> replaceFunctions = new ArrayList<>();
 
     private Predicate<InventoryClickEvent> eventCallback;
     private Consumer<PlayerInteractEvent> interactCallback;
@@ -50,7 +50,7 @@ public class ItemBuilder implements Cloneable {
     private String toSaveString;
 
     @Setter
-    private ConfigManager config,  language;
+    private ConfigManager config, language;
     @Setter
     private String configPath;
 

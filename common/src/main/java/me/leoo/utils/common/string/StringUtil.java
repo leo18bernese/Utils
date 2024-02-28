@@ -3,15 +3,10 @@ package me.leoo.utils.common.string;
 import lombok.experimental.UtilityClass;
 import me.leoo.utils.common.compatibility.SoftwareManager;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @UtilityClass

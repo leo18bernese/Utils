@@ -235,7 +235,7 @@ public class VCommandBuilder {
     }
 
     public boolean checkPermission(CommandSender sender) {
-        if(permission == null || permission.isEmpty()) return true;
+        if (permission == null || permission.isEmpty()) return true;
 
         return sender.hasPermission(permission);
     }

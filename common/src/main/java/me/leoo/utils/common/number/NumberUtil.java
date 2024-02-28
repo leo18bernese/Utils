@@ -96,7 +96,7 @@ public class NumberUtil {
     }
 
     public int getPercentage(int value, int max) {
-        if(max == 0) return 0;
+        if (max == 0) return 0;
 
         return (int) ((value * (double) max) * 100);
     }

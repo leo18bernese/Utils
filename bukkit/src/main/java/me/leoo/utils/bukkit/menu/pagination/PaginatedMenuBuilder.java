@@ -53,14 +53,14 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
 
         if (page > 1 && getPreviousPageItem() != null) {
             items.add(getPreviousPageItem().event(event -> {
-                openNewPage( -1);
+                openNewPage(-1);
                 return true;
             }));
         }
 
         if (page < getPages() && getNextPageItem() != null) {
             items.add(getNextPageItem().event(event -> {
-                openNewPage( +1);
+                openNewPage(+1);
                 return true;
             }));
         }
