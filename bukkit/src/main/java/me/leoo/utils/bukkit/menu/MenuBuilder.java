@@ -44,7 +44,7 @@ public abstract class MenuBuilder {
         items.addAll(getItems());
         items.forEach(itemBuilder -> {
             int slot = itemBuilder.getSlot();
-            if (slot >= 0 && slot <= getSlots()) inventory.setItem(slot, itemBuilder.setDefaultFlags().get());
+            if (slot >= 0 && slot <= getSlots()) inventory.setItem(slot, itemBuilder.defaultFlags().get());
         });
     }
 

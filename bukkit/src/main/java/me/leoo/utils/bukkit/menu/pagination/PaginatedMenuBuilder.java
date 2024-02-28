@@ -42,7 +42,7 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
                 continue;
             }
 
-            items.add(builders.get(index).setSlot(slot));
+            items.add(builders.get(index).slot(slot));
 
             index++;
         }
@@ -52,14 +52,14 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
         }
 
         if (page > 1 && getPreviousPageItem() != null) {
-            items.add(getPreviousPageItem().setEvent(event -> {
+            items.add(getPreviousPageItem().event(event -> {
                 openNewPage( -1);
                 return true;
             }));
         }
 
         if (page < getPages() && getNextPageItem() != null) {
-            items.add(getNextPageItem().setEvent(event -> {
+            items.add(getNextPageItem().event(event -> {
                 openNewPage( +1);
                 return true;
             }));
