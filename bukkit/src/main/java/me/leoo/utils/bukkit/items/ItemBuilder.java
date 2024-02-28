@@ -31,7 +31,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Getter
-@Setter
 @AllArgsConstructor
 public class ItemBuilder implements Cloneable {
 
@@ -49,8 +48,10 @@ public class ItemBuilder implements Cloneable {
     private String command;
 
     private String toSaveString;
-    private ConfigManager config;
-    private ConfigManager language;
+
+    @Setter
+    private ConfigManager config,  language;
+    @Setter
     private String configPath;
 
     private int slot = -1;
