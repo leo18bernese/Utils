@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
-public class ConfigManager {
+public abstract class ConfigManager {
 
     private YamlConfiguration yml;
     private final File config;
@@ -38,12 +38,12 @@ public class ConfigManager {
         this.name = name;
     }
 
-    public ConfigManager(Plugin plugin, String name) {
-        this(name, plugin.getDataFolder().toString());
-    }
-
     public ConfigManager(String name) {
         this(Utils.getInitializedFrom(), name);
+    }
+
+    public ConfigManager(Plugin plugin, String name) {
+        this(name, plugin.getDataFolder().toString());
     }
 
     public void reload() {
@@ -163,10 +163,14 @@ public class ConfigManager {
     }
 
     //items
-    public void addItem(String path, XMaterial material, String name, String... lore) {
-        new ItemBuilder(material).setName(name).setLore(lore).saveIntoConfig(path, this);
+    public void saveItem(String path, int slot, XMaterial material, String name, String... lore) {
+        new ItemBuilder(material).data(material.getData()).name(name).lore(lore).slot(slot).save(path, this);
 
         save();
+    }
+
+    public void saveItem(String path,XMaterial material, String name, String... lore) {
+        saveItem(path, -1, material, name, lore);
     }
 
     //action method from config
