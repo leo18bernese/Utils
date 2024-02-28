@@ -16,7 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -25,10 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -43,7 +39,7 @@ public class ItemBuilder implements Cloneable {
     private ItemMeta itemMeta;
 
     private Map<String, String> replacements = new HashMap<>();
-    private Function<String, String> replaceFunction;
+    private List<Function<String, String>> replaceFunctions = new ArrayList<>();
 
     private Predicate<InventoryClickEvent> eventCallback;
     private Consumer<PlayerInteractEvent> interactCallback;
@@ -88,17 +84,17 @@ public class ItemBuilder implements Cloneable {
         itemMeta = meta;
     }
 
-    public ItemBuilder setName(String name) {
+    public ItemBuilder name(String name) {
         itemMeta.setDisplayName(name);
         return this;
     }
 
-    public ItemBuilder setLore(List<String> lore) {
+    public ItemBuilder lore(List<String> lore) {
         itemMeta.setLore(lore);
         return this;
     }
 
-    public ItemBuilder setLore(String... lore) {
+    public ItemBuilder lore(String... lore) {
         itemMeta.setLore(Arrays.asList(lore));
         return this;
     }
@@ -113,29 +109,29 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder setType(Material material) {
+    public ItemBuilder type(Material material) {
         itemStack.setType(material);
         return this;
     }
 
-    public ItemBuilder setData(int data) {
+    public ItemBuilder data(int data) {
         getItemStack().setDurability((short) data);
         return this;
     }
 
-    public ItemBuilder applySkin(String string) {
+    public ItemBuilder skin(String string) {
         SkullUtils.applySkin(itemMeta, string);
         return this;
     }
 
-    public ItemBuilder applySkinCondition(String string, boolean condition) {
+    public ItemBuilder skinCondition(String string, boolean condition) {
         if (condition) {
-            return applySkin(string);
+            return skin(string);
         }
         return this;
     }
 
-    public ItemBuilder setOwner(String string, boolean overrideItem) {
+    public ItemBuilder owner(String string, boolean overrideItem) {
         if (overrideItem) {
             itemStack.setType(XMaterial.PLAYER_HEAD.parseMaterial());
             itemStack.setDurability((short) 3);
@@ -152,17 +148,17 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder setOwner(String string) {
-        setOwner(string, false);
+    public ItemBuilder owner(String string) {
+        owner(string, false);
         return this;
     }
 
-    public ItemBuilder setAmount(int amount) {
+    public ItemBuilder amount(int amount) {
         itemStack.setAmount(amount);
         return this;
     }
 
-    public ItemBuilder addEnchant(String enchantment, int level) {
+    public ItemBuilder enchant(String enchantment, int level) {
         Enchantment xEnchantment = XEnchantment.matchXEnchantment(enchantment).orElse(XEnchantment.DURABILITY).getEnchant();
 
         itemMeta.addEnchant(xEnchantment, level, true);
@@ -170,35 +166,34 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder addEnchants(String... enchantments) {
+    public ItemBuilder enchants(String... enchantments) {
         for (String enchantment : enchantments) {
-            addEnchant(enchantment, 1);
+            enchant(enchantment, 1);
         }
 
         return this;
     }
 
-    public ItemBuilder addEnchants(List<String> enchantments) {
+    public ItemBuilder enchants(List<String> enchantments) {
         for (String enchantment : enchantments) {
-            addEnchant(enchantment, 1);
+            enchant(enchantment, 1);
         }
 
         return this;
     }
 
     public ItemBuilder setEnchanted() {
-        addEnchant(XEnchantment.DURABILITY.name(), 1);
+        enchant(XEnchantment.DURABILITY.name(), 1);
         return this;
     }
 
     public ItemBuilder setEnchanted(boolean enchanted) {
-        if (enchanted) {
-            return setEnchanted();
-        }
+        if (enchanted) return setEnchanted();
+
         return this;
     }
 
-    public ItemBuilder addEffects(PotionEffect effect) {
+    public ItemBuilder effect(PotionEffect effect) {
         ((PotionMeta) itemMeta).addCustomEffect(effect, true);
         return this;
     }
@@ -213,13 +208,13 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder addFlags(ItemFlag... itemFlags) {
+    public ItemBuilder flag(ItemFlag... itemFlags) {
         itemMeta.addItemFlags(itemFlags);
         return this;
     }
 
-    public ItemBuilder setDefaultFlags() {
-        addFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS);
+    public ItemBuilder defaultFlags() {
+        flag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS);
         return this;
     }
 
@@ -228,18 +223,18 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder setReplaceFunction(Function<String, String> replaceFunction) {
-        this.replaceFunction = replaceFunction;
+    public ItemBuilder addReplaceFunction(Function<String, String> replaceFunction) {
+        this.replaceFunctions.add(replaceFunction);
         return this;
     }
 
     public ItemBuilder replaceName(Function<String, String> replaceFunction) {
-        setName(replaceFunction.apply(itemMeta.getDisplayName()));
+        name(replaceFunction.apply(itemMeta.getDisplayName()));
         return this;
     }
 
     public ItemBuilder replaceLore(Function<List<String>, List<String>> replaceFunction) {
-        setLore(replaceFunction.apply(itemMeta.getLore()));
+        lore(replaceFunction.apply(itemMeta.getLore()));
         return this;
     }
 
@@ -265,29 +260,29 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder setSlot(int slot) {
+    public ItemBuilder slot(int slot) {
         this.slot = slot;
         return this;
     }
 
-    public ItemBuilder setPermission(String permission) {
+    public ItemBuilder permission(String permission) {
         this.permission = permission;
         return this;
     }
 
-    public ItemBuilder setCommand(String command) {
+    public ItemBuilder command(String command) {
         this.command = command;
         return this;
     }
 
 
-    public ItemBuilder setEvent(Predicate<InventoryClickEvent> eventCallBack) {
+    public ItemBuilder event(Predicate<InventoryClickEvent> eventCallBack) {
         this.eventCallback = eventCallBack;
         return this;
     }
 
-    public ItemBuilder setEvent(Consumer<InventoryClickEvent> eventConsumer) {
-        setEvent(event -> {
+    public ItemBuilder event(Consumer<InventoryClickEvent> eventConsumer) {
+        event(event -> {
             eventConsumer.accept(event);
             return true;
         });
@@ -296,17 +291,17 @@ public class ItemBuilder implements Cloneable {
     }
 
 
-    public ItemBuilder setInteract(Consumer<PlayerInteractEvent> interactCallback) {
+    public ItemBuilder interact(Consumer<PlayerInteractEvent> interactCallback) {
         this.interactCallback = interactCallback;
         return this;
     }
 
-    public ItemBuilder setInteractRequire(boolean interactRequire) {
+    public ItemBuilder interactRequire(boolean interactRequire) {
         this.interactRequire = interactRequire;
         return this;
     }
 
-    public void saveIntoConfig(String path, ConfigManager config, ConfigManager language) {
+    public void save(String path, ConfigManager config, ConfigManager language) {
         config.add(path + ".material", itemStack.getType().name() + (toSaveString == null ? (itemStack.getDurability() == 0 ? "" : ":" + itemStack.getDurability()) : ":" + toSaveString));
         config.add(path + ".amount", itemStack.getAmount());
         config.add(path + ".enchanted", itemMeta.hasEnchant(XEnchantment.DURABILITY.getEnchant()));
@@ -329,8 +324,8 @@ public class ItemBuilder implements Cloneable {
         }
     }
 
-    public void saveIntoConfig(String path, ConfigManager config) {
-        saveIntoConfig(path, config, config);
+    public void save(String path, ConfigManager config) {
+        save(path, config, config);
     }
 
     public static ItemBuilder parse(String path, ConfigManager config, ConfigManager language) {
@@ -342,10 +337,10 @@ public class ItemBuilder implements Cloneable {
 
         if (name.equals("texture") || (material.length == 2 && XMaterial.matchXMaterial(name + ":" + 3).orElse(XMaterial.STONE) == XMaterial.PLAYER_HEAD)) {
             builder = new ItemBuilder(XMaterial.PLAYER_HEAD, 3);
-            builder.setOwner(material[1]);
+            builder.owner(material[1]);
         } else if (name.equalsIgnoreCase("potion")) {
             builder = new ItemBuilder(XMaterial.POTION);
-            builder.setData(getData(material));
+            builder.data(getData(material));
         } else {
             builder = new ItemBuilder(name, getData(material));
         }
@@ -361,10 +356,10 @@ public class ItemBuilder implements Cloneable {
             builder.setLanguage(language);
 
             if (language.getYml().get(path + ".name") != null) {
-                builder.setName(language.getString(path + ".name"));
+                builder.name(language.getString(path + ".name"));
             }
             if (language.getYml().get(path + ".lore") != null) {
-                builder.setLore(language.getList(path + ".lore"));
+                builder.lore(language.getList(path + ".lore"));
             }
         }
 
@@ -373,13 +368,13 @@ public class ItemBuilder implements Cloneable {
         }
 
         if (config.getYml().get(path + ".amount") != null) {
-            builder.setAmount(config.getInt(path + ".amount"));
+            builder.amount(config.getInt(path + ".amount"));
         }
         if (config.getYml().get(path + ".slot") != null) {
-            builder.setSlot(config.getInt(path + ".slot"));
+            builder.slot(config.getInt(path + ".slot"));
         }
         if (config.getYml().get(path + ".permission") != null) {
-            builder.setPermission(config.getString(path + ".permission"));
+            builder.permission(config.getString(path + ".permission"));
         }
 
         return builder;
@@ -395,22 +390,22 @@ public class ItemBuilder implements Cloneable {
 
     public ItemStack get() {
         for (Map.Entry<String, String> entry : replacements.entrySet()) {
-            setName(itemMeta.getDisplayName().replace(entry.getKey(), entry.getValue()));
+            name(itemMeta.getDisplayName().replace(entry.getKey(), entry.getValue()));
 
             if (itemMeta.getLore() != null) {
                 List<String> lore = itemMeta.getLore();
                 lore.replaceAll(line -> line.replace(entry.getKey(), entry.getValue()));
-                setLore(lore);
+                lore(lore);
             }
         }
 
-        if (replaceFunction != null) {
-            setName(replaceFunction.apply(itemMeta.getDisplayName()));
+        replaceFunctions.forEach(replaceFunction -> {
+            name(replaceFunction.apply(itemMeta.getDisplayName()));
 
             if (itemMeta.getLore() != null) {
-                setLore(itemMeta.getLore().stream().map(string -> replaceFunction.apply(string)).collect(Collectors.toList()));
+                lore(itemMeta.getLore().stream().map(replaceFunction).collect(Collectors.toList()));
             }
-        }
+        });
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
