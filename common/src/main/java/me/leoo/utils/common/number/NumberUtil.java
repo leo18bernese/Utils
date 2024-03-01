@@ -3,6 +3,7 @@ package me.leoo.utils.common.number;
 import lombok.experimental.UtilityClass;
 
 import java.util.TreeMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 @UtilityClass
 public class NumberUtil {
@@ -99,5 +100,15 @@ public class NumberUtil {
         if (max == 0) return 0;
 
         return (int) ((value * (double) max) * 100);
+    }
+
+    public int random(int max) {
+        return (int) (Math.random() * max);
+    }
+
+    public boolean testChance(int chance) {
+        if (chance <= 0) return false;
+        if (chance >= 100) return true;
+        return ThreadLocalRandom.current().nextInt(100) < chance;
     }
 }
