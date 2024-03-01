@@ -75,7 +75,7 @@ public class StringUtil {
      * @param key   placeholder to replace
      * @param value string that replace the placeholder
      */
-    public List<String> replaceWithList(List<String> list, String key, List<String> value) {
+    public void replaceWithList(List<String> list, String key, List<String> value) {
         for (int i = 0; i < list.size(); i++) {
             String line = list.get(i);
 
@@ -92,7 +92,5 @@ public class StringUtil {
                 list.set(i, value.size() == 1 ? line.replace(key, value.get(0)) : value.get(0));
             }
         }
-
-        return list;
     }
 }
