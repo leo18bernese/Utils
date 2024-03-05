@@ -38,9 +38,7 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
 
         int index = (getPage() - 1) * getPaginatedSlots().size();
         for (Integer slot : getPaginatedSlots()) {
-            if (index >= builders.size()) {
-                continue;
-            }
+            if (index >= builders.size()) continue;
 
             items.add(builders.get(index).slot(slot));
 
