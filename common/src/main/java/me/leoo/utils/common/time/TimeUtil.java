@@ -1,48 +1,58 @@
 package me.leoo.utils.common.time;
 
 import lombok.experimental.UtilityClass;
+import me.leoo.utils.common.number.NumberUtil;
 
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.TreeMap;
 
 @UtilityClass
 public class TimeUtil {
 
-    public long millisFromTimeString(String time) {
-        Map<String, Integer> values = new HashMap<>();
+    public static final TreeMap<String, Integer> TIME_VALUES = new TreeMap<>();
 
+    static {
         for (String s : new String[]{"s", "second", "seconds"}) {
-            values.put(s, 1);
+            TIME_VALUES.put(s, 1);
         }
 
         for (String s : new String[]{"m", "minute", "minutes"}) {
-            values.put(s, 60);
+            TIME_VALUES.put(s, 60);
         }
 
         for (String s : new String[]{"h", "hour", "hours"}) {
-            values.put(s, 60 * 60);
+            TIME_VALUES.put(s, 60 * 60);
         }
 
         for (String s : new String[]{"d", "day", "days"}) {
-            values.put(s, 24 * 60 * 60);
+            TIME_VALUES.put(s, 24 * 60 * 60);
         }
 
         for (String s : new String[]{"w", "week", "weeks"}) {
-            values.put(s, 7 * 24 * 60 * 60);
+            TIME_VALUES.put(s, 7 * 24 * 60 * 60);
         }
 
         for (String s : new String[]{"month", "months"}) {
-            values.put(s, 30 * 7 * 24 * 60 * 60);
+            TIME_VALUES.put(s, 30 * 7 * 24 * 60 * 60);
         }
 
-        for (String unit : values.keySet()) {
+        for (String s : new String[]{"y", "year", "years"}) {
+            TIME_VALUES.put(s, 365 * 24 * 60 * 60);
+        }
+    }
+
+    public long millisFromTimeString(String time) {
+        if (time == null) return -1;
+
+        for (String unit : TIME_VALUES.keySet()) {
             if (!time.endsWith(unit)) continue;
 
-            return Integer.parseInt(time.replace(unit, "").trim()) * values.get(unit) * 1000L;
+            String replaced = time.replace(unit, "").trim();
+
+            return NumberUtil.toInt(replaced) * TIME_VALUES.get(unit) * 1000L;
         }
 
-        return 0;
+        return -1;
     }
 
     public String timeStringFromMillis(long millis) {
