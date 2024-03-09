@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
-public abstract class ConfigManager {
+public class ConfigManager {
 
     private YamlConfiguration yml;
     private final File config;

@@ -42,7 +42,7 @@ public class TimeUtil {
     }
 
     public long millisFromTimeString(String time) {
-        if (time == null) return -1;
+        if (time == null || time.isEmpty()) return -1;
 
         for (String unit : TIME_VALUES.keySet()) {
             if (!time.endsWith(unit)) continue;
