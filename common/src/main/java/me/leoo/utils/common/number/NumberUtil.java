@@ -99,7 +99,7 @@ public class NumberUtil {
     public int getPercentage(int value, int max) {
         if (max == 0) return 0;
 
-        return (int) ((value * (double) max) * 100);
+        return (int) ((value / (double) max) * 100);
     }
 
     public int random(int max) {
