@@ -7,6 +7,7 @@ import me.leoo.utils.bukkit.chat.CC;
 import me.leoo.utils.bukkit.items.ItemBuilder;
 import me.leoo.utils.bukkit.location.LocationUtil;
 import me.leoo.utils.common.file.FileUtil;
+import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -158,6 +159,13 @@ public class ConfigManager {
         add(path + ".message", strings);
         add(path + ".title", title);
         add(path + ".sub-title", subTitle);
+
+        save();
+    }
+
+    //clickable messages
+    public void saveClickableMessage(String path, String text, String hover, String command, ClickEvent.Action action) {
+        add(path, text + ";" + hover + ";" + command + ";" + action.name());
 
         save();
     }

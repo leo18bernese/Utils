@@ -2,6 +2,7 @@ package me.leoo.utils.bukkit.chat;
 
 import lombok.experimental.UtilityClass;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.leoo.utils.bukkit.config.ConfigManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -79,13 +80,16 @@ public class CC {
     }
 
     public void sendClickableMessage(CommandSender player, String text, String hover, String command, ClickEvent.Action action) {
-        TextComponent component = getClickableMessage(text, hover, command, action);
-
         if (player instanceof Player) {
-            ((Player) player).spigot().sendMessage(component);
+            ((Player) player).spigot().sendMessage(getClickableMessage(text, hover, command, action));
         } else {
-            player.sendMessage(component.getText());
+            player.sendMessage(text);
         }
+    }
+
+    public void sendClickableMessage(ConfigManager config, CommandSender player, String path) {
+        String[] split = config.getString(path).split(";");
+        sendClickableMessage(player, split[0], split[1], split[2], ClickEvent.Action.valueOf(split[3]));
     }
 
     // Plugin info
