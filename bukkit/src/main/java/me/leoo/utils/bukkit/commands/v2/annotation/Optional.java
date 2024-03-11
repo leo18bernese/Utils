@@ -11,6 +11,10 @@ public @interface Optional {
 
     /**
      * Can be the default value only for strings, otherwise it need a specific value
+     * Example: @Optional("10")
+     * Example: @Optional("true")
+     *
+     * @return the default value
      */
     String value() default "";
 
