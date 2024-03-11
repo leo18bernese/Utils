@@ -48,6 +48,7 @@ public class TimeUtil {
             if (!time.endsWith(unit)) continue;
 
             String replaced = time.replace(unit, "").trim();
+            if (replaced.isEmpty()) continue;
 
             return NumberUtil.toInt(replaced) * TIME_VALUES.get(unit) * 1000L;
         }
