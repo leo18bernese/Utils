@@ -29,7 +29,7 @@ public class ConfigManager {
     private final boolean firstTime;
 
     public ConfigManager(String name, String dir) {
-        firstTime = !new File(dir, name).exists();
+        firstTime = !(new File(dir, name).exists());
         config = FileUtil.generateFile(name + ".yml", dir);
 
         if (config == null) return;
@@ -75,7 +75,7 @@ public class ConfigManager {
     }
 
     public void addList(String path, String... values) {
-        add(path, Arrays.asList(values));
+        add(path, values);
     }
 
     public boolean getBoolean(String path) {

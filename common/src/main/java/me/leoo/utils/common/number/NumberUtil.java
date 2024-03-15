@@ -26,6 +26,15 @@ public class NumberUtil {
         ROMAN_NUMBERS.put(1, "I");
     }
 
+    public boolean isInt(Object object) {
+        try {
+            Integer.parseInt(object.toString());
+            return true;
+        } catch (NumberFormatException | NullPointerException ignored) {
+            return false;
+        }
+    }
+
     public int toInt(Object object) {
         try {
             return Integer.parseInt(object.toString());

@@ -50,17 +50,22 @@ public class TimeUtil {
             String replaced = time.replace(unit, "").trim();
             if (replaced.isEmpty()) continue;
 
+            if(!NumberUtil.isInt(replaced)) continue;
+
             return NumberUtil.toInt(replaced) * TIME_VALUES.get(unit) * 1000L;
         }
 
         return -1;
     }
 
-    public String timeStringFromMillis(long millis) {
+    public String timeStringFromMillis(long millis,
+                                       String yearName, String yearsName, String dayName, String daysName,
+                                       String hourName, String hoursName, String minuteName, String minutesName,
+                                       String secondName, String secondsName) {
         long seconds = millis / 1000L;
 
         if (seconds <= 0) {
-            return "0 seconds";
+            return "0 " + seconds;
         }
 
         long minutes = seconds / 60;
@@ -77,26 +82,35 @@ public class TimeUtil {
 
         StringBuilder builder = new StringBuilder();
         if (years > 0) {
-            builder.append(years).append(" year").append(years > 1 ? "s" : "").append(" ");
+            builder.append(years).append(" ").append(years > 1 ? yearsName : yearName).append(" ");
         }
 
         if (days > 0) {
-            builder.append(days).append(" day").append(days > 1 ? "s" : "").append(" ");
+            builder.append(days).append(" ").append(days > 1 ? daysName : dayName).append(" ");
         }
 
         if (hours > 0) {
-            builder.append(hours).append(" hour").append(hours > 1 ? "s" : "").append(" ");
+            builder.append(hours).append(" ").append(hours > 1 ? hoursName : hourName).append(" ");
         }
 
         if (minutes > 0) {
-            builder.append(minutes).append(" minute").append(minutes > 1 ? "s" : "").append(" ");
+            builder.append(minutes).append(" ").append(minutes > 1 ? minutesName : minuteName).append(" ");
         }
 
         if (seconds > 0) {
-            builder.append(seconds).append(" second").append(seconds > 1 ? "s" : "").append(" ");
+            builder.append(seconds).append(" ").append(seconds > 1 ? secondsName : secondName);
         }
 
+
         return builder.toString().trim();
+    }
+
+    public String timeStringFromMillis(long millis) {
+        return timeStringFromMillis(millis,
+                "year", "years", "day", "days",
+                "hour", "hours", "minute", "minutes",
+                "second", "seconds"
+        );
     }
 
     public boolean compareDate(long date1, int compareType) {
