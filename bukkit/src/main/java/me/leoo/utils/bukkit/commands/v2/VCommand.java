@@ -30,11 +30,11 @@ public abstract class VCommand extends BukkitCommand {
 
         if (mainCommand == null) return false;
 
-        if (!mainCommand.checkExecutor(sender)) {
+        if (!mainCommand.testExecutor(sender)) {
             return false;
         }
 
-        if (!mainCommand.checkPermission(sender)) {
+        if (!mainCommand.testPermission(sender)) {
             sender.sendMessage(CC.color(VCommandManager.get().getError().getNoPermissionMessage()));
             return false;
         }
@@ -44,11 +44,11 @@ public abstract class VCommand extends BukkitCommand {
             VCommandBuilder subCommand = getSubCommand(args[0]);
 
             if (subCommand != null) {
-                if (!subCommand.checkExecutor(sender)) {
+                if (!subCommand.testExecutor(sender)) {
                     return false;
                 }
 
-                if (!subCommand.checkPermission(sender)) {
+                if (!subCommand.testPermission(sender)) {
                     sender.sendMessage(CC.color(VCommandManager.get().getError().getNoPermissionMessage()));
                     return false;
                 }

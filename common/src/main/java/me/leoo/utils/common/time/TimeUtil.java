@@ -50,7 +50,7 @@ public class TimeUtil {
             String replaced = time.replace(unit, "").trim();
             if (replaced.isEmpty()) continue;
 
-            if(!NumberUtil.isInt(replaced)) continue;
+            if (!NumberUtil.isInt(replaced)) continue;
 
             return NumberUtil.toInt(replaced) * TIME_VALUES.get(unit) * 1000L;
         }

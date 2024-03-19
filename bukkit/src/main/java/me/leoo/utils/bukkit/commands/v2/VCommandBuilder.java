@@ -206,7 +206,7 @@ public class VCommandBuilder {
     }
 
 
-    public boolean checkExecutor(CommandSender sender) {
+    public boolean testExecutor(CommandSender sender) {
         switch (executorType) {
             case PLAYER:
             case OPERATORS:
@@ -234,7 +234,7 @@ public class VCommandBuilder {
         return true;
     }
 
-    public boolean checkPermission(CommandSender sender) {
+    public boolean testPermission(CommandSender sender) {
         if (permission == null || permission.isEmpty()) return true;
 
         return sender.hasPermission(permission);

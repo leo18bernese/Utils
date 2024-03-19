@@ -346,7 +346,7 @@ public class ItemBuilder implements Cloneable {
             builder = new ItemBuilder(name, getData(material));
         }
 
-        if (builder.getItemStack().getType() == XMaterial.FIREWORK_STAR.parseMaterial()) {
+        if (XMaterial.FIREWORK_STAR.isSimilar(builder.getItemStack())) {
             if (material.length == 2) {
                 int[] dataSplit = Arrays.stream(material[1].split("-")).mapToInt(NumberUtil::toInt).toArray();
 
@@ -394,7 +394,7 @@ public class ItemBuilder implements Cloneable {
     }
 
     private static int getData(String[] material) {
-        if(material.length == 2) {
+        if (material.length == 2) {
             return NumberUtil.isInt(material[1]) ? NumberUtil.toInt(material[1]) : 0;
         }
 
