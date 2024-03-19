@@ -347,7 +347,15 @@ public class ItemBuilder implements Cloneable {
         }
 
         if (builder.getItemStack().getType() == XMaterial.FIREWORK_STAR.parseMaterial()) {
-            if (material.length == 2) builder.colorFirework(Color.fromRGB(getData(material)));
+            if (material.length == 2) {
+                int[] dataSplit = Arrays.stream(material[1].split("-")).mapToInt(NumberUtil::toInt).toArray();
+
+                if (dataSplit.length == 3) {
+                    builder.colorFirework(Color.fromRGB(dataSplit[0], dataSplit[1], dataSplit[2]));
+                } else {
+                    builder.colorFirework(Color.fromRGB(dataSplit[0]));
+                }
+            }
         }
 
         builder.setConfigPath(path);
@@ -386,7 +394,11 @@ public class ItemBuilder implements Cloneable {
     }
 
     private static int getData(String[] material) {
-        return material.length == 2 ? NumberUtil.toInt(material[1]) : 0;
+        if(material.length == 2) {
+            return NumberUtil.isInt(material[1]) ? NumberUtil.toInt(material[1]) : 0;
+        }
+
+        return 0;
     }
 
     public ItemStack get() {
