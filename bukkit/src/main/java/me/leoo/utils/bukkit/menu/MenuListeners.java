@@ -37,7 +37,10 @@ public class MenuListeners implements Listener {
         int slot = event.getSlot();
 
         ItemBuilder item = menu.getItem(rawSlot).orElse(null);
-        if (item == null) return;
+        if (item == null) {
+            event.setCancelled(true);
+            return;
+        }
 
         if (item.getPermission() != null && !player.hasPermission(item.getPermission())) {
             event.setCancelled(true);
