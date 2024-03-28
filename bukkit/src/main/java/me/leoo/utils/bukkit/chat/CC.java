@@ -105,4 +105,8 @@ public class CC {
     public Color getColor(java.awt.Color javaColor) {
         return Color.fromRGB(javaColor.getRed(), javaColor.getGreen(), javaColor.getBlue());
     }
+
+    public java.awt.Color fromBukkitColor(Color color) {
+        return new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue());
+    }
 }
