@@ -181,6 +181,12 @@ public class ConfigManager {
         saveItem(path, -1, material, name, lore);
     }
 
+    public void saveItem(String path, ConfigManager language, int slot, XMaterial material, String name, String... lore) {
+        new ItemBuilder(material).data(material.getData()).name(name).lore(lore).slot(slot).save(path, this, language);
+
+        save();
+    }
+
     //action method from config
     public boolean executeAction(String path, Player player) {
         return PlayerAction.fromConfig(this, path).run(player);
