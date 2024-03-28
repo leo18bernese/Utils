@@ -15,7 +15,7 @@ public class ArmorStandBuilder {
         this.armorStand = location.getWorld().spawn(location, ArmorStand.class);
     }
 
-    public ArmorStandBuilder setName(String name) {
+    public ArmorStandBuilder name(String name) {
         armorStand.setCustomName(name);
         armorStand.setCustomNameVisible(true);
 
