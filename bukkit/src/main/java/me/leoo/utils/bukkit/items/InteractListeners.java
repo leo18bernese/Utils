@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.stream.Collectors;
 
-@Beta
 public class InteractListeners implements Listener {
 
     @EventHandler

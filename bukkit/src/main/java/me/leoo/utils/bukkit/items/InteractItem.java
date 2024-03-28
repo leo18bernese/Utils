@@ -18,8 +18,6 @@ public class InteractItem {
     private static List<InteractItem> items = new ArrayList<>();
 
     public InteractItem(ItemBuilder item, Player player) {
-        InteractListeners.register();
-
         this.item = item;
         this.player = player;
 
@@ -42,7 +40,7 @@ public class InteractItem {
         return InteractItem.getItems().stream()
                 .filter(item -> item.getItem().get().getType() == itemStack.getType())
                 .filter(item -> item.getItem().get().getItemMeta().getDisplayName().equals(itemStack.getItemMeta().getDisplayName()))
-                .filter(item -> item.getItem().isInteractRequire())
+                .filter(item -> item.getItem().isInteractRequirement())
                 .findAny().orElse(null);
     }
 }
