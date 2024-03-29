@@ -42,6 +42,7 @@ public abstract class MenuBuilder {
     private void updateContent(Inventory inventory) {
         items.clear();
         items.addAll(getItems());
+        items.removeIf(Objects::isNull);
         items.forEach(itemBuilder -> {
             int slot = itemBuilder.getSlot();
             if (slot >= 0 && slot <= getSlots()) inventory.setItem(slot, itemBuilder.defaultFlags().get());
