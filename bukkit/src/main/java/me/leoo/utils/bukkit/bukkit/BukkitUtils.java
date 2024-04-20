@@ -2,8 +2,13 @@ package me.leoo.utils.bukkit.bukkit;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.Location;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,5 +29,16 @@ public class BukkitUtils {
         items.addAll(Arrays.asList(player.getInventory().getArmorContents()));
 
         return items;
+    }
+
+    public Firework sendFireworks(Location location, int power, Color... colors){
+        Firework firework = location.getWorld().spawn(location, Firework.class);
+
+        FireworkMeta meta = firework.getFireworkMeta();
+        meta.addEffect(FireworkEffect.builder().withColor(colors).build());
+        meta.setPower(power);
+        firework.setFireworkMeta(meta);
+
+        return firework;
     }
 }
