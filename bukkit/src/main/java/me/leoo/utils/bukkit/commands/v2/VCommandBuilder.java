@@ -9,6 +9,7 @@ import me.leoo.utils.bukkit.commands.v2.parser.ArgumentParser;
 import me.leoo.utils.bukkit.commands.v2.tabcomplete.VTabComplete;
 import me.leoo.utils.bukkit.config.ConfigManager;
 import me.leoo.utils.common.reflection.ReflectionUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -189,11 +190,18 @@ public class VCommandBuilder {
 
     //execute command
     public void execute(String main, CommandSender sender, Object[] args) {
-        ReflectionUtil.invokeMethod(method, VCommandCache.getVInstances().get(main), args);
+        ReflectionUtil.invokeMethod(method, VCommandCache.getInstances().get(main), args);
     }
 
     public void execute(String main, Player player, Object[] args) {
-        ReflectionUtil.invokeMethod(method, VCommandCache.getVInstances().get(main), args);
+        Object instance = VCommandCache.getInstance(main);
+
+        if (instance == null) {
+            Bukkit.getLogger().warning("No instance found for command " + main + ", please report this to the developer.");
+            return;
+        }
+
+        ReflectionUtil.invokeMethod(method, VCommandCache.getInstance(main), args);
     }
 
     public void execute(CommandSender sender, Object[] args) {
