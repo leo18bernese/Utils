@@ -2,6 +2,7 @@ package me.leoo.utils.bukkit.chat;
 
 import lombok.experimental.UtilityClass;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.leoo.utils.bukkit.bukkit.BukkitUtils;
 import me.leoo.utils.bukkit.config.ConfigManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -16,6 +17,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -44,22 +47,33 @@ public class CC {
     public final String DARK_RED = "§4";
     public final String PINK = "§d";
 
-    public String color(String string) {
-        if (string == null) return "";
+    private final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
 
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            string = PlaceholderAPI.setPlaceholders(null, string);
+    private String translate(String string){
+        if(BukkitUtils.supports(16)){
+            Matcher matcher = HEX_PATTERN.matcher(string);
+            while(matcher.find()){
+                String color = matcher.group();
+                string = string.replace(color, net.md_5.bungee.api.ChatColor.of(color.substring(1)).toString());
+                matcher = HEX_PATTERN.matcher(string);
+            }
         }
 
         return ChatColor.translateAlternateColorCodes('&', string);
     }
 
+    public String color(String string) {
+        return color(string, null);
+    }
+
     public String color(String string, Player player) {
+        if(string == null) return "";
+
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             string = PlaceholderAPI.setPlaceholders(player, string);
         }
 
-        return ChatColor.translateAlternateColorCodes('&', string);
+        return translate(string);
     }
 
     public List<String> color(List<String> strings) {
