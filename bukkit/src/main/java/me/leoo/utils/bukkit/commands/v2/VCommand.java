@@ -10,18 +10,19 @@ import me.leoo.utils.bukkit.commands.v2.tabcomplete.VTabComplete;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
 public abstract class VCommand extends BukkitCommand {
 
-    public VCommand(String name) {
-        super(name);
+    public VCommand() {
+        super("");
     }
 
     @Override
@@ -81,7 +82,20 @@ public abstract class VCommand extends BukkitCommand {
         VCommandBuilder mainCommand = getMainCommand();
 
         if (args.length == 1) {
-            return mainCommand.getSubCommands().stream().map(VCommandBuilder::getName).collect(Collectors.toList());
+            List<String> completions = new ArrayList<>();
+
+            for (VCommandBuilder subCommand : mainCommand.getSubCommands()) {
+                if (!subCommand.testPermission(sender)) continue;
+
+                completions.add(subCommand.getName());
+                completions.addAll(Arrays.asList(subCommand.getAliases()));
+            }
+
+            if (getTabComplete(args[0]) != null) {
+                completions.addAll(getTabComplete(args[0]).execute(sender, alias, args));
+            }
+
+            return StringUtil.copyPartialMatches(args[0], completions, new ArrayList<>());
         }
 
         VTabComplete tabComplete = getTabComplete(args[0]);
