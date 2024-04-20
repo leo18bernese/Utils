@@ -22,12 +22,13 @@ public class CommandManager {
 
     public void register(VCommand... commands) {
         for (VCommand command : commands) {
-            VCommandCache.vInstances.put(command.getName(), command);
-
             VCommandBuilder builder = new VCommandBuilder(command.getClass());
             VCommandCache.getCommands().put(command.getClass().getName(), builder);
 
+            command.setName(builder.getName());
             command.setAliases(Arrays.asList(builder.getAliases()));
+
+            VCommandCache.getInstances().put(builder.getName(), command);
 
             registerCommand(command);
         }
