@@ -31,7 +31,7 @@ public class BukkitUtils {
         return items;
     }
 
-    public Firework sendFireworks(Location location, int power, Color... colors){
+    public Firework sendFireworks(Location location, int power, Color... colors) {
         Firework firework = location.getWorld().spawn(location, Firework.class);
 
         FireworkMeta meta = firework.getFireworkMeta();

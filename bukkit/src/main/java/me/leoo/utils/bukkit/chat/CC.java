@@ -49,10 +49,10 @@ public class CC {
 
     private final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
 
-    private String translate(String string){
-        if(BukkitUtils.supports(16)){
+    private String translate(String string) {
+        if (BukkitUtils.supports(16)) {
             Matcher matcher = HEX_PATTERN.matcher(string);
-            while(matcher.find()){
+            while (matcher.find()) {
                 String color = matcher.group();
                 string = string.replace(color, net.md_5.bungee.api.ChatColor.of(color.substring(1)).toString());
                 matcher = HEX_PATTERN.matcher(string);
@@ -67,7 +67,7 @@ public class CC {
     }
 
     public String color(String string, Player player) {
-        if(string == null) return "";
+        if (string == null) return "";
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             string = PlaceholderAPI.setPlaceholders(player, string);

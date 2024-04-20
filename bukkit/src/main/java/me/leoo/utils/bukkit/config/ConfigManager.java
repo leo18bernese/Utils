@@ -115,6 +115,7 @@ public class ConfigManager {
 
         return section == null ? new HashSet<>() : section.getKeys(false);
     }
+
     public Set<Map.Entry<String, String>> getSectionContent(String path) {
         Map<String, String> map = new HashMap<>();
 

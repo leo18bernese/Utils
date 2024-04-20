@@ -1,7 +1,6 @@
 package me.leoo.utils.bukkit.items;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.google.common.annotations.Beta;
 import me.leoo.utils.bukkit.events.Events;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
