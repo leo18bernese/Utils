@@ -1,6 +1,7 @@
 package me.leoo.utils.bukkit.items;
 
-import java.util.ArrayList;
+import me.leoo.utils.common.string.StringUtil;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +18,7 @@ public class PlaceholderMap implements Cloneable {
     }
 
     public PlaceholderMap add(String key, String value) {
-        placeholders.put(key, () -> value);
-        return this;
+        return add(key, () -> value);
     }
 
     public PlaceholderMap addMultiple(String key, Supplier<List<String>> value) {
@@ -27,37 +27,25 @@ public class PlaceholderMap implements Cloneable {
     }
 
     public PlaceholderMap addMultiple(String key, List<String> value) {
-        multiLinePlaceholders.put(key, () -> value);
-        return this;
+        return addMultiple(key, () -> value);
     }
 
     public String parse(String text) {
         for (Map.Entry<String, Supplier<String>> entry : placeholders.entrySet()) {
             text = text.replace(entry.getKey(), entry.getValue().get());
         }
+
         return text;
     }
 
     public List<String> parse(List<String> text) {
-        List<String> parsed = new ArrayList<>();
+        placeholders.forEach((key, value) -> text.replaceAll(line -> line.replace(key, value.get())));
 
-        for (String line : text) {
-            boolean found = false;
-
-            for (Map.Entry<String, Supplier<List<String>>> entry : multiLinePlaceholders.entrySet()) {
-                if (line.contains(entry.getKey())) {
-                    parsed.addAll(entry.getValue().get());
-
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                parsed.add(parse(line));
-            }
+        for (Map.Entry<String, Supplier<List<String>>> entry : multiLinePlaceholders.entrySet()) {
+            StringUtil.replaceWithList(text, entry.getKey(), entry.getValue().get());
         }
-        return parsed;
+
+        return text;
     }
 
     @Override

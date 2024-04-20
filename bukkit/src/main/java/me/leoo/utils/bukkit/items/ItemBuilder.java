@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import me.leoo.utils.bukkit.Utils;
+import me.leoo.utils.bukkit.chat.CC;
 import me.leoo.utils.bukkit.config.ConfigManager;
 import me.leoo.utils.bukkit.menu.MenuBuilder;
 import me.leoo.utils.common.number.NumberUtil;
@@ -39,6 +40,8 @@ public class ItemBuilder implements Cloneable {
 
     private final Map<String, String> replacements = new HashMap<>();
     private final List<Function<String, String>> replaceFunctions = new ArrayList<>();
+
+    private List<PlaceholderMap> placeholders = new ArrayList<>();
 
     private Predicate<InventoryClickEvent> eventCallback;
     private Consumer<PlayerInteractEvent> interactCallback;
@@ -229,6 +232,12 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder addPlaceholdersMap(PlaceholderMap placeholders) {
+        this.placeholders.add(placeholders);
+        return this;
+    }
+
+
     public ItemBuilder replaceName(Function<String, String> replaceFunction) {
         name(replaceFunction.apply(itemMeta.getDisplayName()));
         return this;
@@ -320,8 +329,8 @@ public class ItemBuilder implements Cloneable {
         }
 
         if (language != null) {
-            language.add(path + ".name", itemMeta.getDisplayName());
-            language.add(path + ".lore", itemMeta.getLore());
+            if (itemMeta.hasDisplayName()) language.add(path + ".name", itemMeta.getDisplayName());
+            if (itemMeta.hasLore()) language.add(path + ".lore", itemMeta.getLore());
         }
     }
 
@@ -405,7 +414,7 @@ public class ItemBuilder implements Cloneable {
         for (Map.Entry<String, String> entry : replacements.entrySet()) {
             name(itemMeta.getDisplayName().replace(entry.getKey(), entry.getValue()));
 
-            if (itemMeta.getLore() != null) {
+            if (itemMeta.hasLore()) {
                 List<String> lore = itemMeta.getLore();
                 lore.replaceAll(line -> line.replace(entry.getKey(), entry.getValue()));
                 lore(lore);
@@ -415,10 +424,20 @@ public class ItemBuilder implements Cloneable {
         replaceFunctions.forEach(replaceFunction -> {
             name(replaceFunction.apply(itemMeta.getDisplayName()));
 
-            if (itemMeta.getLore() != null) {
+            if (itemMeta.hasLore()) {
                 lore(itemMeta.getLore().stream().map(replaceFunction).collect(Collectors.toList()));
             }
         });
+
+        placeholders.forEach(placeholderMap -> {
+            name(placeholderMap.parse(itemMeta.getDisplayName()));
+
+            if (itemMeta.hasLore()) lore(placeholderMap.parse(itemMeta.getLore()));
+        });
+
+
+        if (itemMeta.hasDisplayName()) name(CC.color(itemMeta.getDisplayName()));
+        if (itemMeta.hasLore()) lore(CC.color(itemMeta.getLore()));
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
