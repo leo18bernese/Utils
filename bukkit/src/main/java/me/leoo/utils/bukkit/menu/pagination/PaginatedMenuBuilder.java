@@ -72,7 +72,11 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
     }
 
     public void openNewPage(int amount) {
-        this.page += amount;
+        openPage(page + amount);
+    }
+
+    public void openPage(int page) {
+        this.page = page;
         getItems().clear();
         open();
     }

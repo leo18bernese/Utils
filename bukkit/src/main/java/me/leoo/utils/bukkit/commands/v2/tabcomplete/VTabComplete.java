@@ -22,7 +22,8 @@ public class VTabComplete {
     private Method method;
 
     public List<String> execute(CommandSender sender, String alias, String[] args) {
-        Object instance = VCommandCache.getVInstances().get(mainCommand);
+        Object instance = VCommandCache.getInstance(mainCommand);
+
         if (instance == null) {
             Bukkit.getLogger().warning("No instance found for tab complete for main command " + mainCommand);
             return null;

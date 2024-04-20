@@ -80,7 +80,7 @@ public class StringUtil {
             String line = list.get(i);
 
             if (line.contains(key)) {
-                if (value.isEmpty() || String.join("", value).isEmpty()) {
+                if (value == null || value.isEmpty() || String.join("", value).isEmpty()) {
                     list.remove(line);
                     continue;
                 }

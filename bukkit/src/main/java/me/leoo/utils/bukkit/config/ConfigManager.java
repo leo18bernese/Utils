@@ -115,6 +115,13 @@ public class ConfigManager {
 
         return section == null ? new HashSet<>() : section.getKeys(false);
     }
+    public Set<Map.Entry<String, String>> getSectionContent(String path) {
+        Map<String, String> map = new HashMap<>();
+
+        getSection(path).forEach(key -> map.put(key, path + "." + key));
+
+        return map.entrySet();
+    }
 
     public List<Integer> getIntegerSplit(String path) {
         return Arrays.stream(getString(path).split(","))
