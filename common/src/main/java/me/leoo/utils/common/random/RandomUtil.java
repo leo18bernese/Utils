@@ -9,11 +9,19 @@ import java.util.concurrent.ThreadLocalRandom;
 @UtilityClass
 public class RandomUtil {
 
-    public final Random random = new Random();
+    public final Random RANDOM = new Random();
 
-    public final ThreadLocalRandom localRandom = ThreadLocalRandom.current();
+    public final ThreadLocalRandom LOCAL = ThreadLocalRandom.current();
 
     public Color getRandomRgb() {
-        return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+        return new Color(RANDOM.nextInt(256), RANDOM.nextInt(256), RANDOM.nextInt(256));
+    }
+
+    public int randomInt(int bound) {
+        return LOCAL.nextInt(bound);
+    }
+
+    public int randomInt(int origin, int bound) {
+        return LOCAL.nextInt(origin, bound);
     }
 }
