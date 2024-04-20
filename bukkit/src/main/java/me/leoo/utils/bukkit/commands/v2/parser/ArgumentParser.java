@@ -69,6 +69,11 @@ public class ArgumentParser {
                     parameters[i] = args.getSender();
                 } else if (type == Player.class) {
                     parameters[i] = args.getSender();
+                } else{
+                    Function<String, ?> provider = providers.get(type);
+                    if (provider != null) {
+                        parameters[i] = provider.apply(args.getSender().getName());
+                    }
                 }
 
                 continue;
