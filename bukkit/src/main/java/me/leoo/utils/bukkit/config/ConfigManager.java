@@ -29,7 +29,7 @@ public class ConfigManager {
     private final boolean firstTime;
 
     public ConfigManager(String name, String dir) {
-        firstTime = !(new File(dir, name).exists());
+        firstTime = !(new File(dir, name + ".yml").exists());
         config = FileUtil.generateFile(name + ".yml", dir);
 
         if (config == null) return;
@@ -180,9 +180,7 @@ public class ConfigManager {
 
     //items
     public void saveItem(String path, int slot, XMaterial material, String name, String... lore) {
-        new ItemBuilder(material).data(material.getData()).name(name).lore(lore).slot(slot).save(path, this);
-
-        save();
+        saveItem(path, this, slot, material, name, lore);
     }
 
     public void saveItem(String path, XMaterial material, String name, String... lore) {
