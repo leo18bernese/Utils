@@ -41,4 +41,8 @@ public class BukkitUtils {
 
         return firework;
     }
+
+    public String getRgbString(Color color) {
+        return color.getRed() + "-" + color.getGreen() + "-" + color.getBlue();
+    }
 }
