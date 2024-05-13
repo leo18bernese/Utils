@@ -6,7 +6,7 @@
 
     <groupId>me.leoo.utils</groupId>
     <artifactId>Utils</artifactId>
-    <version>1.7.15</version>
+    <version>1.7.17</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -14,6 +14,7 @@
         <module>velocity</module>
         <module>bungee</module>
         <module>common</module>
+        <module>mongodb</module>
     </modules>
 
     <properties>
