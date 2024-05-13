@@ -335,12 +335,11 @@ public class ItemBuilder implements Cloneable {
     }
 
     public void save(String path, ConfigManager config) {
-        save(path, config, config);
+        save(path, config, Utils.getLanguage(config));
     }
 
     public static ItemBuilder parse(String path, ConfigManager config, ConfigManager language) {
         String[] material = config.getString(path + ".material").split(":");
-
         String name = material[0];
 
         ItemBuilder builder;
@@ -373,33 +372,21 @@ public class ItemBuilder implements Cloneable {
         if (language != null) {
             builder.setLanguage(language);
 
-            if (language.getYml().get(path + ".name") != null) {
-                builder.name(language.getString(path + ".name"));
-            }
-            if (language.getYml().get(path + ".lore") != null) {
-                builder.lore(language.getList(path + ".lore"));
-            }
+            if (language.contains(path + ".name")) builder.name(language.getString(path + ".name"));
+            if (language.contains(path + ".lore")) builder.lore(language.getList(path + ".lore"));
         }
 
-        if (config.getBoolean(path + ".enchanted")) {
-            builder.setEnchanted();
-        }
+        builder.setEnchanted(config.getBoolean(path + ".enchanted"));
+        builder.permission(config.getYml().getString(path + ".permission"));
 
-        if (config.getYml().get(path + ".amount") != null) {
-            builder.amount(config.getInt(path + ".amount"));
-        }
-        if (config.getYml().get(path + ".slot") != null) {
-            builder.slot(config.getInt(path + ".slot"));
-        }
-        if (config.getYml().get(path + ".permission") != null) {
-            builder.permission(config.getString(path + ".permission"));
-        }
+        builder.amount(config.getInt(path + ".amount"));
+        builder.slot(config.getInt(path + ".slot"));
 
         return builder;
     }
 
     public static ItemBuilder parse(String path, ConfigManager config) {
-        return parse(path, config, config);
+        return parse(path, config, Utils.getLanguage(config));
     }
 
     private static int getData(String[] material) {
@@ -452,8 +439,7 @@ public class ItemBuilder implements Cloneable {
 
         if (slot == -1) {
             Bukkit.getLogger().severe(
-                    "Slot not set for item: " + itemMeta.getDisplayName() + " in menu: " + menu.getTitle() + "." +
-                            "\nUsing first slot.");
+                    "Slot not set for item: " + itemMeta.getDisplayName() + " in menu: " + menu.getTitle() + ".\nUsing first slot.");
         }
 
         setInInventory(menu);

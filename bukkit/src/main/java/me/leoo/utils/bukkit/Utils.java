@@ -2,6 +2,7 @@ package me.leoo.utils.bukkit;
 
 import lombok.Getter;
 import me.leoo.utils.bukkit.chat.ChatMessage;
+import me.leoo.utils.bukkit.config.ConfigManager;
 import me.leoo.utils.bukkit.items.InteractListeners;
 import me.leoo.utils.bukkit.menu.MenuListeners;
 import me.leoo.utils.bukkit.menu.MenuTask;
@@ -17,6 +18,7 @@ public class Utils extends JavaPlugin {
 
     @Getter
     private static Plugin initializedFrom;
+    public static ConfigManager language;
 
     @Override
     public void onEnable() {
@@ -35,7 +37,7 @@ public class Utils extends JavaPlugin {
     public static void initialize(Plugin plugin) {
         initializedFrom = plugin;
 
-        SoftwareManager.setUtils(new Software());
+        SoftwareManager.init(new Software());
 
         Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(get(), "BungeeCord");
 
@@ -44,6 +46,10 @@ public class Utils extends JavaPlugin {
         ChatMessage.register();
         MenuListeners.register();
         InteractListeners.register();
+    }
+
+    public static void applySettings(ConfigManager language) {
+        Utils.language = language;
     }
 
     public static void disable() {
@@ -58,5 +64,9 @@ public class Utils extends JavaPlugin {
             plugin = JavaPlugin.getProvidingPlugin(Utils.class);
         }
         return plugin;
+    }
+
+    public static ConfigManager getLanguage(ConfigManager config) {
+        return language != null ? language : config;
     }
 }
