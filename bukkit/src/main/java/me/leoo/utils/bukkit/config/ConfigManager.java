@@ -8,6 +8,7 @@ import me.leoo.utils.bukkit.items.ItemBuilder;
 import me.leoo.utils.bukkit.location.LocationUtil;
 import me.leoo.utils.common.file.FileUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,19 +25,22 @@ public class ConfigManager {
 
     private YamlConfiguration yml;
     private final File config;
-    private String name;
+    private final String name;
 
     private final boolean firstTime;
 
-    public ConfigManager(String name, String dir) {
-        firstTime = !(new File(dir, name + ".yml").exists());
-        config = FileUtil.generateFile(name + ".yml", dir);
+    private static final Map<String, ConfigManager> configs = new HashMap<>();
 
+    public ConfigManager(String name, String dir) {
+        this.name = name;
+        this.firstTime = !FileUtil.exists(dir, name + ".yml");
+
+        this.config = FileUtil.generateFile(dir, name + ".yml");
         if (config == null) return;
 
-        yml = YamlConfiguration.loadConfiguration(config).options().copyDefaults(true).configuration();
+        this.yml = YamlConfiguration.loadConfiguration(config).options().copyDefaults(true).configuration();
 
-        this.name = name;
+        configs.put(name, this);
     }
 
     public ConfigManager(String name) {
@@ -65,9 +69,7 @@ public class ConfigManager {
     }
 
     public void addIfNotExists(String path, Object value) {
-        if (yml.get(path) == null) {
-            set(path, value);
-        }
+        if (!contains(path)) add(path, value);
     }
 
     public void add(String path, Object value) {
@@ -76,6 +78,25 @@ public class ConfigManager {
 
     public void addList(String path, String... values) {
         add(path, values);
+    }
+
+    public void move(String from, String to) {
+        if (!contains(from)) return;
+
+        yml.set(to, yml.get(from));
+        yml.set(from, null);
+    }
+
+    public void moveDefault(String from, String to, Object defaultValue) {
+        if (!contains(from)) {
+            yml.set(to, defaultValue);
+        } else {
+            move(from, to);
+        }
+    }
+
+    public boolean contains(String path) {
+        return yml.get(path) != null;
     }
 
     public boolean getBoolean(String path) {
@@ -94,7 +115,7 @@ public class ConfigManager {
         String string = yml.getString(path);
 
         if (string == null) {
-            Utils.get().getLogger().severe("String " + path + " not found in " + name + ".yml");
+            Bukkit.getLogger().severe("String " + path + " not found in " + name + ".yml");
             return "StringNotFound";
         }
 
@@ -102,24 +123,31 @@ public class ConfigManager {
     }
 
     public List<String> getList(String path) {
-        if (yml.get(path) == null) {
-            Utils.get().getLogger().severe("List " + path + " not found in " + name + ".yml");
+        if (!contains(path)) {
+            Bukkit.getLogger().severe("List " + path + " not found in " + name + ".yml");
             return Collections.emptyList();
         }
 
         return yml.getStringList(path).stream().map(CC::color).collect(Collectors.toList());
     }
 
-    public Set<String> getSection(String path) {
+    public ConfigurationSection getSection(String path) {
+        return yml.getConfigurationSection(path);
+    }
+
+    public Set<String> getKeys(String path) {
         ConfigurationSection section = yml.getConfigurationSection(path);
 
         return section == null ? new HashSet<>() : section.getKeys(false);
     }
 
+    /**
+     * @return A set of entries where the key is the key of the section and the value is the path to the key
+     */
     public Set<Map.Entry<String, String>> getSectionContent(String path) {
         Map<String, String> map = new HashMap<>();
 
-        getSection(path).forEach(key -> map.put(key, path + "." + key));
+        getKeys(path).forEach(key -> map.put(key, path + "." + key));
 
         return map.entrySet();
     }
@@ -150,7 +178,7 @@ public class ConfigManager {
         List<String> list = getList(path);
         list.addAll(locations.stream().map(LocationUtil::serializeLocation).collect(Collectors.toList()));
 
-        yml.set(path, list);
+        add(path, list);
         save();
     }
 
@@ -179,6 +207,10 @@ public class ConfigManager {
     }
 
     //items
+    public ItemBuilder getItem(String path) {
+        return ItemBuilder.parse(path, this);
+    }
+
     public void saveItem(String path, int slot, XMaterial material, String name, String... lore) {
         saveItem(path, this, slot, material, name, lore);
     }
@@ -199,34 +231,38 @@ public class ConfigManager {
     }
 
     //group methods
-    public String getGroupPath(String prefix, String path, String group) {
-        String prefixPath = prefix.isEmpty() ? "" : prefix + ".";
-        String pathPath = path.isEmpty() ? "" : "." + path;
+    public String getGroupPath(String path, String subPath, String group) {
+        path = path.isEmpty() ? "" : "." + path;
+        subPath = subPath.isEmpty() ? "" : "." + subPath;
 
-        return prefixPath + (yml.get(prefixPath + group + pathPath) == null ? "Default" : group) + pathPath;
+        return path + (contains(path + group + subPath) ? group : "Default") + subPath;
     }
 
-    public String getGroupString(String prefix, String path, String group) {
-        return getString(getGroupPath(prefix, path, group));
+    public String getGroupString(String path, String subPath, String group) {
+        return getString(getGroupPath(path, subPath, group));
     }
 
-    public List<String> getGroupList(String prefix, String path, String group) {
-        return getList(getGroupPath(prefix, path, group));
+    public List<String> getGroupList(String path, String subPath, String group) {
+        return getList(getGroupPath(path, subPath, group));
     }
 
-    public Set<String> getGroupSection(String prefix, String path, String group) {
-        return getSection(getGroupPath(prefix, path, group));
+    public Set<String> getGroupSection(String path, String subPath, String group) {
+        return getKeys(getGroupPath(path, subPath, group));
     }
 
-    public boolean getGroupBoolean(String prefix, String path, String group) {
-        return getBoolean(getGroupPath(prefix, path, group));
+    public boolean getGroupBoolean(String path, String subPath, String group) {
+        return getBoolean(getGroupPath(path, subPath, group));
     }
 
-    public int getGroupInt(String prefix, String path, String group) {
-        return getInt(getGroupPath(prefix, path, group));
+    public int getGroupInt(String path, String subPath, String group) {
+        return getInt(getGroupPath(path, subPath, group));
     }
 
-    public double getGroupDouble(String prefix, String path, String group) {
-        return getDouble(getGroupPath(prefix, path, group));
+    public double getGroupDouble(String path, String subPath, String group) {
+        return getDouble(getGroupPath(path, subPath, group));
+    }
+
+    public static void reloadAll() {
+        configs.values().forEach(ConfigManager::reload);
     }
 }
