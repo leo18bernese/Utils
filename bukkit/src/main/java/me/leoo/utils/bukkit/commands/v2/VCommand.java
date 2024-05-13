@@ -101,7 +101,7 @@ public abstract class VCommand extends BukkitCommand {
         VTabComplete tabComplete = getTabComplete(args[0]);
 
         if (tabComplete != null) {
-            return tabComplete.execute(sender, alias, args);
+            return StringUtil.copyPartialMatches(args[1], tabComplete.execute(sender, alias, args), new ArrayList<>());
         }
 
         return Collections.emptyList();
