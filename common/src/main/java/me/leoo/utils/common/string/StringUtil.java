@@ -34,6 +34,10 @@ public class StringUtil {
     }
 
     // String manipulation
+    public String translateLower(String string) {
+        return string.toLowerCase().replace("_", "-");
+    }
+
     public String getCenteredMessage(String message) {
         if (message == null || message.isEmpty()) return "";
 

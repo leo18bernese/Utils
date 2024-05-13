@@ -27,6 +27,6 @@ public class Utils {
         instance.setProxy(proxyServer);
         instance.setLogger(proxyLogger);
 
-        SoftwareManager.setUtils(new Software());
+        SoftwareManager.init(new Software());
     }
 }

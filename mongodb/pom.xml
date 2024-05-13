@@ -7,7 +7,7 @@
     <parent>
         <groupId>me.leoo.utils</groupId>
         <artifactId>Utils</artifactId>
-        <version>1.7.17</version>
+        <version>1.8.0</version>
     </parent>
 
     <artifactId>mongodb</artifactId>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>me.leoo.utils</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.17</version>
+            <version>1.8.0</version>
         </dependency>
 
         <!-- MongoDB -->

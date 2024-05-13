@@ -9,7 +9,15 @@ import java.io.IOException;
 @UtilityClass
 public class FileUtil {
 
-    public File generateFile(String name, String directory) {
+    public boolean exists(String name) {
+        return new File(name).exists();
+    }
+
+    public boolean exists(String directory, String name) {
+        return new File(directory, name).exists();
+    }
+
+    public File generateFile(String directory, String name) {
         File file = new File(generateFolder(directory), name);
 
         if (!file.exists()) {

@@ -18,7 +18,7 @@ public class Utils extends Plugin {
      * Must be executed before running anything related to this plugin.
      */
     public static void initialize() {
-        SoftwareManager.setUtils(new Software());
+        SoftwareManager.init(new Software());
     }
 
     public static Plugin get() {
