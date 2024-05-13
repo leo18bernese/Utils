@@ -1,4 +1,4 @@
-![JitPack](https://img.shields.io/jitpack/version/com.github.leo18bernese/Utils?label=Utils)
+![JitPack](https://img.shields.io/github/v/release/leo18bernese/Utils)
 
 # Utils
 
