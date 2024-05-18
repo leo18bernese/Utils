@@ -69,4 +69,13 @@ public class ReflectionUtil {
         if (!method.getName().startsWith("set")) return false;
         return method.getParameterTypes().length == 1;
     }
+
+    public boolean existClass(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 }
