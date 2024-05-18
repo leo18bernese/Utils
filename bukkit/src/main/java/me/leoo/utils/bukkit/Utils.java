@@ -12,13 +12,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.function.Supplier;
+
 public class Utils extends JavaPlugin {
 
     private static Plugin plugin;
 
     @Getter
     private static Plugin initializedFrom;
-    public static ConfigManager language;
+    public static Supplier<ConfigManager> language;
 
     @Override
     public void onEnable() {
@@ -48,7 +50,7 @@ public class Utils extends JavaPlugin {
         InteractListeners.register();
     }
 
-    public static void applySettings(ConfigManager language) {
+    public static void applySettings(Supplier<ConfigManager> language) {
         Utils.language = language;
     }
 
@@ -67,6 +69,6 @@ public class Utils extends JavaPlugin {
     }
 
     public static ConfigManager getLanguage(ConfigManager config) {
-        return language != null ? language : config;
+        return language != null ? language.get() : config;
     }
 }

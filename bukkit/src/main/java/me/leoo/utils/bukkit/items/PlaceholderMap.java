@@ -13,6 +13,10 @@ public class PlaceholderMap implements Cloneable {
     private final Map<String, Supplier<List<String>>> multiLinePlaceholders = new HashMap<>();
 
     public PlaceholderMap add(String key, Supplier<String> value) {
+        if (!key.startsWith("{") || !key.endsWith("}")) {
+            key = "{" + key + "}";
+        }
+
         placeholders.put(key, value);
         return this;
     }

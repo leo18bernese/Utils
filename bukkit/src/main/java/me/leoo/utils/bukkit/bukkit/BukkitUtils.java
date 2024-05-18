@@ -1,6 +1,7 @@
 package me.leoo.utils.bukkit.bukkit;
 
 import lombok.experimental.UtilityClass;
+import me.leoo.utils.bukkit.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -9,10 +10,12 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 @UtilityClass
 public class BukkitUtils {
@@ -44,5 +47,66 @@ public class BukkitUtils {
 
     public String getRgbString(Color color) {
         return color.getRed() + "-" + color.getGreen() + "-" + color.getBlue();
+    }
+
+
+    public void repeat(Runnable task, long delay, long interval, int times) {
+        new BukkitRunnable() {
+            int remaining = times;
+
+            @Override
+            public void run() {
+                task.run();
+
+                if (--remaining == 0) {
+                    cancel();
+                }
+            }
+        }.runTaskTimer(Utils.get(), delay, interval);
+    }
+
+    public void repeat(Runnable task, long delay, long interval, int times, Runnable onEnd) {
+        new BukkitRunnable() {
+            int remaining = times;
+
+            @Override
+            public void run() {
+                task.run();
+
+                if (--remaining == 0) {
+                    onEnd.run();
+
+                    cancel();
+                }
+            }
+        }.runTaskTimer(Utils.get(), delay, interval);
+    }
+
+    public void repeat(Runnable task, long delay, long interval, Supplier<Boolean> condition) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!condition.get()) {
+                    cancel();
+                    return;
+                }
+                task.run();
+            }
+        }.runTaskTimer(Utils.get(), delay, interval);
+    }
+
+    public void repeat(Runnable task, long delay, long interval, Supplier<Boolean> condition, Runnable onEnd) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!condition.get()) {
+                    onEnd.run();
+
+                    cancel();
+                    return;
+                }
+                task.run();
+            }
+        }.runTaskTimer(Utils.get(), delay, interval);
     }
 }

@@ -9,7 +9,7 @@ import java.util.UUID;
 public class MenuTask {
 
     public MenuTask() {
-        Tasks.timer(() -> MenuBuilder.getOpenedInventories().entrySet().removeIf(entry -> {
+        Tasks.get().timer(() -> MenuBuilder.getOpenedInventories().entrySet().removeIf(entry -> {
             UUID uuid = entry.getKey();
             Player player = Bukkit.getPlayer(uuid);
 
@@ -20,6 +20,6 @@ public class MenuTask {
             if (menu.isAutoUpdate()) menu.update();
 
             return false;
-        }), 0, 1);
+        }), 1, 1);
     }
 }
