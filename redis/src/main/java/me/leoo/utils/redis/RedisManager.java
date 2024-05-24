@@ -9,6 +9,7 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisPubSub;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ForkJoinPool;
@@ -65,6 +66,9 @@ public class RedisManager {
     }
 
     // Publishing messages
+    public void publish(Enum<?> type, JsonBuilder json, Enum<?>... channels) {
+        publish(type, json, Arrays.stream(channels).map(Enum::name).toArray(String[]::new));
+    }
 
     public void publish(Enum<?> type, JsonBuilder builder, String... channels) {
         publish(type, builder.getJsonObject(), channels);
