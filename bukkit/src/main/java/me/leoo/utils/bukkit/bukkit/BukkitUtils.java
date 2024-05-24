@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class BukkitUtils {
@@ -108,5 +109,13 @@ public class BukkitUtils {
                 task.run();
             }
         }.runTaskTimer(Utils.get(), delay, interval);
+    }
+
+    public List<String> addColor(String color, List<String> list) {
+        return list.stream().map(line -> color + line).collect(Collectors.toList());
+    }
+
+    public String[] addColor(String color, String... list){
+        return Arrays.stream(list).map(line -> color + line).toArray(String[]::new);
     }
 }

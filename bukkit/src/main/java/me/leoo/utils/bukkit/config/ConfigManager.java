@@ -232,7 +232,7 @@ public class ConfigManager {
 
     //group methods
     public String getGroupPath(String path, String subPath, String group) {
-        path = path.isEmpty() ? "" : "." + path;
+        path = path.isEmpty() ? "" : path + ".";
         subPath = subPath.isEmpty() ? "" : "." + subPath;
 
         return path + (contains(path + group + subPath) ? group : "Default") + subPath;

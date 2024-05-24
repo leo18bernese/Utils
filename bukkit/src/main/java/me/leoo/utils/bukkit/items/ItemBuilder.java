@@ -311,22 +311,22 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder applyToMeta(String path, ConfigManager config) {
+        if (config.contains(path + ".name")) name(config.getString(path + ".name"));
+        if (config.contains(path + ".lore")) lore(config.getList(path + ".lore"));
+
+        return this;
+    }
+
     public void save(String path, ConfigManager config, ConfigManager language) {
         config.add(path + ".material", itemStack.getType().name() + (toSaveString == null ? (itemStack.getDurability() == 0 ? "" : ":" + itemStack.getDurability()) : ":" + toSaveString));
-        config.add(path + ".amount", itemStack.getAmount());
-        config.add(path + ".enchanted", itemMeta.hasEnchant(XEnchantment.DURABILITY.getEnchant()));
 
-        if (slot >= 0) {
-            config.add(path + ".slot", slot);
-        }
+        if (itemStack.getAmount() > 0) config.add(path + ".amount", itemStack.getAmount());
+        if (itemMeta.hasEnchants()) config.add(path + ".enchanted", itemMeta.hasEnchants());
 
-        if (permission != null) {
-            config.add(path + ".permission", permission);
-        }
-
-        if (command != null) {
-            config.add(path + ".command", command);
-        }
+        if (slot >= 0) config.add(path + ".slot", slot);
+        if (permission != null) config.add(path + ".permission", permission);
+        if (command != null) config.add(path + ".command", command);
 
         if (language != null) {
             if (itemMeta.hasDisplayName()) language.add(path + ".name", itemMeta.getDisplayName());

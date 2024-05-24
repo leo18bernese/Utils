@@ -6,7 +6,6 @@ import me.leoo.utils.common.reflection.ReflectionUtil;
 
 public abstract class Tasks {
 
-    private static boolean FOLIA;
     private static Tasks INSTANCE;
 
     public abstract ScheduledTask run(Runnable runnable);
@@ -23,7 +22,7 @@ public abstract class Tasks {
 
     public static Tasks get() {
         if (INSTANCE == null) {
-            FOLIA = ReflectionUtil.existClass("io.papermc.paper.threadedregions.RegionizedServer");
+            boolean FOLIA = ReflectionUtil.existClass("io.papermc.paper.threadedregions.RegionizedServer");
 
             INSTANCE = FOLIA ? new FoliaScheduler() : new SpigotScheduler();
         }
