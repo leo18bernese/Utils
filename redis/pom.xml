@@ -20,15 +20,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.20.3-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>me.leoo.utils</groupId>
-            <artifactId>bukkit</artifactId>
+            <artifactId>common</artifactId>
             <version>1.8.0</version>
         </dependency>
 

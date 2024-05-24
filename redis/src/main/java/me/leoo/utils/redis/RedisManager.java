@@ -9,6 +9,7 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisPubSub;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ForkJoinPool;
 
@@ -16,8 +17,10 @@ import java.util.concurrent.ForkJoinPool;
 public class RedisManager {
 
     private final JedisPool pool;
+    private final UUID serverId;
 
     private final String clientName;
+    private final String[] channels;
 
     private final String host;
     private final int port;
@@ -28,57 +31,88 @@ public class RedisManager {
     @Nullable
     private final String password;
 
-    public RedisManager(String clientName, String host, int port, @Nullable String user, @Nullable String password, JedisPubSub listener) {
+    public RedisManager(String clientName, String[] channels,
+                        String host, int port, @Nullable String user, @Nullable String password,
+                        JedisPubSub listener, boolean generateServerId) {
         this.clientName = clientName;
+        this.channels = channels;
+
         this.host = host;
         this.port = port;
-        this.user = user;
-        this.password = password;
+        this.user = (user == null || user.isEmpty()) ? null : user;
+        this.password = (password == null || password.isEmpty()) ? null : password;
+
+        this.serverId = generateServerId ? UUID.randomUUID() : null;
 
         this.pool = setupPool();
 
         setupListener(listener);
     }
 
-    public void publish(Enum<?> type, UUID serverId, JsonBuilder builder) {
-        publish(type, serverId, builder.getJsonObject());
-    }
-
-    public void publish(Enum<?> type, UUID serverId, JsonElement json) {
+    private Jedis getRedis() {
         try (Jedis jedis = pool.getResource()) {
 
-
-            if (password != null && !password.isEmpty() && user != null && !user.isEmpty()) {
-                jedis.auth(user, password);
+            if (password != null) {
+                if (user != null) {
+                    jedis.auth(user, password);
+                } else {
+                    jedis.auth(password);
+                }
             }
 
-            String message = new JsonBuilder()
-                    .add("type", type.name().toLowerCase())
-                    .add("id", serverId == null ? "" : serverId.toString())
-                    .add("data", json).string();
-            jedis.publish("guilds", message);
+            return jedis;
         }
     }
 
+    // Publishing messages
+
+    public void publish(Enum<?> type, JsonBuilder builder, String... channels) {
+        publish(type, builder.getJsonObject(), channels);
+    }
+
+    public void publish(Enum<?> type, JsonElement json, String... channels) {
+        String message = new JsonBuilder()
+                .add("type", type.name().toLowerCase())
+                .add("id", serverId == null ? "" : serverId.toString())
+                .add("data", json).string();
+
+        String[] targetChannels = channels.length == 0 ? this.channels : channels;
+
+        for (String channel : targetChannels) {
+            getRedis().publish(channel, message);
+        }
+    }
+
+    // Set, Get, Delete methods
+    public void set(String key, Map<String, String> value) {
+        getRedis().hset(key, value);
+    }
+
+    public Map<String, String> get(String key) {
+        return getRedis().hgetAll(key);
+    }
+
+    public void delete(String key, String... fields) {
+        getRedis().hdel(key, fields);
+    }
+
+    // Other methods
     public void close() {
         pool.close();
     }
 
     private JedisPool setupPool() {
-        String redisPassword = (password == null || password.isEmpty()) ? null : password;
-        String redisUser = (user == null || user.isEmpty()) ? null : user;
-
-        if (redisUser == null) {
+        if (user == null) {
             return new JedisPool(
                     new JedisPoolConfig(),
                     host, port,
-                    30_000, redisPassword, 0, "guilds"
+                    30_000, password, 0, clientName
             );
         } else {
             return new JedisPool(
                     new JedisPoolConfig(),
                     host, port,
-                    30_000, redisUser, redisPassword, 0, "guilds"
+                    30_000, user, password, 0, clientName
             );
         }
     }
@@ -86,7 +120,7 @@ public class RedisManager {
     private void setupListener(JedisPubSub listener) {
         ForkJoinPool.commonPool().execute(() -> {
             try (Jedis jedis = pool.getResource()) {
-                jedis.subscribe(listener, "guilds");
+                jedis.subscribe(listener, channels);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
