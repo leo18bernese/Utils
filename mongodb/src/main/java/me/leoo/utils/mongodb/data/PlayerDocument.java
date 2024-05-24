@@ -7,23 +7,34 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Getter
-public abstract class PlayerDocument extends CommonDocument implements Listener {
+public abstract class PlayerDocument<T> extends CommonDocument implements Listener {
 
     public final UUID uuid;
     private boolean firstLoad = false;
 
+    public final T data;
+
+    private final Consumer<PlayerDocument<T>> addConsumer;
+    private final Consumer<PlayerDocument<T>> removeConsumer;
+
     private static final MongoManager MANAGER = MongoManager.getInstance();
 
-    public PlayerDocument(UUID uuid, Enum<?> type) {
+    public PlayerDocument(UUID uuid, Enum<?> type, T data, Consumer<PlayerDocument<T>> addConsumer, Consumer<PlayerDocument<T>> removeConsumer) {
         super(type, "uuid");
 
         this.uuid = uuid;
+        this.data = data;
+
+        this.addConsumer = addConsumer;
+        this.removeConsumer = removeConsumer;
 
         init();
-        MANAGER.getAddToPlayerData().accept(uuid, this);
+
+        addConsumer.accept(this);
     }
 
     private void init() {
@@ -50,7 +61,7 @@ public abstract class PlayerDocument extends CommonDocument implements Listener 
     public void destroy() {
         save();
 
-        MANAGER.getRemoveFromPlayerData().accept(uuid, this);
+        removeConsumer.accept(this);
     }
 
     //Abstract methods
@@ -73,7 +84,7 @@ public abstract class PlayerDocument extends CommonDocument implements Listener 
     }
 
     public Document getSavedDocument() {
-        return getData(uuid.toString()).first();
+        return getDocuments(uuid.toString()).first();
     }
 }
 

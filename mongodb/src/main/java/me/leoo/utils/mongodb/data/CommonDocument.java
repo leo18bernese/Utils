@@ -28,11 +28,11 @@ public class CommonDocument {
     //Type methods
 
     //Data methods
-    public FindIterable<Document> getData(String value) {
+    public FindIterable<Document> getDocuments(String value) {
         return getCollection().find(Filters.eq(idString, value));
     }
 
-    public FindIterable<Document> getData() {
+    public FindIterable<Document> getDocuments() {
         return getCollection().find();
     }
 

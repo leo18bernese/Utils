@@ -6,10 +6,6 @@ import com.mongodb.client.MongoDatabase;
 import lombok.Data;
 import lombok.Getter;
 import me.leoo.utils.common.compatibility.SoftwareManager;
-import me.leoo.utils.mongodb.data.PlayerDocument;
-
-import java.util.UUID;
-import java.util.function.BiConsumer;
 
 @Data
 public class MongoManager {
@@ -20,14 +16,8 @@ public class MongoManager {
     @Getter
     private static MongoManager instance;
 
-    private BiConsumer<UUID, PlayerDocument> addToPlayerData;
-    private BiConsumer<UUID, PlayerDocument> removeFromPlayerData;
-
-    public MongoManager(String host, int port, String database, String username, String password, BiConsumer<UUID, PlayerDocument> addToPlayerData, BiConsumer<UUID, PlayerDocument> removeFromPlayerData) {
+    public MongoManager(String host, int port, String database, String username, String password) {
         connect(host, port, database, username, password);
-
-        this.addToPlayerData = addToPlayerData;
-        this.removeFromPlayerData = removeFromPlayerData;
     }
 
     private void connect(String host, int port, String database, String username, String password) {
