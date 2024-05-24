@@ -15,6 +15,7 @@
         <module>bungee</module>
         <module>common</module>
         <module>mongodb</module>
+        <module>redis</module>
     </modules>
 
     <properties>
