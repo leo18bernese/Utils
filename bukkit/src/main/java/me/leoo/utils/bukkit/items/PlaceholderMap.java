@@ -12,6 +12,7 @@ public class PlaceholderMap implements Cloneable {
     private final Map<String, Supplier<String>> placeholders = new HashMap<>();
     private final Map<String, Supplier<List<String>>> multiLinePlaceholders = new HashMap<>();
 
+    // Add
     public PlaceholderMap add(String key, Supplier<String> value) {
         if (!key.startsWith("{") && !key.endsWith("}")) {
             key = "{" + key + "}";
@@ -38,6 +39,14 @@ public class PlaceholderMap implements Cloneable {
         return addMultiple(key, () -> value);
     }
 
+    public PlaceholderMap addMap(PlaceholderMap map) {
+        placeholders.putAll(map.placeholders);
+        multiLinePlaceholders.putAll(map.multiLinePlaceholders);
+
+        return this;
+    }
+
+    // Parse
     public String parse(String text) {
         for (Map.Entry<String, Supplier<String>> entry : placeholders.entrySet()) {
             text = text.replace(entry.getKey(), entry.getValue().get());
