@@ -40,21 +40,25 @@ public abstract class PlayerDocument<T> extends CommonDocument implements Listen
     private void init() {
         Document document = getSavedDocument();
 
-        if (document == null || onLoad().apply(document)) {
+        if ((document == null || onLoad().apply(document)) && !firstLoad) {
+            firstLoad = true;
+
             firstLoad();
             save();
 
             init();
 
-            firstLoad = true;
-
             return;
         }
 
         load(document);
+        afterLoad();
     }
 
     public void save() {
+        Document document = getDocument();
+        if (document == null) return;
+
         saveDocument(getDocument(), uuid.toString());
     }
 
@@ -75,6 +79,9 @@ public abstract class PlayerDocument<T> extends CommonDocument implements Listen
 
     public Function<Document, Boolean> onLoad() {
         return document -> false;
+    }
+
+    public void afterLoad() {
     }
 
     public void onJoin(Player player) {

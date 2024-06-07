@@ -115,7 +115,18 @@ public class BukkitUtils {
         return list.stream().map(line -> color + line).collect(Collectors.toList());
     }
 
-    public String[] addColor(String color, String... list){
+    public String[] addColor(String color, String... list) {
         return Arrays.stream(list).map(line -> color + line).toArray(String[]::new);
+    }
+
+    // Messages methods
+    public void sendMessage(List<Player> players, String message) {
+        players.forEach(player -> player.sendMessage(message));
+    }
+
+    public void broadcast(String message, String permission) {
+        Bukkit.getOnlinePlayers().stream()
+                .filter(player -> player.hasPermission(permission))
+                .forEach(player -> player.sendMessage(message));
     }
 }

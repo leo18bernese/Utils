@@ -34,7 +34,7 @@ public class RedisManager {
 
     public RedisManager(String clientName, String[] channels,
                         String host, int port, @Nullable String user, @Nullable String password,
-                        JedisPubSub listener, boolean generateServerId) {
+                        RedisListener<?> listener, boolean generateServerId) {
         this.clientName = clientName;
         this.channels = channels;
 
@@ -66,17 +66,13 @@ public class RedisManager {
     }
 
     // Publishing messages
-    public void publish(Enum<?> type, JsonBuilder json, Enum<?>... channels) {
-        publish(type, json, Arrays.stream(channels).map(Enum::name).toArray(String[]::new));
-    }
-
-    public void publish(Enum<?> type, JsonBuilder builder, String... channels) {
-        publish(type, builder.getJsonObject(), channels);
+    public void publish(Enum<?> type, JsonBuilder builder, Object... channels) {
+        publish(type, builder.getJsonObject(), Arrays.stream(channels).map(Object::toString).toArray(String[]::new));
     }
 
     public void publish(Enum<?> type, JsonElement json, String... channels) {
         String message = new JsonBuilder()
-                .add("type", type.name().toLowerCase())
+                .add("type", type.name())
                 .add("id", serverId == null ? "" : serverId.toString())
                 .add("data", json).string();
 
@@ -88,8 +84,8 @@ public class RedisManager {
     }
 
     // Set, Get, Delete methods
-    public void set(String key, Map<String, String> value) {
-        getRedis().hset(key, value);
+    public void set(String key, String field, String value) {
+        getRedis().hset(key, field, value);
     }
 
     public Map<String, String> get(String key) {
@@ -121,10 +117,10 @@ public class RedisManager {
         }
     }
 
-    private void setupListener(JedisPubSub listener) {
+    private void setupListener(RedisListener<?> listener) {
         ForkJoinPool.commonPool().execute(() -> {
             try (Jedis jedis = pool.getResource()) {
-                jedis.subscribe(listener, channels);
+                jedis.subscribe(listener.setServerId(serverId), channels);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
