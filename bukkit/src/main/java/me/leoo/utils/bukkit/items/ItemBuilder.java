@@ -1,8 +1,8 @@
 package me.leoo.utils.bukkit.items;
 
-import com.cryptomorin.xseries.SkullUtils;
 import com.cryptomorin.xseries.XEnchantment;
 import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XSkull;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadableItemNBT;
 import lombok.AllArgsConstructor;
@@ -11,13 +11,12 @@ import lombok.Setter;
 import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.chat.CC;
 import me.leoo.utils.bukkit.config.ConfigManager;
-import me.leoo.utils.bukkit.menu.MenuBuilder;
 import me.leoo.utils.common.number.NumberUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
@@ -54,6 +53,7 @@ public class ItemBuilder implements Cloneable {
 
     @Setter
     private ConfigManager config, language;
+
     @Setter
     private String configPath;
 
@@ -124,7 +124,7 @@ public class ItemBuilder implements Cloneable {
     }
 
     public ItemBuilder skin(String string) {
-        SkullUtils.applySkin(itemMeta, string);
+        XSkull.of(itemMeta).profile(string).apply();
         return this;
     }
 
@@ -144,9 +144,7 @@ public class ItemBuilder implements Cloneable {
         }
 
         if (itemMeta instanceof SkullMeta) {
-            SkullUtils.applySkin(itemMeta, string);
-
-            /*Tasks.runLater(() -> SkullUtils.applySkin(itemMeta, string), 5L);*/
+            XSkull.of(itemMeta).profile(string).apply();
         }
 
         return this;
@@ -162,10 +160,11 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder enchant(String enchantment, int level) {
-        Enchantment xEnchantment = XEnchantment.matchXEnchantment(enchantment).orElse(XEnchantment.DURABILITY).getEnchant();
+    public ItemBuilder enchant(String enchantName, int level) {
+        Enchantment enchant = XEnchantment.matchXEnchantment(enchantName).orElse(XEnchantment.UNBREAKING).getEnchant();
+        if (enchant == null) return this;
 
-        itemMeta.addEnchant(xEnchantment, level, true);
+        itemMeta.addEnchant(enchant, level, true);
 
         return this;
     }
@@ -187,7 +186,7 @@ public class ItemBuilder implements Cloneable {
     }
 
     public ItemBuilder setEnchanted() {
-        enchant(XEnchantment.DURABILITY.name(), 1);
+        enchant(XEnchantment.UNBREAKING.name(), 1);
         return this;
     }
 
@@ -318,6 +317,12 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public boolean executeItemAction(Player player) {
+        if (config == null || configPath == null) return false;
+
+        return config.executeAction(configPath, player);
+    }
+
     public void save(String path, ConfigManager config, ConfigManager language) {
         config.add(path + ".material", itemStack.getType().name() + (toSaveString == null ? (itemStack.getDurability() == 0 ? "" : ":" + itemStack.getDurability()) : ":" + toSaveString));
 
@@ -428,21 +433,6 @@ public class ItemBuilder implements Cloneable {
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
-    }
-
-    public void setInInventory(MenuBuilder menu) {
-        menu.getItems().add(this);
-    }
-
-    public void setInInventory(MenuBuilder menu, int slot) {
-        this.slot = slot;
-
-        if (slot == -1) {
-            Bukkit.getLogger().severe(
-                    "Slot not set for item: " + itemMeta.getDisplayName() + " in menu: " + menu.getTitle() + ".\nUsing first slot.");
-        }
-
-        setInInventory(menu);
     }
 
     @Override

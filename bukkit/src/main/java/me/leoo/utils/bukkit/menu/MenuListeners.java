@@ -15,18 +15,17 @@ import java.util.UUID;
 
 public class MenuListeners implements Listener {
 
+    private static final Map<UUID, MenuBuilder> OPENED_INVENTORIES = MenuBuilder.getOpenedInventories();
+
     @EventHandler(priority = EventPriority.MONITOR)
     public void onClick(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
 
-        Map<UUID, MenuBuilder> openedInventories = MenuBuilder.getOpenedInventories();
-
-        if (openedInventories.isEmpty()) return;
-
         Player player = (Player) event.getWhoClicked();
-        if (!openedInventories.containsKey(player.getUniqueId())) return;
 
-        MenuBuilder menu = openedInventories.get(player.getUniqueId());
+        MenuBuilder menu = OPENED_INVENTORIES.get(player.getUniqueId());
+        if (menu == null) return;
+
         int rawSlot = event.getRawSlot();
 
         if (rawSlot >= menu.getSlots()) {
@@ -34,10 +33,8 @@ public class MenuListeners implements Listener {
             return;
         }
 
-        int slot = event.getSlot();
-
         ItemBuilder item = menu.getItem(rawSlot).orElse(null);
-        if (item == null) {
+        if (item == null || item.getItemStack().getType() != event.getCurrentItem().getType()) {
             event.setCancelled(true);
             return;
         }
