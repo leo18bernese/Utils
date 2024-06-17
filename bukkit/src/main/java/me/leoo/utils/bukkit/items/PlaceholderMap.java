@@ -1,5 +1,6 @@
 package me.leoo.utils.bukkit.items;
 
+import me.leoo.utils.common.number.NumberUtil;
 import me.leoo.utils.common.string.StringUtil;
 
 import java.util.HashMap;
@@ -24,6 +25,10 @@ public class PlaceholderMap implements Cloneable {
 
     public PlaceholderMap add(String key, String value) {
         return add(key, () -> value);
+    }
+
+    public PlaceholderMap add(String key, Number value) {
+        return add(key, String.valueOf(value));
     }
 
     public PlaceholderMap addMultiple(String key, Supplier<List<String>> value) {
