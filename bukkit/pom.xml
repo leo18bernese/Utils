@@ -53,7 +53,6 @@
             <scope>provided</scope>
         </dependency>
 
-
         <dependency>
             <groupId>com.mojang</groupId>
             <artifactId>authlib</artifactId>
