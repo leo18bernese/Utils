@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import me.leoo.utils.bukkit.Utils;
+import me.leoo.utils.bukkit.bukkit.PlaceholderMap;
 import me.leoo.utils.bukkit.chat.CC;
 import me.leoo.utils.bukkit.config.ConfigManager;
 import me.leoo.utils.common.number.NumberUtil;
@@ -38,8 +39,6 @@ public class ItemBuilder implements Cloneable {
     private ItemMeta itemMeta;
 
     private final Map<String, String> replacements = new HashMap<>();
-    private final List<Function<String, String>> replaceFunctions = new ArrayList<>();
-
     private List<PlaceholderMap> placeholders = new ArrayList<>();
 
     private Predicate<InventoryClickEvent> eventCallback;
@@ -124,25 +123,6 @@ public class ItemBuilder implements Cloneable {
     }
 
     public ItemBuilder skin(String string) {
-        XSkull.of(itemMeta).profile(string).apply();
-        return this;
-    }
-
-    public ItemBuilder skinCondition(String string, boolean condition) {
-        if (condition) {
-            return skin(string);
-        }
-        return this;
-    }
-
-    public ItemBuilder owner(String string, boolean overrideItem) {
-        if (overrideItem) {
-            itemStack.setType(XMaterial.PLAYER_HEAD.parseMaterial());
-            itemStack.setDurability((short) 3);
-
-            itemMeta = itemStack.getItemMeta();
-        }
-
         if (itemMeta instanceof SkullMeta) {
             XSkull.of(itemMeta).profile(string).apply();
         }
@@ -150,8 +130,19 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder owner(String string) {
-        owner(string, false);
+    public ItemBuilder skinCondition(String string, boolean condition) {
+        if (condition) {
+            return skin(string);
+        }
+
+        return this;
+    }
+
+    public ItemBuilder owner(UUID uuid) {
+        if (itemMeta instanceof SkullMeta) {
+            XSkull.of(itemMeta).profile(uuid).apply();
+        }
+
         return this;
     }
 
@@ -223,11 +214,6 @@ public class ItemBuilder implements Cloneable {
 
     public ItemBuilder addReplacement(String key, String value) {
         replacements.put(key, value);
-        return this;
-    }
-
-    public ItemBuilder addReplaceFunction(Function<String, String> replaceFunction) {
-        this.replaceFunctions.add(replaceFunction);
         return this;
     }
 
@@ -351,7 +337,12 @@ public class ItemBuilder implements Cloneable {
 
         if (name.equals("texture") || (material.length == 2 && XMaterial.matchXMaterial(name + ":" + 3).orElse(XMaterial.STONE) == XMaterial.PLAYER_HEAD)) {
             builder = new ItemBuilder(XMaterial.PLAYER_HEAD, 3);
-            builder.owner(material[1]);
+
+            String value = material[1];
+            if (value.length() > 1) {
+                builder.skin(value);
+            }
+
         } else if (name.equalsIgnoreCase("potion")) {
             builder = new ItemBuilder(XMaterial.POTION);
             builder.data(getData(material));
@@ -404,6 +395,8 @@ public class ItemBuilder implements Cloneable {
 
     public ItemStack get() {
         for (Map.Entry<String, String> entry : replacements.entrySet()) {
+            if (entry.getValue() == null) continue;
+
             name(itemMeta.getDisplayName().replace(entry.getKey(), entry.getValue()));
 
             if (itemMeta.hasLore()) {
@@ -412,14 +405,6 @@ public class ItemBuilder implements Cloneable {
                 lore(lore);
             }
         }
-
-        replaceFunctions.forEach(replaceFunction -> {
-            name(replaceFunction.apply(itemMeta.getDisplayName()));
-
-            if (itemMeta.hasLore()) {
-                lore(itemMeta.getLore().stream().map(replaceFunction).collect(Collectors.toList()));
-            }
-        });
 
         placeholders.forEach(placeholderMap -> {
             name(placeholderMap.parse(itemMeta.getDisplayName()));
@@ -444,5 +429,11 @@ public class ItemBuilder implements Cloneable {
         }
 
         return null;
+    }
+
+    protected void replaceName(String string) {
+        if (itemMeta.hasDisplayName() && string != null) {
+            name(string);
+        }
     }
 }
