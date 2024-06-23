@@ -26,7 +26,7 @@ public class CC {
 
 
 
-    
+
     public final String BLUE = "§9";
     public final String AQUA = "§b";
     public final String YELLOW = "§e";
