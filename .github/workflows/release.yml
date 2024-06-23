@@ -34,7 +34,7 @@ jobs:
         if: steps.check.outputs.version
         uses: softprops/action-gh-release@v1
         with:
-          name: Update ${{ steps.check.outputs.version }}
+          name: ${{ steps.check.outputs.version }}
           tag_name: ${{ steps.check.outputs.version }}
           body: ${{ steps.commits.outputs.commits }}
           draft: false
