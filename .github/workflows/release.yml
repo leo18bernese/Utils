@@ -1,0 +1,40 @@
+name: Publish release
+on:
+  push:
+    branches:
+      - master
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v2
+
+      - name: Check commit message
+        id: check
+        run: |
+          message=$(git log -1 --pretty=format:"%s")
+          if [[ $message == "updated version"* ]]; then
+            echo "::set-output name=version::${message##* }"
+          fi
+
+      - name: Get latest release
+        id: latest
+        run: |
+          latest=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | jq -r .tag_name)
+          echo "::set-output name=latest::$latest"
+
+      - name: Get commits since latest release
+        id: commits
+        run: |
+          commits=$(git log ${{ steps.latest.outputs.latest }}..HEAD --pretty=format:"- %s (%h)" --reverse)
+          echo "::set-output name=commits::$commits"
+
+      - name: Publish release
+        if: steps.check.outputs.version
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ steps.check.outputs.version }}
+          tag_name: ${{ steps.check.outputs.version }}
+          body: ${{ steps.commits.outputs.commits }}
+          draft: false
