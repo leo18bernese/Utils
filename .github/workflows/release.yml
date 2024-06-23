@@ -1,40 +1,53 @@
-name: Publish release
+name: Publish Release
+
 on:
   push:
     branches:
-      - master
+      - main
+
 jobs:
-  release:
+  publish-release:
     runs-on: ubuntu-latest
+    if: startsWith(github.event.head_commit.message, 'updated version')
+
     steps:
-      - name: Checkout project sources
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Check commit message
-        id: check
-        run: |
-          message=$(git log -1 --pretty=format:"%s")
-          if [[ $message == "updated version"* ]]; then
-            echo "::set-output name=version::${message##* }"
-          fi
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
 
-      - name: Get latest release
-        id: latest
+      - name: Extract version from commit message
+        id: get-version
         run: |
-          latest=$(curl --silent "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" | jq -r .tag_name)
-          echo "::set-output name=latest::$latest"
+          commit_message="${{ github.event.head_commit.message }}"
+          version=$(echo "$commit_message" | awk '{print $NF}')
+          echo "::set-output name=version::$version"
 
-      - name: Get commits since latest release
-        id: commits
+      - name: Set up Git
         run: |
-          commits=$(git log ${{ steps.latest.outputs.latest }}..HEAD --pretty=format:"- %s (%h)" --reverse)
-          echo "::set-output name=commits::$commits"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Publish release
-        if: steps.check.outputs.version
+      - name: Get latest release tag
+        id: get-latest-release
+        run: echo "::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))"
+
+      - name: Get commit messages since last release
+        id: get-commit-messages
+        run: |
+          latest_tag=${{ steps.get-latest-release.outputs.tag }}
+          commit_messages=$(git log $latest_tag..HEAD --oneline --no-decorate)
+          echo "::set-output name=messages::$commit_messages"
+
+      - name: Create Release
+        id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          name: ${{ steps.check.outputs.version }}
-          tag_name: ${{ steps.check.outputs.version }}
-          body: ${{ steps.commits.outputs.commits }}
+          tag_name: ${{ steps.get-version.outputs.version }}
+          name: "Release ${{ steps.get-version.outputs.version }}"
+          body: ${{ steps.get-commit-messages.outputs.messages }}
           draft: false
