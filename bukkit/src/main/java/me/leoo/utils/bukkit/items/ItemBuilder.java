@@ -29,7 +29,6 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
@@ -57,6 +56,9 @@ public class ItemBuilder implements Cloneable {
     private String configPath;
 
     private int slot = -1;
+
+    private ItemData itemData = new ItemData();
+
 
     public ItemBuilder(XMaterial xMaterial, int data) {
         this(xMaterial.parseMaterial(), data);
@@ -309,6 +311,11 @@ public class ItemBuilder implements Cloneable {
         return config.executeAction(configPath, player);
     }
 
+    public ItemBuilder addDataFunction(String function) {
+        itemData.add(function.toUpperCase());
+        return this;
+    }
+
     public void save(String path, ConfigManager config, ConfigManager language) {
         config.add(path + ".material", itemStack.getType().name() + (toSaveString == null ? (itemStack.getDurability() == 0 ? "" : ":" + itemStack.getDurability()) : ":" + toSaveString));
 
@@ -377,6 +384,12 @@ public class ItemBuilder implements Cloneable {
 
         builder.amount(config.getInt(path + ".amount"));
         builder.slot(config.getInt(path + ".slot"));
+
+        if (config.contains(path + ".functions")) {
+            for (String function : config.getList(path + ".functions")) {
+                builder.addDataFunction(function);
+            }
+        }
 
         return builder;
     }

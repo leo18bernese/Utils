@@ -7,6 +7,7 @@ import me.leoo.utils.bukkit.items.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -45,7 +46,11 @@ public abstract class MenuBuilder {
         items.removeIf(Objects::isNull);
         items.forEach(itemBuilder -> {
             int slot = itemBuilder.getSlot();
-            if (slot >= 0 && slot <= getSlots()) inventory.setItem(slot, itemBuilder.defaultFlags().get());
+
+            if (slot >= 0 && slot <= getSlots()){
+                ItemStack item = itemBuilder.getItemData().applyFunctions(player, itemBuilder.defaultFlags()).get();
+                inventory.setItem(slot, item);
+            }
         });
     }
 

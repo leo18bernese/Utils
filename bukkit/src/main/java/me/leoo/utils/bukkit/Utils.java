@@ -12,6 +12,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class Utils extends JavaPlugin {
@@ -20,7 +23,9 @@ public class Utils extends JavaPlugin {
 
     @Getter
     private static Plugin initializedFrom;
+
     public static Supplier<ConfigManager> language;
+    public static List<String> menuFunctions = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -50,8 +55,12 @@ public class Utils extends JavaPlugin {
         InteractListeners.register();
     }
 
-    public static void applySettings(Supplier<ConfigManager> language) {
+    public static void setLanguage(Supplier<ConfigManager> language) {
         Utils.language = language;
+    }
+
+    public static void setMenuFunctions(String... functions) {
+        menuFunctions.addAll(Arrays.asList(functions));
     }
 
     public static void disable() {
