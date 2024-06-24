@@ -26,6 +26,7 @@ public class Utils extends JavaPlugin {
 
     public static Supplier<ConfigManager> language;
     public static List<String> menuFunctions = new ArrayList<>();
+    public static int menuUpdate = 1;
 
     @Override
     public void onEnable() {
@@ -61,6 +62,10 @@ public class Utils extends JavaPlugin {
 
     public static void setMenuFunctions(String... functions) {
         menuFunctions.addAll(Arrays.asList(functions));
+    }
+
+    public static void setMenuUpdate(int menuUpdate) {
+        Utils.menuUpdate = menuUpdate;
     }
 
     public static void disable() {

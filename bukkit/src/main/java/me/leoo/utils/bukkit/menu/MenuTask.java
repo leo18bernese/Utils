@@ -1,5 +1,6 @@
 package me.leoo.utils.bukkit.menu;
 
+import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.task.Tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -20,6 +21,6 @@ public class MenuTask {
             if (menu.isAutoUpdate()) menu.update();
 
             return false;
-        }), 1, 1);
+        }), 1, Utils.menuUpdate);
     }
 }
