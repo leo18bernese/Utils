@@ -1,10 +1,10 @@
 package me.leoo.utils.common.time;
 
 import lombok.experimental.UtilityClass;
+import me.leoo.utils.common.java.JavaUtil;
 import me.leoo.utils.common.number.NumberUtil;
 
-import java.util.Calendar;
-import java.util.TreeMap;
+import java.util.*;
 
 @UtilityClass
 public class TimeUtil {
@@ -58,11 +58,44 @@ public class TimeUtil {
         return -1;
     }
 
-    public String timeStringFromMillis(long millis,
+    public String timeStringFromMillis(long millis) {
+        List<String> list = new ArrayList<>();
+
+        long next = 0;
+
+        for (TimeUnit unit : TimeUnit.values()) {
+
+            TimeUnit nextUnit = JavaUtil.getNextEnum(TimeUnit.class, unit.ordinal());
+            if (nextUnit == null || nextUnit.ordinal() == 0) break;
+
+            long current;
+
+            if (unit == TimeUnit.SECOND) {
+                current = millis / unit.getPartOf();
+
+                if (current <= 0) return "0 " + unit.getNames()[1];
+            } else {
+                current = next;
+            }
+
+            next = current / nextUnit.getPartOf();
+            current %= nextUnit.getPartOf();
+
+            if (current <= 0) continue;
+
+            list.add(unit.format(current) + " ");
+        }
+
+        //reverse list
+        Collections.reverse(list);
+        return String.join("", list);
+    }
+
+    /*public String timeStringFromMillis(long millis,
                                        String yearName, String yearsName, String dayName, String daysName,
                                        String hourName, String hoursName, String minuteName, String minutesName,
                                        String secondName, String secondsName) {
-        long seconds = millis / 1000L;
+        int seconds = (int) (millis / 1000L);
 
         if (seconds <= 0) {
             return "0 " + seconds;
@@ -103,15 +136,7 @@ public class TimeUtil {
 
 
         return builder.toString().trim();
-    }
-
-    public String timeStringFromMillis(long millis) {
-        return timeStringFromMillis(millis,
-                "year", "years", "day", "days",
-                "hour", "hours", "minute", "minutes",
-                "second", "seconds"
-        );
-    }
+    }*/
 
     public boolean compareDate(long date1, int compareType) {
         return compareDate(date1, System.currentTimeMillis(), compareType);
