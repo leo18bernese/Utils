@@ -1,56 +1,70 @@
-name: Publish Release
+name: Create Release
 
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
-  publish-release:
+  check_commit:
     runs-on: ubuntu-latest
-    if: startsWith(github.event.head_commit.message, 'updated version')
-
+    outputs:
+      is_release: ${{ steps.check.outputs.is_release }}
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Set up Java
-        uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
-          java-version: '11'
+          fetch-depth: 2
 
-      - name: Extract version from commit message
-        id: get-version
+      - name: Check commit message
+        id: check
         run: |
-          commit_message="${{ github.event.head_commit.message }}"
-          version=$(echo "$commit_message" | awk '{print $NF}')
-          echo "::set-output name=version::$version"
+          message=$(git log --format=%B -n 1 ${{ github.sha }})
+          echo "Commit message: $message"
+          if [[ $message == "updated version"* ]]; then
+            echo "::set-output name=is_release::true"
+            echo "Commit message starts with 'updated version'"
+          else
+            echo "::set-output name=is_release::false"
+            echo "Commit message does not start with 'updated version'"
+          fi
 
-      - name: Set up Git
+  release:
+    needs: check_commit
+    if: needs.check_commit.outputs.is_release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get commit message
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{ github.sha }})
+          echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_ENV
+          echo "Commit message: $COMMIT_MESSAGE"
 
-      - name: Get latest release tag
-        id: get-latest-release
-        run: echo "::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))"
-
-      - name: Get commit messages since last release
-        id: get-commit-messages
+      - name: Get version
         run: |
-          latest_tag=${{ steps.get-latest-release.outputs.tag }}
-          commit_messages=$(git log $latest_tag..HEAD --oneline --no-decorate)
-          echo "::set-output name=messages::$commit_messages"
+          VERSION=$(echo $COMMIT_MESSAGE | awk 'BEGIN{FS=" "} {print $NF}')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Version: $VERSION"
+
+      - name: Get release description
+        run: |
+          DESCRIPTION=$(git log ${{ github.event.before }}..${{ github.sha }} --pretty=format:'- %s' | grep -v "updated version")
+          echo "DESCRIPTION<<EOF" >> $GITHUB_ENV
+          echo "$DESCRIPTION" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          echo "Release description: $DESCRIPTION"
 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
-          tag_name: ${{ steps.get-version.outputs.version }}
-          release_name: "Release ${{ steps.get-version.outputs.version }}"
-          body: ${{ steps.get-commit-messages.outputs.messages }}
-          draft: false
-          prerelease: false
+          tag_name: ${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          body: ${{ env.DESCRIPTION }}
