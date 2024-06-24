@@ -14,6 +14,7 @@ import me.leoo.utils.bukkit.chat.CC;
 import me.leoo.utils.bukkit.config.ConfigManager;
 import me.leoo.utils.common.number.NumberUtil;
 import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -23,6 +24,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
+import org.bukkit.material.Colorable;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
@@ -201,6 +203,11 @@ public class ItemBuilder implements Cloneable {
 
     public ItemBuilder colorFirework(Color color) {
         ((FireworkEffectMeta) itemMeta).setEffect(FireworkEffect.builder().withColor(color).build());
+        return this;
+    }
+
+    public ItemBuilder colorItem(Color color) {
+        ((Colorable) itemStack.getData()).setColor(DyeColor.getByColor(color));
         return this;
     }
 
