@@ -26,7 +26,7 @@ public class Utils extends JavaPlugin {
 
     public static Supplier<ConfigManager> language;
     public static List<String> menuFunctions = new ArrayList<>();
-    public static int menuUpdate = 1;
+    public static int menuUpdate = 10;
 
     @Override
     public void onEnable() {
