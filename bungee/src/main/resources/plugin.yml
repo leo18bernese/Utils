@@ -1,5 +1,5 @@
 name: Utils-Bungee
-version: ${project.version}
+version: ${version}
 author: itz_leoo
 main: me.leoo.utils.bungee.Utils
 description: Utils methods for bungeecord plugins by itz_leoo

@@ -2,7 +2,8 @@ package me.leoo.utils.bukkit.items;
 
 import com.cryptomorin.xseries.XEnchantment;
 import com.cryptomorin.xseries.XMaterial;
-import com.cryptomorin.xseries.XSkull;
+import com.cryptomorin.xseries.profiles.builder.XSkull;
+import com.cryptomorin.xseries.profiles.objects.Profileable;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadableItemNBT;
 import lombok.AllArgsConstructor;
@@ -128,7 +129,7 @@ public class ItemBuilder implements Cloneable {
 
     public ItemBuilder skin(String string) {
         if (itemMeta instanceof SkullMeta) {
-            XSkull.of(itemMeta).profile(string).apply();
+            XSkull.of(itemMeta).profile(Profileable.detect(string)).apply();
         }
 
         return this;
@@ -144,7 +145,7 @@ public class ItemBuilder implements Cloneable {
 
     public ItemBuilder owner(UUID uuid) {
         if (itemMeta instanceof SkullMeta) {
-            XSkull.of(itemMeta).profile(uuid).apply();
+            XSkull.of(itemMeta).profile(Profileable.of(uuid)).apply();
         }
 
         return this;

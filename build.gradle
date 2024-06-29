@@ -1,0 +1,62 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'io.github.goooler.shadow' version '8.1.7' // Java 21 fix
+}
+
+group = 'me.leoo.utils'
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+    apply plugin: 'io.github.goooler.shadow'
+
+    if (plugins.hasPlugin('java')) {
+        repositories {
+            mavenLocal()
+            mavenCentral()
+        }
+
+        dependencies {
+            compileOnly 'org.projectlombok:lombok:1.18.30'
+
+            annotationProcessor 'org.projectlombok:lombok:1.18.30'
+        }
+
+        java {
+            sourceCompatibility = JavaVersion.VERSION_1_8
+            targetCompatibility = JavaVersion.VERSION_1_8
+        }
+
+        shadowJar {
+            archiveFileName = 'Utils-' + project.version + '.jar'
+            archiveClassifier = ''
+
+            finalizedBy publishToMavenLocal
+        }
+
+        processResources {
+            filteringCharset 'UTF-8'
+            expand 'version': project.version
+        }
+
+        publishing {
+            publications {
+                shadow(MavenPublication) { publication ->
+                    project.shadow.component(publication)
+                }
+            }
+        }
+    }
+}
+
+
+tasks {
+    compileJava {
+        options.encoding = 'UTF-8'
+        dependsOn clean
+    }
+    shadowJar {
+        dependsOn clean
+    }
+}

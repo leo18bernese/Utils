@@ -1,0 +1,7 @@
+rootProject.name = 'Utils'
+include 'common'
+include 'bukkit'
+include 'bungee'
+include 'velocity'
+include 'mongodb'
+include 'redis'

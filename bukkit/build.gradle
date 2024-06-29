@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    // id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'io.github.goooler.shadow' version '8.1.7' // Java 21 fix
+}
+
+group = 'me.leoo.utils'
+
+repositories {
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven { url 'https://repo.codemc.org/repository/maven-public/' }
+    maven { url 'https://papermc.io/repo/repository/maven-public/' }
+}
+
+dependencies {
+    compileOnly 'dev.folia:folia-api:1.20.1-R0.1-SNAPSHOT'
+
+    compileOnly 'me.clip:placeholderapi:2.11.6'
+    compileOnly 'com.mojang:authlib:3.16.29'
+
+    implementation 'com.github.cryptomorin:XSeries:11.2.0'
+    implementation 'de.tr7zw:item-nbt-api:2.13.0'
+
+    // Projects implementation
+    implementation project(':common')
+}
+
+
+shadowJar {
+    archiveFileName = 'Utils-Bukkit-' + project.version + '.jar'
+
+    minimize ()
+}

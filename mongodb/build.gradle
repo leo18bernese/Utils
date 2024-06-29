@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    // id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'io.github.goooler.shadow' version '8.1.7' // Java 21 fix
+}
+
+group = 'me.leoo.utils'
+
+repositories {
+    maven { url 'https://papermc.io/repo/repository/maven-public/' }
+}
+
+dependencies {
+    compileOnly 'dev.folia:folia-api:1.20.1-R0.1-SNAPSHOT'
+
+    implementation 'org.mongodb:mongo-java-driver:3.12.14'
+
+    // Utils
+    implementation project(':common')
+}
+
+shadowJar {
+    archiveFileName = 'Utils-MongoDB-' + project.version + '.jar'
+
+    minimize ()
+}

@@ -31,6 +31,8 @@ public class ItemData {
     public ItemBuilder applyFunctions(Player player, ItemBuilder item) {
         for (String function : enabledFunctions) {
             item = FUNCTIONS.get(function).apply(player, item);
+
+            System.out.println("Applying function: " + function + " to item: " + item.get().getItemMeta().getDisplayName());
         }
 
         /*List<String> functions = new ArrayList<>(Utils.menuFunctions);

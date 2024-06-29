@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    // id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'io.github.goooler.shadow' version '8.1.7' // Java 21 fix
+}
+
+group = 'me.leoo.utils'
+
+dependencies {
+    implementation 'redis.clients:jedis:5.1.0'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    // Utils
+    implementation project(':common')
+}
+
+shadowJar {
+    archiveFileName = 'Utils-Redis-' + project.version + '.jar'
+
+    minimize ()
+}
