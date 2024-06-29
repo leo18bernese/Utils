@@ -129,6 +129,14 @@ public class ItemBuilder implements Cloneable {
 
     public ItemBuilder skin(String string) {
         if (itemMeta instanceof SkullMeta) {
+            XSkull.of(itemMeta).profile(Profileable.detect(string)).applyAsync();
+        }
+
+        return this;
+    }
+
+    public ItemBuilder skinSync(String string) {
+        if (itemMeta instanceof SkullMeta) {
             XSkull.of(itemMeta).profile(Profileable.detect(string)).apply();
         }
 
@@ -138,14 +146,6 @@ public class ItemBuilder implements Cloneable {
     public ItemBuilder skinCondition(String string, boolean condition) {
         if (condition) {
             return skin(string);
-        }
-
-        return this;
-    }
-
-    public ItemBuilder owner(UUID uuid) {
-        if (itemMeta instanceof SkullMeta) {
-            XSkull.of(itemMeta).profile(Profileable.of(uuid)).apply();
         }
 
         return this;

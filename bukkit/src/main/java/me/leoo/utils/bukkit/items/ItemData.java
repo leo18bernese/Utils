@@ -17,7 +17,7 @@ public class ItemData {
     private static final Map<String, BiFunction<Player, ItemBuilder, ItemBuilder>> FUNCTIONS = new HashMap<>();
 
     static {
-        FUNCTIONS.put("SELF_SKIN", (player, item) -> item.owner(player.getUniqueId()));
+        FUNCTIONS.put("SELF_SKIN", (player, item) -> item.skinSync(player.getUniqueId().toString()));
     }
 
     public ItemData add(String function) {
@@ -31,19 +31,7 @@ public class ItemData {
     public ItemBuilder applyFunctions(Player player, ItemBuilder item) {
         for (String function : enabledFunctions) {
             item = FUNCTIONS.get(function).apply(player, item);
-
-            System.out.println("Applying function: " + function + " to item: " + item.get().getItemMeta().getDisplayName());
         }
-
-        /*List<String> functions = new ArrayList<>(Utils.menuFunctions);
-
-        for (String function : enabledFunctions) {
-            if (!functions.contains(function)) functions.add(function);
-        }
-
-        for (String function : functions) {
-            item = FUNCTIONS.get(function).apply(player, item);
-        }*/
 
         return item;
     }
