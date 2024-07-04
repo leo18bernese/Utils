@@ -14,10 +14,14 @@ public class ItemData {
 
     private final List<String> enabledFunctions = new ArrayList<>();
 
+    private static final List<String> DEFAULT_FUNCTIONS = new ArrayList<>();
     private static final Map<String, BiFunction<Player, ItemBuilder, ItemBuilder>> FUNCTIONS = new HashMap<>();
 
     static {
         FUNCTIONS.put("SELF_SKIN", (player, item) -> item.skinSync(player.getUniqueId().toString()));
+        FUNCTIONS.put("PLACEHOLDERS", (player, item) -> item.replacePlaceholders(player));
+
+        DEFAULT_FUNCTIONS.add("PLACEHOLDERS");
     }
 
     public ItemData add(String function) {
@@ -29,6 +33,8 @@ public class ItemData {
     }
 
     public ItemBuilder applyFunctions(Player player, ItemBuilder item) {
+        enabledFunctions.addAll(DEFAULT_FUNCTIONS);
+
         for (String function : enabledFunctions) {
             item = FUNCTIONS.get(function).apply(player, item);
         }
