@@ -80,6 +80,10 @@ public class CC {
         return strings.stream().map(CC::color).collect(Collectors.toList());
     }
 
+    public List<String> color(List<String> strings, Player player) {
+        return strings.stream().map(s -> color(s, player)).collect(Collectors.toList());
+    }
+
     public String strip(String string) {
         return ChatColor.stripColor(string);
     }
