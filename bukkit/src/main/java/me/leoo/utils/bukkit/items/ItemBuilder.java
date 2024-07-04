@@ -222,17 +222,29 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder addReplacement(String key, String value) {
+    public ItemBuilder replacement(String key, String value) {
         replacements.put(key, value);
         return this;
     }
 
-    public ItemBuilder addPlaceholdersMap(PlaceholderMap placeholders) {
-        this.placeholders.add(placeholders);
+    public ItemBuilder replacement(String key, Number value) {
+        replacements.put(key, String.valueOf(value));
         return this;
     }
 
+    public ItemBuilder placeholderMap(PlaceholderMap map) {
+        this.placeholders.add(map);
+        return this;
+    }
 
+    public ItemBuilder replacePlaceholders(Player player) {
+        if (itemMeta.hasDisplayName()) name(CC.color(itemMeta.getDisplayName(), player));
+        if (itemMeta.hasLore()) lore(CC.color(itemMeta.getLore(), player));
+
+        return this;
+    }
+
+    //todo maybe to remove
     public ItemBuilder replaceName(Function<String, String> replaceFunction) {
         name(replaceFunction.apply(itemMeta.getDisplayName()));
         return this;
@@ -279,7 +291,6 @@ public class ItemBuilder implements Cloneable {
         this.command = command;
         return this;
     }
-
 
     public ItemBuilder event(Predicate<InventoryClickEvent> eventCallBack) {
         this.eventCallback = eventCallBack;
