@@ -402,7 +402,7 @@ public class ItemBuilder implements Cloneable {
         builder.permission(config.getYml().getString(path + ".permission"));
 
         builder.amount(config.getInt(path + ".amount"));
-        builder.slot(config.getInt(path + ".slot"));
+        builder.slot(config.getYml().getInt(path + ".slot", -1));
 
         if (config.contains(path + ".functions")) {
             for (String function : config.getList(path + ".functions")) {
@@ -429,7 +429,7 @@ public class ItemBuilder implements Cloneable {
         for (Map.Entry<String, String> entry : replacements.entrySet()) {
             if (entry.getValue() == null) continue;
 
-            name(itemMeta.getDisplayName().replace(entry.getKey(), entry.getValue()));
+            if (itemMeta.hasDisplayName()) name(itemMeta.getDisplayName().replace(entry.getKey(), entry.getValue()));
 
             if (itemMeta.hasLore()) {
                 List<String> lore = itemMeta.getLore();
@@ -438,10 +438,9 @@ public class ItemBuilder implements Cloneable {
             }
         }
 
-        placeholders.forEach(placeholderMap -> {
-            name(placeholderMap.parse(itemMeta.getDisplayName()));
-
-            if (itemMeta.hasLore()) lore(placeholderMap.parse(itemMeta.getLore()));
+        placeholders.forEach(map -> {
+            if (itemMeta.hasDisplayName()) name(map.parse(itemMeta.getDisplayName()));
+            if (itemMeta.hasLore()) lore(map.parse(itemMeta.getLore()));
         });
 
 
