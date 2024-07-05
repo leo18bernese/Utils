@@ -31,5 +31,7 @@ dependencies {
 shadowJar {
     archiveFileName = 'Utils-Bukkit-' + project.version + '.jar'
 
-    minimize ()
+    minimize {
+        //exclude(dependency('com.github.cryptomorin:XSeries'))
+    }
 }
