@@ -83,8 +83,10 @@ public class ConfigManager {
     public void move(String from, String to) {
         if (!contains(from)) return;
 
-        yml.set(to, yml.get(from));
+        Object value = yml.get(from);
+
         yml.set(from, null);
+        yml.set(to, value);
     }
 
     public void moveDefault(String from, String to, Object defaultValue) {
