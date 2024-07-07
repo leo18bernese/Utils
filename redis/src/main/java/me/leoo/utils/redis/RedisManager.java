@@ -6,7 +6,6 @@ import me.leoo.utils.redis.json.JsonBuilder;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisPubSub;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;

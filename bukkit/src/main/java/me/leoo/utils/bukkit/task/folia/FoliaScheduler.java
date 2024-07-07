@@ -29,7 +29,7 @@ public class FoliaScheduler extends Tasks {
 
     @Override
     public ScheduledTask timer(Runnable runnable, long delay, long interval) {
-        if(delay <= 0) delay = 1;
+        if (delay <= 0) delay = 1;
 
         return new FoliaTask(Bukkit.getGlobalRegionScheduler().runAtFixedRate(Utils.get(), task -> runnable.run(), delay, interval));
     }

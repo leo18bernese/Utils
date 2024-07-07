@@ -11,7 +11,7 @@ import java.util.Map;
 public enum TimeUnit {
 
     SECOND(1000),
-    MINUTE( 60),
+    MINUTE(60),
     HOUR(60),
     DAY(24),
     YEAR(365);
@@ -21,7 +21,7 @@ public enum TimeUnit {
 
     private static final Map<TimeUnit, String[]> NAMES = new HashMap<>();
 
-    public String format(long value){
+    public String format(long value) {
         String[] names = NAMES.get(this);
 
         return value + " " + (value == 1 ? names[0] : names[1]);

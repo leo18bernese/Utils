@@ -4,7 +4,6 @@ import lombok.Getter;
 import me.leoo.utils.bukkit.items.ItemBuilder;
 import me.leoo.utils.bukkit.menu.MenuBuilder;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
     public abstract ItemBuilder getPreviousPageItem();
 
     public List<ItemBuilder> getGlobalItems() {
-        return null;
+        return new ArrayList<>();
     }
 
     public PaginatedMenuBuilder(Player player, int rows) {
@@ -34,9 +33,19 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
 
     @Override
     public List<ItemBuilder> getItems() {
-        List<ItemBuilder> items = new ArrayList<>();
+        List<ItemBuilder> items = new ArrayList<>(getGlobalItems());
         List<ItemBuilder> builders = new ArrayList<>(getAllPageItems());
 
+        // Remove the items in the previous and next page slots
+        if (getPreviousPageItem() != null) {
+            items.removeIf(item -> item.getSlot() == getPreviousPageItem().getSlot());
+        }
+
+        if (getNextPageItem() != null) {
+            items.removeIf(item -> item.getSlot() == getNextPageItem().getSlot());
+        }
+
+        // Added paginated items
         int index = (getPage() - 1) * getPaginatedSlots().size();
         for (Integer slot : getPaginatedSlots()) {
             if (index >= builders.size()) continue;
@@ -46,10 +55,7 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
             index++;
         }
 
-        if (getGlobalItems() != null) {
-            items.addAll(getGlobalItems());
-        }
-
+        // Add the previous and next page items
         if (page > 1 && getPreviousPageItem() != null) {
             items.add(getPreviousPageItem().event(event -> {
                 openNewPage(-1);

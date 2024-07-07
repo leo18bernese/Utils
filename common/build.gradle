@@ -14,5 +14,5 @@ dependencies {
 shadowJar {
     archiveFileName = 'Utils-Common-' + project.version + '.jar'
 
-    minimize ()
+    minimize()
 }

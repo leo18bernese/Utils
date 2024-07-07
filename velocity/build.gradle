@@ -21,5 +21,5 @@ dependencies {
 shadowJar {
     archiveFileName = 'Utils-Redis-' + project.version + '.jar'
 
-    minimize ()
+    minimize()
 }

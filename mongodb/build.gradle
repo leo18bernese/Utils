@@ -23,5 +23,5 @@ dependencies {
 shadowJar {
     archiveFileName = 'Utils-MongoDB-' + project.version + '.jar'
 
-    minimize ()
+    minimize()
 }

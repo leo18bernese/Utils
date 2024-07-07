@@ -47,7 +47,7 @@ public abstract class MenuBuilder {
         items.forEach(itemBuilder -> {
             int slot = itemBuilder.getSlot();
 
-            if (slot >= 0 && slot <= getSlots()){
+            if (slot >= 0 && slot <= getSlots()) {
                 ItemStack item = itemBuilder.getItemData().applyFunctions(player, itemBuilder).defaultFlags().get();
                 inventory.setItem(slot, item);
             }
