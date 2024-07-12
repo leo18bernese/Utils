@@ -10,9 +10,10 @@ import java.util.function.Supplier;
 public class PlaceholderMap implements Cloneable {
 
     private final Map<String, Supplier<String>> replacements = new HashMap<>();
+    private final Map<String, Supplier<List<String>>> multiReplacements = new HashMap<>();
 
     private final Map<String, Supplier<String>> placeholders = new HashMap<>();
-    private final Map<String, Supplier<List<String>>> multiLinePlaceholders = new HashMap<>();
+    private final Map<String, Supplier<List<String>>> multiPlaceholders = new HashMap<>();
 
     // Add
     public PlaceholderMap add(String key, Supplier<String> value) {
@@ -37,7 +38,7 @@ public class PlaceholderMap implements Cloneable {
             key = "{" + key + "}";
         }
 
-        multiLinePlaceholders.put(key, value);
+        multiPlaceholders.put(key, value);
         return this;
     }
 
@@ -47,7 +48,7 @@ public class PlaceholderMap implements Cloneable {
 
     public PlaceholderMap addMap(PlaceholderMap map) {
         placeholders.putAll(map.placeholders);
-        multiLinePlaceholders.putAll(map.multiLinePlaceholders);
+        multiPlaceholders.putAll(map.multiPlaceholders);
 
         return this;
     }
@@ -59,6 +60,15 @@ public class PlaceholderMap implements Cloneable {
         }
 
         replacements.put(key, value);
+        return this;
+    }
+
+    public PlaceholderMap addMultipleReplacement(String key, Supplier<List<String>> value) {
+        if (!key.startsWith("{") && !key.endsWith("}")) {
+            key = "{" + key + "}";
+        }
+
+        multiReplacements.put(key, value);
         return this;
     }
 
@@ -79,7 +89,11 @@ public class PlaceholderMap implements Cloneable {
         replacements.forEach((key, value) -> text.replaceAll(line -> replace(line, key, value)));
         placeholders.forEach((key, value) -> text.replaceAll(line -> replace(line, key, value)));
 
-        for (Map.Entry<String, Supplier<List<String>>> entry : multiLinePlaceholders.entrySet()) {
+        for (Map.Entry<String, Supplier<List<String>>> entry : multiReplacements.entrySet()) {
+            StringUtil.replaceWithList(text, entry.getKey(), entry.getValue().get());
+        }
+
+        for (Map.Entry<String, Supplier<List<String>>> entry : multiPlaceholders.entrySet()) {
             StringUtil.replaceWithList(text, entry.getKey(), entry.getValue().get());
         }
 
@@ -91,7 +105,7 @@ public class PlaceholderMap implements Cloneable {
         PlaceholderMap map = new PlaceholderMap();
 
         map.placeholders.putAll(this.placeholders);
-        map.multiLinePlaceholders.putAll(this.multiLinePlaceholders);
+        map.multiPlaceholders.putAll(this.multiPlaceholders);
 
         return map;
     }
