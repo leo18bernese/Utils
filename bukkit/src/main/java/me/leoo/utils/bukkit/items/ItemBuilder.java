@@ -338,7 +338,7 @@ public class ItemBuilder implements Cloneable {
     public void save(String path, ConfigManager config, ConfigManager language) {
         config.add(path + ".material", itemStack.getType().name() + (toSaveString == null ? (itemStack.getDurability() == 0 ? "" : ":" + itemStack.getDurability()) : ":" + toSaveString));
 
-        if (itemStack.getAmount() > 0) config.add(path + ".amount", itemStack.getAmount());
+        if (itemStack.getAmount() > 1) config.add(path + ".amount", itemStack.getAmount());
         if (itemMeta.hasEnchants()) config.add(path + ".enchanted", itemMeta.hasEnchants());
 
         if (slot >= 0) config.add(path + ".slot", slot);
@@ -401,7 +401,7 @@ public class ItemBuilder implements Cloneable {
         builder.setEnchanted(config.getBoolean(path + ".enchanted"));
         builder.permission(config.getYml().getString(path + ".permission"));
 
-        builder.amount(config.getInt(path + ".amount"));
+        builder.amount(config.getYml().getInt(path + ".amount", 1));
         builder.slot(config.getYml().getInt(path + ".slot", -1));
 
         if (config.contains(path + ".functions")) {
