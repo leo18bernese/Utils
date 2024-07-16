@@ -27,6 +27,7 @@ public class ConfigManager {
     private final File config;
     private final String name;
 
+    private final List<String> excludeFirstTime = new ArrayList<>();
     private final boolean firstTime;
 
     private static final Map<String, ConfigManager> configs = new HashMap<>();
@@ -53,6 +54,16 @@ public class ConfigManager {
 
     public void reload() {
         yml = YamlConfiguration.loadConfiguration(config);
+    }
+
+    public void addExcludeFirstTime(String path) {
+        excludeFirstTime.add(path);
+    }
+
+    public boolean checkFirstTime(String path) {
+        if (!excludeFirstTime.contains(path)) return true;
+
+        return firstTime;
     }
 
     public void save() {
@@ -94,6 +105,16 @@ public class ConfigManager {
             yml.set(to, defaultValue);
         } else {
             move(from, to);
+        }
+    }
+
+    public void replace(String path, String oldString, String newString) {
+        if (!contains(path)) return;
+
+        if (yml.isList(path)) {
+            set(path, yml.getStringList(path).stream().map(s -> s.replace(oldString, newString)).collect(Collectors.toList()));
+        } else {
+            set(path, yml.getString(path).replace(oldString, newString));
         }
     }
 
