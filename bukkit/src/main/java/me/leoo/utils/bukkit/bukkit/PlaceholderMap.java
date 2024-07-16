@@ -79,7 +79,7 @@ public class PlaceholderMap implements Cloneable {
         }
 
         for (Map.Entry<String, Supplier<String>> entry : placeholders.entrySet()) {
-            text = text.replace(entry.getKey(), entry.getValue().get());
+            text = replace(text, entry.getKey(), entry.getValue());
         }
 
         return text;
