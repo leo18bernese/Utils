@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class BukkitUtils {
 
     public static final int VERSION = Integer.parseInt(Bukkit.getBukkitVersion().split("-")[0].split("\\.")[1]);
+    public static final String VERSION_STRING = Bukkit.getBukkitVersion().split("-")[0].replace(".", "_");
 
     public boolean supports(int version) {
         return VERSION >= version;
