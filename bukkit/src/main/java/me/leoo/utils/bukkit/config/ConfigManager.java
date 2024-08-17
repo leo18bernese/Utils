@@ -4,6 +4,8 @@ import com.cryptomorin.xseries.XMaterial;
 import lombok.Getter;
 import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.chat.CC;
+import me.leoo.utils.bukkit.commands.v2.VCommandBuilder;
+import me.leoo.utils.bukkit.commands.v2.cache.VCommandCache;
 import me.leoo.utils.bukkit.items.ItemBuilder;
 import me.leoo.utils.bukkit.location.LocationUtil;
 import me.leoo.utils.common.file.FileUtil;
@@ -30,7 +32,7 @@ public class ConfigManager {
     private final List<String> excludeFirstTime = new ArrayList<>();
     private final boolean firstTime;
 
-    private static final Map<String, ConfigManager> configs = new HashMap<>();
+    private static final List<ConfigManager> configs = new ArrayList<>();
 
     public ConfigManager(String name, String dir) {
         this.name = name;
@@ -41,7 +43,7 @@ public class ConfigManager {
 
         this.yml = YamlConfiguration.loadConfiguration(config).options().copyDefaults(true).configuration();
 
-        configs.put(name, this);
+        configs.add(this);
     }
 
     public ConfigManager(String name) {
@@ -67,6 +69,8 @@ public class ConfigManager {
     }
 
     public void save() {
+        yml.options().copyDefaults(true);
+
         try {
             yml.save(config);
         } catch (IOException exception) {
@@ -148,7 +152,7 @@ public class ConfigManager {
     public List<String> getList(String path) {
         if (!contains(path)) {
             Bukkit.getLogger().severe("List " + path + " not found in " + name + ".yml");
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
 
         return yml.getStringList(path).stream().map(CC::color).collect(Collectors.toList());
@@ -187,7 +191,7 @@ public class ConfigManager {
     }
 
     public List<Location> getLocations(String path) {
-        return getList(path).stream()
+        return yml.getStringList(path).stream()
                 .map(LocationUtil::deserializeLocation)
                 .collect(Collectors.toList());
     }
@@ -198,7 +202,7 @@ public class ConfigManager {
     }
 
     public void saveLocations(String path, List<Location> locations) {
-        List<String> list = getList(path);
+        List<String> list = yml.getStringList(path);
         list.addAll(locations.stream().map(LocationUtil::serializeLocation).collect(Collectors.toList()));
 
         add(path, list);
@@ -269,8 +273,12 @@ public class ConfigManager {
         return getList(getGroupPath(path, subPath, group));
     }
 
-    public Set<String> getGroupSection(String path, String subPath, String group) {
+    public Set<String> getGroupKeys(String path, String subPath, String group) {
         return getKeys(getGroupPath(path, subPath, group));
+    }
+
+    public ConfigurationSection getGroupSection(String path, String subPath, String group) {
+        return getSection(getGroupPath(path, subPath, group));
     }
 
     public boolean getGroupBoolean(String path, String subPath, String group) {
@@ -285,7 +293,13 @@ public class ConfigManager {
         return getDouble(getGroupPath(path, subPath, group));
     }
 
+    public void removeFromMemory() {
+        configs.remove(this);
+    }
+
     public static void reloadAll() {
-        configs.values().forEach(ConfigManager::reload);
+        configs.forEach(ConfigManager::reload);
+
+        VCommandCache.getCommands().values().forEach(VCommandBuilder::reload);
     }
 }
