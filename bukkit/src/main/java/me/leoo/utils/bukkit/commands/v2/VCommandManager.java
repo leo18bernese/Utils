@@ -5,6 +5,8 @@ import me.leoo.utils.bukkit.commands.v2.exception.CommandError;
 import me.leoo.utils.bukkit.commands.v2.exception.VCommandError;
 import me.leoo.utils.bukkit.config.ConfigManager;
 
+import java.util.function.Supplier;
+
 @Data
 public class VCommandManager {
 
@@ -12,7 +14,7 @@ public class VCommandManager {
 
     private String usagePath;
     private String displayPath;
-    private ConfigManager configManager;
+    private Supplier<ConfigManager> configManager;
 
     private boolean buildUsageMessage = true;
 
@@ -28,7 +30,7 @@ public class VCommandManager {
         this(new CommandError());
     }
 
-    public void setCommandUsage(ConfigManager configManager, String usagePath, String displayPath) {
+    public void setCommandUsage(Supplier<ConfigManager> configManager, String usagePath, String displayPath) {
         this.configManager = configManager;
         this.usagePath = usagePath;
         this.displayPath = displayPath;

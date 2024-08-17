@@ -3,6 +3,7 @@ package me.leoo.utils.bukkit.commands.v2;
 import lombok.Getter;
 import lombok.Setter;
 import me.leoo.utils.bukkit.chat.CC;
+import me.leoo.utils.bukkit.chat.ChatMessage;
 import me.leoo.utils.bukkit.commands.v2.cache.VCommandCache;
 import me.leoo.utils.bukkit.commands.v2.parser.ArgumentParser;
 import me.leoo.utils.bukkit.commands.v2.parser.CommandArgs;
@@ -58,6 +59,18 @@ public abstract class VCommand extends BukkitCommand {
 
                 Object[] subParameters = ArgumentParser.parseArguments(subCommand, new CommandArgs(sender, subArgs));
                 if (subParameters == null) return false;
+
+                if (subCommand.isConfirmation()) {
+                    if (sender instanceof Player) {
+                        ChatMessage.request(((Player) sender).getUniqueId(), event -> {
+                            String runned = "/" + s + " " + String.join(" ", args);
+
+                            if (event.getMessage().equals(runned)) {
+                                ((Player) sender).performCommand(runned);
+                            }
+                        });
+                    }
+                }
 
                 if (sender instanceof Player) {
                     subCommand.execute(mainCommand.getName(), (Player) sender, subParameters);

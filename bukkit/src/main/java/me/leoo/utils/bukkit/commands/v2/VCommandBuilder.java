@@ -33,6 +33,8 @@ public class VCommandBuilder {
 
     private Method method;
 
+    private boolean confirmation;
+
     private final List<VCommandBuilder> subCommands = new ArrayList<>();
 
     private static final VCommandManager manager = VCommandManager.get();
@@ -45,7 +47,7 @@ public class VCommandBuilder {
         }
 
         for (Method method : clazz.getMethods()) {
-            parseCommand(method);
+            parseSubCommand(method);
         }
     }
 
@@ -69,7 +71,7 @@ public class VCommandBuilder {
         }
     }
 
-    private void parseCommand(Method method) {
+    private void parseSubCommand(Method method) {
         if (method.isAnnotationPresent(SubCommand.class)) {
             SubCommand subCommand = method.getAnnotation(SubCommand.class);
 
@@ -87,7 +89,9 @@ public class VCommandBuilder {
             String[] subUsage = parseUsage(subName, method);
             String subDisplay = parseDisplay(subName, method);
 
-            subCommands.add(new VCommandBuilder(subName, subAliases, subExecutor, subPermission, subUsage, subDisplay, method));
+            boolean confirmation = subCommand.confirmation();
+
+            subCommands.add(new VCommandBuilder(subName, subAliases, subExecutor, subPermission, subUsage, subDisplay, method, confirmation));
         } else if (method.isAnnotationPresent(TabComplete.class)) {
             TabComplete tabComplete = method.getAnnotation(TabComplete.class);
 
@@ -120,7 +124,7 @@ public class VCommandBuilder {
     }
 
     private String[] parseUsageFromSettings(String name, Method method) {
-        ConfigManager config = manager.getConfigManager();
+        ConfigManager config = manager.getConfigManager().get();
         String path = manager.getUsagePath();
 
         if (config != null && path != null) {
@@ -155,7 +159,7 @@ public class VCommandBuilder {
     }
 
     private String parseDisplayFromSettings(String name, Method method) {
-        ConfigManager config = manager.getConfigManager();
+        ConfigManager config = manager.getConfigManager().get();
         String path = manager.getDisplayPath();
 
         if (config != null && path != null) {
@@ -258,6 +262,14 @@ public class VCommandBuilder {
         for (String s : usage) {
             sender.sendMessage(CC.color(s));
         }
+    }
+
+    //reload
+    public void reload(){
+        subCommands.forEach(VCommandBuilder::reload);
+
+        this.usage = parseUsage(name, method);
+        this.display = parseDisplay(name, method);
     }
 
 

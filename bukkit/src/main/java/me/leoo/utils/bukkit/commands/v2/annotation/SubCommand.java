@@ -14,4 +14,6 @@ public @interface SubCommand {
     String[] value() default {};
 
     CommandExecutor executor() default CommandExecutor.PLAYER;
+
+    boolean confirmation() default false;
 }
