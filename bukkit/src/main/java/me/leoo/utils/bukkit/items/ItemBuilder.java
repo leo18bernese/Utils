@@ -5,7 +5,6 @@ import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.profiles.builder.XSkull;
 import com.cryptomorin.xseries.profiles.objects.Profileable;
 import de.tr7zw.changeme.nbtapi.NBT;
-import de.tr7zw.changeme.nbtapi.iface.ReadableItemNBT;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,6 +50,8 @@ public class ItemBuilder implements Cloneable {
     private String command;
 
     private String toSaveString;
+
+    private final Map<String, String> tags = new HashMap<>();
 
     @Setter
     private ConfigManager config, language;
@@ -256,7 +257,7 @@ public class ItemBuilder implements Cloneable {
     }
 
     public ItemBuilder setTag(String value) {
-        setTag(itemStack, value);
+        tags.put(Utils.getInitializedFrom().getDescription().getName(), value);
         return this;
     }
 
@@ -269,7 +270,9 @@ public class ItemBuilder implements Cloneable {
     }
 
     public static String getTag(ItemStack itemStack) {
-        return NBT.get(itemStack, (Function<ReadableItemNBT, String>) nbt -> nbt.getString(Utils.getInitializedFrom().getDescription().getName()));
+        return NBT.get(itemStack, nbt -> {
+            return nbt.getString(Utils.getInitializedFrom().getDescription().getName());
+        });
     }
 
     public ItemBuilder setToSaveString(String toSaveString) {
@@ -448,7 +451,19 @@ public class ItemBuilder implements Cloneable {
         if (itemMeta.hasLore()) lore(CC.color(itemMeta.getLore()));
 
         itemStack.setItemMeta(itemMeta);
+
+        // Apply NBT Tags
+        applyTags();
+
         return itemStack;
+    }
+
+    public void applyTags() {
+        for (Map.Entry<String, String> entry : tags.entrySet()) {
+            NBT.modify(itemStack, nbt -> {
+                nbt.setString(entry.getKey(), entry.getValue());
+            });
+        }
     }
 
     @Override
