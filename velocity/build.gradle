@@ -19,7 +19,8 @@ dependencies {
 }
 
 shadowJar {
-    archiveFileName = 'Utils-Redis-' + project.version + '.jar'
+    archiveFileName = 'Utils-Velocity-' + project.version + '.jar'
+    destinationDirectory = file('../build/libs/')
 
     minimize()
 }

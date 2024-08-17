@@ -22,6 +22,7 @@ dependencies {
 
 shadowJar {
     archiveFileName = 'Utils-MongoDB-' + project.version + '.jar'
+    destinationDirectory = file('../build/libs/')
 
     minimize()
 }

@@ -13,6 +13,7 @@ dependencies {
 
 shadowJar {
     archiveFileName = 'Utils-Common-' + project.version + '.jar'
+    destinationDirectory = file('../build/libs/')
 
     minimize()
 }
