@@ -17,21 +17,23 @@ public class MongoManager {
     private static MongoManager instance;
 
     public MongoManager(String host, int port, String database, String username, String password) {
-        connect(host, port, database, username, password);
+        if (username == null || username.isEmpty()) {
+            connect(String.format(
+                    "mongodb://%s:%s/%s",
+                    host, port, database), database);
+        } else {
+            connect(String.format(
+                    "mongodb://%s:%s@%s:%d/%s",
+                    username, password, host, port, database), database);
+        }
     }
 
-    private void connect(String host, int port, String database, String username, String password) {
-        if (username == null || username.isEmpty()) {
-            this.client = MongoClients.create(String.format(
-                    "mongodb://%s:%s/%s",
-                    host, port, database
-            ));
-        } else {
-            this.client = MongoClients.create(String.format(
-                    "mongodb://%s:%s@%s:%d/%s",
-                    username, password, host, port, database
-            ));
-        }
+    public MongoManager(String uri, String database) {
+        connect(uri, database);
+    }
+
+    private void connect(String uri, String database) {
+        this.client = MongoClients.create(uri);
 
         this.database = this.client.getDatabase(database);
 

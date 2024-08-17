@@ -1,8 +1,8 @@
 plugins {
     id 'java'
+    id 'java-library'
     id 'maven-publish'
-    // id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id 'io.github.goooler.shadow' version '8.1.7' // Java 21 fix
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'me.leoo.utils'
@@ -20,8 +20,9 @@ dependencies {
     compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'com.mojang:authlib:3.16.29'
 
-    implementation 'com.github.cryptomorin:XSeries:11.2.0'
-    implementation 'de.tr7zw:item-nbt-api:2.13.0'
+    compileOnly 'de.tr7zw:item-nbt-api:2.13.2'
+
+    api 'com.github.cryptomorin:XSeries:11.2.0.1'
 
     // Projects implementation
     implementation project(':common')
@@ -31,7 +32,5 @@ dependencies {
 shadowJar {
     archiveFileName = 'Utils-Bukkit-' + project.version + '.jar'
 
-    minimize {
-        //exclude(dependency('com.github.cryptomorin:XSeries'))
-    }
+    minimize ()
 }

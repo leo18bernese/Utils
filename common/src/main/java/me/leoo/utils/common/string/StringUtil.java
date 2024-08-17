@@ -34,7 +34,7 @@ public class StringUtil {
     }
 
     // String manipulation
-    public String translateLower(String string) {
+    public String lower(String string) {
         return string.toLowerCase().replace("_", "-");
     }
 

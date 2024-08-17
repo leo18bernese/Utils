@@ -1,8 +1,8 @@
 plugins {
     id 'java'
+    id 'java-library'
     id 'maven-publish'
-    // id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id 'io.github.goooler.shadow' version '8.1.7' // Java 21 fix
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'me.leoo.utils'

@@ -22,7 +22,7 @@ public class CommonDocument {
     }
 
     public MongoCollection<Document> getCollection() {
-        return MongoManager.getInstance().getDatabase().getCollection(StringUtil.translateLower(type.name()));
+        return MongoManager.getInstance().getDatabase().getCollection(StringUtil.lower(type.name()));
     }
 
     //Type methods
