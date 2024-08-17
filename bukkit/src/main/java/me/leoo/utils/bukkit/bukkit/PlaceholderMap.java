@@ -87,11 +87,12 @@ public class PlaceholderMap implements Cloneable {
 
     public List<String> parse(List<String> text) {
         replacements.forEach((key, value) -> text.replaceAll(line -> replace(line, key, value)));
-        placeholders.forEach((key, value) -> text.replaceAll(line -> replace(line, key, value)));
 
         for (Map.Entry<String, Supplier<List<String>>> entry : multiReplacements.entrySet()) {
             StringUtil.replaceWithList(text, entry.getKey(), entry.getValue().get());
         }
+
+        placeholders.forEach((key, value) -> text.replaceAll(line -> replace(line, key, value)));
 
         for (Map.Entry<String, Supplier<List<String>>> entry : multiPlaceholders.entrySet()) {
             StringUtil.replaceWithList(text, entry.getKey(), entry.getValue().get());
@@ -112,6 +113,8 @@ public class PlaceholderMap implements Cloneable {
 
     // Replace method
     private String replace(String text, String key, Supplier<String> value) {
+        if (text.isEmpty()) return text;
+
         if (value.get() != null) {
             return text.replace(key, value.get());
         }
