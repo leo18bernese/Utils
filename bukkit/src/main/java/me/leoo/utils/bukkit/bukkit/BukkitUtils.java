@@ -28,6 +28,31 @@ public class BukkitUtils {
         return VERSION >= version;
     }
 
+    public String getNmsVersion(){
+        String craftBukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
+
+        String version = null;
+
+        if (!craftBukkitPackage.contains(".v")) { // cb package not relocated (i.e. paper 1.20.5+)
+            String bukkitVersion = Bukkit.getBukkitVersion();
+
+            // separating major and minor versions, example: 1.20.4-R0.1-SNAPSHOT -> major = 20, minor = 4
+            final String[] versionNumbers = bukkitVersion.split("-")[0].split("\\.");
+            int major = Integer.parseInt(versionNumbers[1]);
+            int minor = versionNumbers.length > 2 ? Integer.parseInt(versionNumbers[2]) : 0;
+
+            if (major == 20 && minor >= 5) { // 1.20.5, 1.20.6
+                version = "1_20_R4";
+            } else if (major == 21 && minor == 0) { // 1.21
+                version = "1_21_R1";
+            }
+        } else {
+            version = craftBukkitPackage.split("\\.")[3].substring(1);
+        }
+
+        return version;
+    }
+
     public List<ItemStack> getInventoryAndArmor(Player player) {
         List<ItemStack> items = new ArrayList<>(Arrays.asList(player.getInventory().getContents()));
         items.addAll(Arrays.asList(player.getInventory().getArmorContents()));
