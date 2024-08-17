@@ -51,6 +51,6 @@ public class PlayerAction {
     }
 
     public static PlayerAction fromConfig(ConfigManager config, String path) {
-        return new PlayerAction(config.getYml().get(path + ".command") == null ? "" : config.getString(path + ".command"));
+        return new PlayerAction(config.getYml().contains(path + ".command") ? config.getString(path + ".command") : "");
     }
 }

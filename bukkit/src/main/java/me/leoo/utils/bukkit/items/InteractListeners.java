@@ -51,13 +51,6 @@ public class InteractListeners implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler
-    public void onLeave(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-
-        InteractItem.getItems().stream().filter(item -> item.getPlayer().equals(player)).collect(Collectors.toList()).clear();
-    }
-
     public static void register() {
         Events.register(new InteractListeners());
     }

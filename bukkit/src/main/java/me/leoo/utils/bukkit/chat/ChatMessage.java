@@ -17,7 +17,6 @@ public class ChatMessage implements Listener {
 
     private final Consumer<AsyncPlayerChatEvent> consumer;
 
-
     @Getter
     private static final Map<UUID, ChatMessage> requests = new HashMap<>();
 
@@ -27,8 +26,5 @@ public class ChatMessage implements Listener {
 
     public static void register() {
         Events.register(new ChatMessageListener());
-    }
-
-    public void fehdi() {
     }
 }
