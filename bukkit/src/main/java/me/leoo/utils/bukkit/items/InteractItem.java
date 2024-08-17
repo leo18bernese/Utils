@@ -5,42 +5,46 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 public class InteractItem {
 
     private final ItemBuilder item;
-    private final Player player;
 
     @Getter
-    private static List<InteractItem> items = new ArrayList<>();
+    private static Map<String, InteractItem> items = new HashMap<>();
 
-    public InteractItem(ItemBuilder item, Player player) {
-        this.item = item;
-        this.player = player;
+    private InteractItem(ItemBuilder item, String id) {
+        this.item = item.setTag("ii-" + id);
 
-        if (items.stream().noneMatch(interact -> interact == this)) {
-            items.add(this);
-        }
+        items.put(id, this);
     }
 
-    public void give() {
-        give(item.getSlot());
+    public static InteractItem create(ItemBuilder item, String id) {
+        if (items.containsKey(id)) return items.get(id);
+
+        return new InteractItem(item, id);
     }
 
-    public void give(int slot) {
+    public void give(Player player) {
+        give(player, item.getSlot());
+    }
+
+    public void give(Player player, int slot) {
         if (slot < 0) return;
 
         player.getInventory().setItem(slot, item.get());
     }
 
     public static InteractItem getByItem(ItemStack itemStack) {
-        return InteractItem.getItems().stream()
-                .filter(item -> item.getItem().get().getType() == itemStack.getType())
-                .filter(item -> item.getItem().get().getItemMeta().getDisplayName().equals(itemStack.getItemMeta().getDisplayName()))
-                .filter(item -> item.getItem().isInteractRequirement())
-                .findAny().orElse(null);
+        String tag = ItemBuilder.getTag(itemStack);
+
+        System.out.println("found tag " + tag);
+
+        if (tag == null || !tag.startsWith("ii-")) return null;
+
+        return items.get(tag.replace("ii-", ""));
     }
 }
