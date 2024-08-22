@@ -41,8 +41,6 @@ public class InteractItem {
     public static InteractItem getByItem(ItemStack itemStack) {
         String tag = ItemBuilder.getTag(itemStack);
 
-        System.out.println("found tag " + tag);
-
         if (tag == null || !tag.startsWith("ii-")) return null;
 
         return items.get(tag.replace("ii-", ""));

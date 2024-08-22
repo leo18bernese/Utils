@@ -3,6 +3,7 @@ package me.leoo.utils.bukkit.menu.pagination;
 import lombok.Getter;
 import me.leoo.utils.bukkit.items.ItemBuilder;
 import me.leoo.utils.bukkit.menu.MenuBuilder;
+import me.leoo.utils.common.number.NumberUtil;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -89,8 +90,7 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
     }
 
     public int getPages() {
-        int itemsAmount = this.getAllPageItems().size();
-        return itemsAmount == 0 ? 1 : (int) Math.ceil((double) itemsAmount / (double) this.getPaginatedSlots().size());
+        return NumberUtil.getTotalPages(getAllPageItems().size(), getPaginatedSlots().size());
     }
 
 }

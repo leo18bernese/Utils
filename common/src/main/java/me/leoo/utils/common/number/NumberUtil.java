@@ -2,6 +2,7 @@ package me.leoo.utils.common.number;
 
 import lombok.experimental.UtilityClass;
 
+import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -119,5 +120,19 @@ public class NumberUtil {
         if (chance <= 0) return false;
         if (chance >= 100) return true;
         return ThreadLocalRandom.current().nextInt(100) < chance;
+    }
+
+    public int getTotalPages(int allItems, int perPage){
+        return allItems == 0 ? 1 : (int) Math.ceil((double) allItems / (double) perPage);
+    }
+
+
+    public <T> List<T> getSubList(List<T> list, int page, int perPage) {
+        int pages = NumberUtil.getTotalPages(list.size(), 10);
+
+        if (page > pages) page = pages;
+        if (page < 1) page = 1;
+
+        return list.subList((page - 1) * perPage, Math.min(page * perPage, list.size()));
     }
 }
