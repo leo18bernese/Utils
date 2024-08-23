@@ -239,7 +239,7 @@ public class ConfigManager {
     }
 
     public void saveItem(String path, int slot, XMaterial material, String name, String... lore) {
-        saveItem(path, this, slot, material, name, lore);
+        saveItem(path, Utils.getLanguage(this), slot, material, name, lore);
     }
 
     public void saveItem(String path, XMaterial material, String name, String... lore) {
