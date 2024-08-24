@@ -1,5 +1,6 @@
 package me.leoo.utils.bukkit;
 
+import com.tcoded.folialib.FoliaLib;
 import lombok.Getter;
 import me.leoo.utils.bukkit.chat.ChatMessage;
 import me.leoo.utils.bukkit.config.ConfigManager;
@@ -28,6 +29,8 @@ public class Utils extends JavaPlugin {
     public static List<String> menuFunctions = new ArrayList<>();
     public static int menuUpdate = 10;
 
+    public static FoliaLib foliaLib;
+
     @Override
     public void onEnable() {
         plugin = this;
@@ -42,18 +45,22 @@ public class Utils extends JavaPlugin {
      * Initialize utils.
      * Must be executed before running anything related to this plugin.
      */
-    public static void initialize(Plugin plugin) {
+    public static void initialize(JavaPlugin plugin) {
         initializedFrom = plugin;
 
         SoftwareManager.init(new Software());
 
         Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(get(), "BungeeCord");
 
+        foliaLib = new FoliaLib(plugin);
+
         new MenuTask();
 
         ChatMessage.register();
         MenuListeners.register();
         InteractListeners.register();
+
+
     }
 
     public static void setLanguage(Supplier<ConfigManager> language) {

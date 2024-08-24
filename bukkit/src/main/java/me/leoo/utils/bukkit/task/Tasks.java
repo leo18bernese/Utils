@@ -1,32 +1,36 @@
 package me.leoo.utils.bukkit.task;
 
-import me.leoo.utils.bukkit.task.bukkit.SpigotScheduler;
-import me.leoo.utils.bukkit.task.folia.FoliaScheduler;
-import me.leoo.utils.common.reflection.ReflectionUtil;
+import com.tcoded.folialib.impl.PlatformScheduler;
+import com.tcoded.folialib.wrapper.task.WrappedTask;
+import lombok.experimental.UtilityClass;
+import me.leoo.utils.bukkit.Utils;
 
-public abstract class Tasks {
+@UtilityClass
+public class Tasks {
 
-    private static Tasks INSTANCE;
+    private static final PlatformScheduler SCHEDULER = Utils.foliaLib.getScheduler();
 
-    public abstract ScheduledTask run(Runnable runnable);
+    public void run(Runnable runnable) {
+        SCHEDULER.runNextTick(task -> runnable.run());
+    }
 
-    public abstract ScheduledTask async(Runnable runnable);
+    public void async(Runnable runnable) {
+        SCHEDULER.runAsync(task -> runnable.run());
+    }
 
-    public abstract ScheduledTask later(Runnable runnable, long delay);
+    public WrappedTask later(Runnable runnable, long delay) {
+        return SCHEDULER.runLater(runnable, delay);
+    }
 
-    public abstract ScheduledTask asyncLater(Runnable runnable, long delay);
+    public WrappedTask asyncLater(Runnable runnable, long delay) {
+        return SCHEDULER.runLaterAsync(runnable, delay);
+    }
 
-    public abstract ScheduledTask timer(Runnable runnable, long delay, long interval);
+    public WrappedTask timer(Runnable runnable, long delay, long interval) {
+        return SCHEDULER.runTimer(runnable, delay, interval);
+    }
 
-    public abstract ScheduledTask asyncTimer(Runnable runnable, long delay, long interval);
-
-    public static Tasks get() {
-        if (INSTANCE == null) {
-            boolean FOLIA = ReflectionUtil.existClass("io.papermc.paper.threadedregions.RegionizedServer");
-
-            INSTANCE = FOLIA ? new FoliaScheduler() : new SpigotScheduler();
-        }
-
-        return INSTANCE;
+    public WrappedTask asyncTimer(Runnable runnable, long delay, long interval) {
+        return SCHEDULER.runTimerAsync(runnable, delay, interval);
     }
 }

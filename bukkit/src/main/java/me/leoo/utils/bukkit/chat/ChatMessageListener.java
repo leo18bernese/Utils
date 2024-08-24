@@ -24,6 +24,6 @@ public class ChatMessageListener implements Listener {
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
-        Tasks.get().async(() -> ChatMessage.getRequests().remove(event.getPlayer().getUniqueId()));
+        Tasks.async(() -> ChatMessage.getRequests().remove(event.getPlayer().getUniqueId()));
     }
 }

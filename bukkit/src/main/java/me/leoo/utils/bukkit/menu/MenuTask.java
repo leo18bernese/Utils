@@ -10,7 +10,7 @@ import java.util.UUID;
 public class MenuTask {
 
     public MenuTask() {
-        Tasks.get().timer(() -> MenuBuilder.getOpenedInventories().entrySet().removeIf(entry -> {
+        Tasks.timer(() -> MenuBuilder.getOpenedInventories().entrySet().removeIf(entry -> {
             UUID uuid = entry.getKey();
             Player player = Bukkit.getPlayer(uuid);
 
