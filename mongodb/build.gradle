@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'dev.folia:folia-api:1.20.1-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
 
     implementation 'org.mongodb:mongo-java-driver:3.12.14'
 
@@ -23,6 +23,4 @@ dependencies {
 shadowJar {
     archiveFileName = 'Utils-MongoDB-' + project.version + '.jar'
     destinationDirectory = file('../build/libs/')
-
-    minimize()
 }
