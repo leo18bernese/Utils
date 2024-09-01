@@ -18,6 +18,4 @@ dependencies {
 shadowJar {
     archiveFileName = 'Utils-Redis-' + project.version + '.jar'
     destinationDirectory = file('../build/libs/')
-
-    minimize()
 }

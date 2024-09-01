@@ -22,6 +22,4 @@ dependencies {
 shadowJar {
     archiveFileName = 'Utils-Bungee-' + project.version + '.jar'
     destinationDirectory = file('../build/libs/')
-
-    minimize()
 }
