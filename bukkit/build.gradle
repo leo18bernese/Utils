@@ -17,11 +17,10 @@ repositories {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
-    implementation "com.github.technicallycoded:FoliaLib:v0.4.3"
 
     compileOnly 'me.clip:placeholderapi:2.11.6'
-    compileOnly 'de.tr7zw:item-nbt-api:2.13.2'
 
+    api 'de.tr7zw:item-nbt-api:2.13.2'
     api 'com.github.cryptomorin:XSeries:11.2.0.1'
 
     // Projects implementation
@@ -33,7 +32,4 @@ shadowJar {
     archiveFileName = 'Utils-Bukkit-' + project.version + '.jar'
     destinationDirectory = file('../build/libs/')
 
-    minimize {
-        exclude dependency("com.github.technicallycoded:FoliaLib:.*")
-    }
 }
