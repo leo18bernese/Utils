@@ -1,6 +1,5 @@
 package me.leoo.utils.bukkit;
 
-import com.tcoded.folialib.FoliaLib;
 import lombok.Getter;
 import me.leoo.utils.bukkit.chat.ChatMessage;
 import me.leoo.utils.bukkit.config.ConfigManager;
@@ -29,8 +28,6 @@ public class Utils extends JavaPlugin {
     public static List<String> menuFunctions = new ArrayList<>();
     public static int menuUpdate = 10;
 
-    public static FoliaLib foliaLib;
-
     @Override
     public void onEnable() {
         plugin = this;
@@ -51,8 +48,6 @@ public class Utils extends JavaPlugin {
         SoftwareManager.init(new Software());
 
         Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(get(), "BungeeCord");
-
-        foliaLib = new FoliaLib(plugin);
 
         new MenuTask();
 
