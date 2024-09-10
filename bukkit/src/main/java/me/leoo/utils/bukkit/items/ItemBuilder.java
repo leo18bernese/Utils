@@ -44,7 +44,7 @@ public class ItemBuilder implements Cloneable {
 
     private Predicate<InventoryClickEvent> eventCallback;
     private Consumer<PlayerInteractEvent> interactCallback;
-    private boolean interactRequirement = true;
+    private Predicate<PlayerInteractEvent> interactRequirement;
 
     private String permission;
     private String command;
@@ -315,7 +315,7 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public ItemBuilder interactRequirement(boolean interactRequirement) {
+    public ItemBuilder interactRequirement(Predicate<PlayerInteractEvent> interactRequirement) {
         this.interactRequirement = interactRequirement;
         return this;
     }

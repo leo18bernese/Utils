@@ -7,10 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.stream.Collectors;
 
 public class InteractListeners implements Listener {
 
@@ -36,7 +33,12 @@ public class InteractListeners implements Listener {
             return;
         }
 
-        item.getItem().getInteractCallback().accept(event);
+        if (builder.getInteractRequirement() != null && !builder.getInteractRequirement().test(event)) {
+            event.setCancelled(true);
+            return;
+        }
+
+        builder.getInteractCallback().accept(event);
     }
 
     @EventHandler
