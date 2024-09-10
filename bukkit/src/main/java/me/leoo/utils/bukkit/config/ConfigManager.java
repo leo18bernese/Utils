@@ -32,6 +32,8 @@ public class ConfigManager {
     private final List<String> excludeFirstTime = new ArrayList<>();
     private final boolean firstTime;
 
+    private final ConfigGroup group = new ConfigGroup(this);
+
     private static final List<ConfigManager> configs = new ArrayList<>();
 
     public ConfigManager(String name, String dir) {
@@ -266,6 +268,7 @@ public class ConfigManager {
     }
 
     public String getGroupString(String path, String subPath, String group) {
+
         return getString(getGroupPath(path, subPath, group));
     }
 
