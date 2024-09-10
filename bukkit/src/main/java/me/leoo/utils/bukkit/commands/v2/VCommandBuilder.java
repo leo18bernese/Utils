@@ -265,13 +265,12 @@ public class VCommandBuilder {
     }
 
     //reload
-    public void reload(){
+    public void reload() {
         subCommands.forEach(VCommandBuilder::reload);
 
         this.usage = parseUsage(name, method);
         this.display = parseDisplay(name, method);
     }
-
 
     public static VCommandBuilder fromClass(Class<?> clazz) {
         VCommandBuilder commandBuilder = new VCommandBuilder(clazz);

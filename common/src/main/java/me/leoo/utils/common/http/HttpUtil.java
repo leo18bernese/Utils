@@ -21,6 +21,7 @@ public class HttpUtil {
 
     /**
      * Performs a GET request to the given URL.
+     *
      * @param url the request URL
      * @return a response object
      */
@@ -31,7 +32,8 @@ public class HttpUtil {
 
     /**
      * Performs a GET request to the given URL.
-     * @param url the request URL
+     *
+     * @param url     the request URL
      * @param headers the request headers
      * @return a response object
      */
@@ -57,7 +59,8 @@ public class HttpUtil {
 
     /**
      * Performs a POST request to the given URL.
-     * @param url the request URL
+     *
+     * @param url  the request URL
      * @param body the request body
      * @return a response object
      */
@@ -68,8 +71,9 @@ public class HttpUtil {
 
     /**
      * Performs a POST request to the given URL.
-     * @param url the request URL
-     * @param body the request body
+     *
+     * @param url     the request URL
+     * @param body    the request body
      * @param headers the request headers
      * @return a response object
      */
@@ -117,6 +121,7 @@ public class HttpUtil {
 
         /**
          * Returns the response body as a string.
+         *
          * @return the response body
          */
         public String text() {
@@ -125,6 +130,7 @@ public class HttpUtil {
 
         /**
          * Returns the response code.
+         *
          * @return the response code
          */
         public int code() {
@@ -133,6 +139,7 @@ public class HttpUtil {
 
         /**
          * Returns the response body as a JsonObject.
+         *
          * @return the response body
          */
         public JsonObject json() {
@@ -141,6 +148,7 @@ public class HttpUtil {
 
         /**
          * Returns whether the request was successful.
+         *
          * @return true if the request was successful, false otherwise
          */
         public boolean success() {

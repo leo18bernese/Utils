@@ -122,10 +122,9 @@ public class NumberUtil {
         return ThreadLocalRandom.current().nextInt(100) < chance;
     }
 
-    public int getTotalPages(int allItems, int perPage){
+    public int getTotalPages(int allItems, int perPage) {
         return allItems == 0 ? 1 : (int) Math.ceil((double) allItems / (double) perPage);
     }
-
 
     public <T> List<T> getSubList(List<T> list, int page, int perPage) {
         int pages = NumberUtil.getTotalPages(list.size(), 10);

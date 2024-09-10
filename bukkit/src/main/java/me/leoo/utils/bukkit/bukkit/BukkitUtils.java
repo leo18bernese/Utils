@@ -28,7 +28,7 @@ public class BukkitUtils {
         return VERSION >= version;
     }
 
-    public String getNmsVersion(){
+    public String getNmsVersion() {
         String craftBukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
 
         String version = null;
