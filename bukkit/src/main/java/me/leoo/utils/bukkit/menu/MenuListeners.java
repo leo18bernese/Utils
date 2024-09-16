@@ -34,7 +34,7 @@ public class MenuListeners implements Listener {
         }
 
         ItemBuilder item = menu.getItem(rawSlot).orElse(null);
-        if (item == null || item.getItemStack().getType() != event.getCurrentItem().getType()) {
+        if (item == null || !item.getItemStack().equals(event.getCurrentItem())) {
             event.setCancelled(true);
             return;
         }
