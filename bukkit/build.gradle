@@ -21,7 +21,7 @@ dependencies {
     compileOnly 'me.clip:placeholderapi:2.11.6'
 
     api 'de.tr7zw:item-nbt-api:2.13.2'
-    api 'com.github.cryptomorin:XSeries:11.2.0.1'
+    api 'com.github.cryptomorin:XSeries:11.2.2'
 
     // Projects implementation
     implementation project(':common')
