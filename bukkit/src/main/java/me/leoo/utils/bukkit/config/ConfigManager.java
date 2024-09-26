@@ -256,7 +256,7 @@ public class ConfigManager {
 
     //action method from config
     public boolean executeAction(String path, Player player) {
-        return PlayerAction.fromConfig(this, path).run(player);
+        return PlayerAction.execute(player, this, path);
     }
 
     //group methods
