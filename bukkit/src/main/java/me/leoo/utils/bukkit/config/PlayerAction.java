@@ -61,6 +61,8 @@ public class PlayerAction {
     public static boolean execute(Player player, ConfigManager config, String path) {
         path = path + ".command";
 
+        if (!config.contains(path)) return false;
+
         if (config.getYml().isList(path)) {
             boolean executed = false;
 

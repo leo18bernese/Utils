@@ -446,7 +446,6 @@ public class ItemBuilder implements Cloneable {
             if (itemMeta.hasLore()) lore(map.parse(itemMeta.getLore()));
         });
 
-
         if (itemMeta.hasDisplayName()) name(CC.color(itemMeta.getDisplayName()));
         if (itemMeta.hasLore()) lore(CC.color(itemMeta.getLore()));
 

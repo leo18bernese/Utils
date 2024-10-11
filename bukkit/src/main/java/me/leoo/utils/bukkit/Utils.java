@@ -54,8 +54,6 @@ public class Utils extends JavaPlugin {
         ChatMessage.register();
         MenuListeners.register();
         InteractListeners.register();
-
-
     }
 
     public static void setLanguage(Supplier<ConfigManager> language) {

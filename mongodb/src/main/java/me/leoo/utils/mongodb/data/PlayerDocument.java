@@ -23,8 +23,8 @@ public abstract class PlayerDocument<T> extends CommonDocument implements Listen
 
     private static final MongoManager MANAGER = MongoManager.getInstance();
 
-    public PlayerDocument(UUID uuid, Enum<?> type, T data, Consumer<PlayerDocument<T>> addConsumer, Consumer<PlayerDocument<T>> removeConsumer) {
-        super(type, "uuid");
+    public PlayerDocument(UUID uuid, T data, Enum<?> type, String idString, Consumer<PlayerDocument<T>> addConsumer, Consumer<PlayerDocument<T>> removeConsumer) {
+        super(type, idString);
 
         this.uuid = uuid;
         this.data = data;
