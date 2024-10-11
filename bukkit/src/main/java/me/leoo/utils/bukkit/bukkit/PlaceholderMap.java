@@ -30,7 +30,7 @@ public class PlaceholderMap implements Cloneable {
     }
 
     public PlaceholderMap add(String key, Number value) {
-        return add(key, String.valueOf(value));
+        return add(key, () -> String.valueOf(value));
     }
 
     public PlaceholderMap addMultiple(String key, Supplier<List<String>> value) {
