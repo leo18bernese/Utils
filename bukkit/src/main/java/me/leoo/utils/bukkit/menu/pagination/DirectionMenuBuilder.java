@@ -76,9 +76,10 @@ public abstract class DirectionMenuBuilder<T> extends MenuBuilder {
 
 
         // Added paginated items
-        Iterator<T> iterator = builders.iterator();
-
         List<Integer>[] direction = vertical() ? VERTICAL : HORIZONTAL;
+
+        int index = (page - 1) * direction.length;
+        Iterator<T> iterator = builders.stream().skip(index).iterator();
 
         for (List<Integer> slots : direction) {
             if (!iterator.hasNext()) break;
@@ -146,7 +147,9 @@ public abstract class DirectionMenuBuilder<T> extends MenuBuilder {
     }
 
     public int getPages() {
-        return NumberUtil.getTotalPages(getGenericValues().size(), VERTICAL[0].size());
+        int size = vertical() ? VERTICAL.length : HORIZONTAL.length;
+
+        return NumberUtil.getTotalPages(getGenericValues().size(), size);
     }
 
 
