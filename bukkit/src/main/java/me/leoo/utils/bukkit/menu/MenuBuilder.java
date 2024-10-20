@@ -74,6 +74,10 @@ public abstract class MenuBuilder {
         updateContent(inventory);
     }
 
+    public void updateAll() {
+        openedInventories.values().stream().filter(m -> m.equals(this)).forEach(MenuBuilder::update);
+    }
+
     public void close() {
         player.closeInventory();
     }
