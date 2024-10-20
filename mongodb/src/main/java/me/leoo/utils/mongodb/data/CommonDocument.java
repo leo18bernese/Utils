@@ -28,7 +28,7 @@ public class CommonDocument {
     //Type methods
 
     //Data methods
-    public FindIterable<Document> getDocuments(String value) {
+    public FindIterable<Document> getDocuments(Object value) {
         return getCollection().find(Filters.eq(idString, value));
     }
 
