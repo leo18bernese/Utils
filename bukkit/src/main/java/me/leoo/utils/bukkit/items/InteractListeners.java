@@ -38,6 +38,7 @@ public class InteractListeners implements Listener {
             return;
         }
 
+        builder.runSound(player);
         builder.getInteractCallback().accept(event);
     }
 

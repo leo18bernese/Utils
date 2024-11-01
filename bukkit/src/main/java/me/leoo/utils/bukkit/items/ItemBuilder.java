@@ -12,6 +12,7 @@ import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.bukkit.PlaceholderMap;
 import me.leoo.utils.bukkit.chat.CC;
 import me.leoo.utils.bukkit.config.ConfigManager;
+import me.leoo.utils.bukkit.sound.SoundUtil;
 import me.leoo.utils.common.number.NumberUtil;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
@@ -51,6 +52,7 @@ public class ItemBuilder implements Cloneable {
 
     private String toSaveString;
 
+    private final List<String> sounds = new ArrayList<>();
     private final Map<String, String> tags = new HashMap<>();
 
     @Setter
@@ -295,6 +297,11 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder sound(String sound) {
+        this.sounds.add(sound);
+        return this;
+    }
+
     public ItemBuilder event(Predicate<InventoryClickEvent> eventCallBack) {
         this.eventCallback = eventCallBack;
         return this;
@@ -364,6 +371,8 @@ public class ItemBuilder implements Cloneable {
 
         ItemBuilder builder;
 
+        System.out.println("parsing item with path " + path);
+
         if (name.equals("texture") || (material.length == 2 && XMaterial.matchXMaterial(name + ":" + 3).orElse(XMaterial.STONE) == XMaterial.PLAYER_HEAD)) {
             builder = new ItemBuilder(XMaterial.PLAYER_HEAD, 3);
 
@@ -406,6 +415,12 @@ public class ItemBuilder implements Cloneable {
 
         builder.amount(config.getYml().getInt(path + ".amount", 1));
         builder.slot(config.getYml().getInt(path + ".slot", -1));
+
+        if (config.contains(path + ".sound")) {
+            for (String sound : config.getList(path + ".sound")) {
+                builder.sound(sound);
+            }
+        }
 
         if (config.contains(path + ".functions")) {
             for (String function : config.getList(path + ".functions")) {
@@ -463,6 +478,10 @@ public class ItemBuilder implements Cloneable {
                 nbt.setString(entry.getKey(), entry.getValue());
             });
         }
+    }
+
+    public void runSound(Player player) {
+        sounds.forEach(sound -> SoundUtil.play(player, sound));
     }
 
     @Override

@@ -57,6 +57,7 @@ public class MenuListeners implements Listener {
         if (item.getEventCallback() == null) {
             event.setCancelled(true);
         } else {
+            item.runSound(player);
             event.setCancelled(item.getEventCallback().test(event));
         }
 
