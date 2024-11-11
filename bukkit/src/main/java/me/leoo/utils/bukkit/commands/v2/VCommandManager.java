@@ -14,7 +14,10 @@ public class VCommandManager {
 
     private String usagePath;
     private String displayPath;
-    private Supplier<ConfigManager> configManager;
+    private Supplier<ConfigManager> language;
+
+    private String path;
+    private Supplier<ConfigManager> config;
 
     private boolean buildUsageMessage = true;
 
@@ -31,9 +34,35 @@ public class VCommandManager {
     }
 
     public void setCommandUsage(Supplier<ConfigManager> configManager, String usagePath, String displayPath) {
-        this.configManager = configManager;
+        this.language = configManager;
         this.usagePath = usagePath;
         this.displayPath = displayPath;
+    }
+
+    public void setGeneralConfig(Supplier<ConfigManager> configManager, String path) {
+        this.config = configManager;
+        this.path = path;
+    }
+
+    public static String getPath(String name, String path, String subPath, Supplier<ConfigManager> configManager) {
+        if (path == null || configManager == null) return null;
+
+        ConfigManager config = configManager.get();
+        if (config == null) return null;
+
+        String finalPath = path.replace("%name%", name);
+
+        if (subPath != null) {
+            finalPath = finalPath + "." + subPath;
+        }
+
+
+        if (!config.contains(finalPath)) {
+            return null;
+        }
+
+
+        return finalPath;
     }
 
     public static VCommandManager get() {

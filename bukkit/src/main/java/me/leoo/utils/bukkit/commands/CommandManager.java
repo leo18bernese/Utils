@@ -10,6 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 
 import java.util.Arrays;
+import java.util.List;
 
 @UtilityClass
 public class CommandManager {
@@ -27,6 +28,9 @@ public class CommandManager {
 
             command.setName(builder.getName());
             command.setAliases(Arrays.asList(builder.getAliases()));
+
+            List<String> aliases = builder.getAliasesByConfig(command.getName());
+            if (aliases != null) command.getAliases().addAll(aliases);
 
             VCommandCache.getInstances().put(builder.getName(), command);
 

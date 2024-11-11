@@ -89,6 +89,11 @@ public class VCommandBuilder {
             String[] subUsage = parseUsage(subName, method);
             String subDisplay = parseDisplay(subName, method);
 
+            List<String> subAliasesByConfig = getAliasesByConfig(name + "." + subName);
+            if (subAliasesByConfig != null) {
+                subAliases = subAliasesByConfig.toArray(new String[0]);
+            }
+
             boolean confirmation = subCommand.confirmation();
 
             subCommands.add(new VCommandBuilder(subName, subAliases, subExecutor, subPermission, subUsage, subDisplay, method, confirmation));
@@ -124,7 +129,7 @@ public class VCommandBuilder {
     }
 
     private String[] parseUsageFromSettings(String name, Method method) {
-        ConfigManager config = manager.getConfigManager().get();
+        ConfigManager config = manager.getLanguage().get();
         String path = manager.getUsagePath();
 
         if (config != null && path != null) {
@@ -159,7 +164,7 @@ public class VCommandBuilder {
     }
 
     private String parseDisplayFromSettings(String name, Method method) {
-        ConfigManager config = manager.getConfigManager().get();
+        ConfigManager config = manager.getLanguage().get();
         String path = manager.getDisplayPath();
 
         if (config != null && path != null) {
@@ -250,6 +255,14 @@ public class VCommandBuilder {
         if (permission == null || permission.isEmpty()) return true;
 
         return sender.hasPermission(permission);
+    }
+
+    //alies by config
+    public List<String> getAliasesByConfig(String commandPath) {
+        String path = VCommandManager.getPath(commandPath, manager.getPath(), "aliases", manager.getConfig());
+        if (path == null) return null;
+
+        return manager.getConfig().get().getList(path);
     }
 
     //send usage
