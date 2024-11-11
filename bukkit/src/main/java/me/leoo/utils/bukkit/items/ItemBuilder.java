@@ -371,8 +371,6 @@ public class ItemBuilder implements Cloneable {
 
         ItemBuilder builder;
 
-        System.out.println("parsing item with path " + path);
-
         if (name.equals("texture") || (material.length == 2 && XMaterial.matchXMaterial(name + ":" + 3).orElse(XMaterial.STONE) == XMaterial.PLAYER_HEAD)) {
             builder = new ItemBuilder(XMaterial.PLAYER_HEAD, 3);
 
