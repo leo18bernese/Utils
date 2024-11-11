@@ -37,12 +37,14 @@ public class MongoManager {
 
         this.database = this.client.getDatabase(database);
 
-        SoftwareManager.info("Connected to the database.");
+        SoftwareManager.info("Connected to the database. (MongoDB)");
 
         instance = this;
     }
 
     public void close() {
         this.client.close();
+
+        SoftwareManager.info("Disconnected from the database. (MongoDB)");
     }
 }

@@ -1,9 +1,12 @@
 package me.leoo.utils.redis.json;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -30,6 +33,36 @@ public class JsonBuilder {
         jsonObject.add(key, value);
         return this;
     }
+
+    // Lists
+    public JsonBuilder addList(String key, List<String> values) {
+        JsonArray array = new JsonArray();
+        values.forEach(array::add);
+
+        jsonObject.add(key, array);
+
+        return this;
+    }
+
+    public JsonBuilder addIntList(String key, List<Integer> values) {
+        JsonArray array = new JsonArray();
+        values.forEach(array::add);
+
+        jsonObject.add(key, array);
+
+        return this;
+    }
+
+    // JSON Objects
+    public JsonBuilder addObject(String key, List<JsonObject> values) {
+        JsonArray array = new JsonArray();
+        values.forEach(array::add);
+
+        jsonObject.add(key, array);
+
+        return this;
+    }
+
 
     public String string() {
         return jsonObject.toString();
