@@ -104,8 +104,9 @@ public abstract class VCommand extends BukkitCommand {
                 completions.addAll(Arrays.asList(subCommand.getAliases()));
             }
 
-            if (getTabComplete(args[0]) != null) {
-                completions.addAll(getTabComplete(args[0]).execute(sender, alias, args));
+            VTabComplete tabComplete = getTabComplete(mainCommand.getName());
+            if (tabComplete != null) {
+                completions.addAll(tabComplete.execute(sender, alias, args));
             }
 
             return StringUtil.copyPartialMatches(args[0], completions, new ArrayList<>());
@@ -141,6 +142,8 @@ public abstract class VCommand extends BukkitCommand {
     }
 
     private VTabComplete getTabCompleteFromAlias(String alias) {
-        return VCommandCache.getTabComplete().values().stream().filter(tabComplete -> Arrays.asList(tabComplete.getAliases()).contains(alias)).findFirst().orElse(null);
+        return VCommandCache.getTabComplete().values().stream()
+                .filter(tabComplete -> tabComplete.getAliases().contains(alias))
+                .findFirst().orElse(null);
     }
 }

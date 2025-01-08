@@ -49,6 +49,10 @@ public class VCommandBuilder {
         for (Method method : clazz.getMethods()) {
             parseSubCommand(method);
         }
+
+        for (Method method : clazz.getMethods()) {
+            parseTabComplete(method);
+        }
     }
 
     private void parseMain(Method method) {
@@ -75,7 +79,7 @@ public class VCommandBuilder {
         if (method.isAnnotationPresent(SubCommand.class)) {
             SubCommand subCommand = method.getAnnotation(SubCommand.class);
 
-            if (subCommand.parent() != null && !subCommand.parent().isEmpty() && !subCommand.parent().equals(name))
+            if (subCommand.parent() != null && !subCommand.parent().isEmpty() && !subCommand.parent().equals(this.name))
                 return;
             if (subCommand.value().length == 0) throw new IllegalArgumentException("Sub Command name cannot be empty");
 
@@ -89,7 +93,7 @@ public class VCommandBuilder {
             String[] subUsage = parseUsage(subName, method);
             String subDisplay = parseDisplay(subName, method);
 
-            List<String> subAliasesByConfig = getAliasesByConfig(name + "." + subName);
+            List<String> subAliasesByConfig = getAliasesByConfig(this.name + "." + subName);
             if (subAliasesByConfig != null) {
                 subAliases = subAliasesByConfig.toArray(new String[0]);
             }
@@ -97,13 +101,18 @@ public class VCommandBuilder {
             boolean confirmation = subCommand.confirmation();
 
             subCommands.add(new VCommandBuilder(subName, subAliases, subExecutor, subPermission, subUsage, subDisplay, method, confirmation));
-        } else if (method.isAnnotationPresent(TabComplete.class)) {
+        }
+    }
+
+    private void parseTabComplete(Method method) {
+        if (method.isAnnotationPresent(TabComplete.class)) {
             TabComplete tabComplete = method.getAnnotation(TabComplete.class);
 
             String main = tabComplete.value();
-            String[] alias = tabComplete.aliases();
 
-            VCommandCache.getTabComplete().put(main, new VTabComplete(this.name, main, alias, method));
+            List<String> alias = tabComplete.aliases() == null ? new ArrayList<>() : Arrays.asList(tabComplete.aliases());
+
+            VCommandCache.getTabComplete().put(main, new VTabComplete(this.name, main, method).init(this, alias));
         }
     }
 
@@ -192,6 +201,10 @@ public class VCommandBuilder {
 
         return null;
     }*/
+
+    public VCommandBuilder getSubCommand(String name) {
+        return subCommands.stream().filter(subCommand -> subCommand.getName().equals(name)).findFirst().orElse(null);
+    }
 
     public VCommandBuilder getFromAlias(String alias) {
         return subCommands.stream().filter(subCommand -> Arrays.asList(subCommand.getAliases()).contains(alias)).findFirst().orElse(null);
