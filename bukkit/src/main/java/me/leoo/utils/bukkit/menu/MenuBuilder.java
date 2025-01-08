@@ -7,6 +7,7 @@ import me.leoo.utils.bukkit.items.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -48,10 +49,15 @@ public abstract class MenuBuilder {
         items.forEach(itemBuilder -> {
             int slot = itemBuilder.getSlot();
 
-            if (slot >= 0 && slot <= getSlots()) {
-                ItemStack item = itemBuilder.getItemData().applyFunctions(player, itemBuilder).defaultFlags().get();
-                inventory.setItem(slot, item);
+            if (slot < 0) return;
+
+            if (slot >= getSlots()) {
+                Bukkit.getLogger().warning("Cannot add item " + itemBuilder.getItemMeta().getDisplayName() + " to slot " + slot + " in " + getTitle() + " menu. Slot is out of bounds.");
+                return;
             }
+
+            ItemStack item = itemBuilder.getItemData().applyFunctions(player, itemBuilder).defaultFlags().get();
+            inventory.setItem(slot, item);
         });
     }
 
@@ -70,8 +76,9 @@ public abstract class MenuBuilder {
     }
 
     public void update() {
-        Inventory inventory = player.getOpenInventory().getTopInventory();
-        updateContent(inventory);
+        InventoryView view = player.getOpenInventory();
+
+        updateContent(view.getTopInventory());
     }
 
     public void updateAll() {
