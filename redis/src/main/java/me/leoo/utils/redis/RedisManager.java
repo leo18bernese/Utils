@@ -2,6 +2,7 @@ package me.leoo.utils.redis;
 
 import com.google.gson.JsonElement;
 import lombok.Getter;
+import me.leoo.utils.common.compatibility.SoftwareManager;
 import me.leoo.utils.redis.json.JsonBuilder;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -35,7 +36,7 @@ public class RedisManager {
                         String host, int port, @Nullable String user, @Nullable String password,
                         RedisListener<?> listener, boolean generateServerId) {
         this.clientName = clientName;
-        this.channels = channels;
+        this.channels = Arrays.stream(channels).map(String::toUpperCase).toArray(String[]::new);
 
         this.host = host;
         this.port = port;
@@ -78,7 +79,7 @@ public class RedisManager {
         String[] targetChannels = channels.length == 0 ? this.channels : channels;
 
         for (String channel : targetChannels) {
-            getRedis().publish(channel, message);
+            getRedis().publish(channel.toUpperCase(), message);
         }
     }
 
@@ -95,6 +96,10 @@ public class RedisManager {
         getRedis().hdel(key, fields);
     }
 
+    public boolean exists(String key, String field) {
+        return getRedis().hexists(key, field);
+    }
+
     // Other methods
     public void close() {
         pool.close();
@@ -102,24 +107,29 @@ public class RedisManager {
 
     private JedisPool setupPool() {
         if (user == null) {
+
+            SoftwareManager.info("Connecting to Redis with no authentication");
+
             return new JedisPool(
                     new JedisPoolConfig(),
                     host, port,
                     30_000, password, 0, clientName
             );
-        } else {
-            return new JedisPool(
-                    new JedisPoolConfig(),
-                    host, port,
-                    30_000, user, password, 0, clientName
-            );
         }
+
+        SoftwareManager.info("Connecting to Redis with authentication");
+
+        return new JedisPool(
+                new JedisPoolConfig(),
+                host, port,
+                30_000, user, password, 0, clientName
+        );
     }
 
     private void setupListener(RedisListener<?> listener) {
         ForkJoinPool.commonPool().execute(() -> {
             try (Jedis jedis = pool.getResource()) {
-                jedis.subscribe(listener.setServerId(serverId), channels);
+                jedis.subscribe(listener/*.setServerId(serverId)*/, channels);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }

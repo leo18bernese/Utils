@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import me.leoo.utils.common.compatibility.SoftwareManager;
 import redis.clients.jedis.JedisPubSub;
 
 import java.util.UUID;
@@ -38,5 +39,35 @@ public abstract class RedisListener<T extends Enum<T>> extends JedisPubSub {
     public RedisListener<T> setServerId(UUID serverId) {
         this.serverId = serverId;
         return this;
+    }
+
+    public String getString(JsonObject data, String key) {
+        if (data.get(key).getAsJsonPrimitive().isString()) {
+            return data.get(key).getAsString();
+        }
+
+        SoftwareManager.severe("Failed to get string from json object with key: " + key);
+
+        return null;
+    }
+
+    public int getInt(JsonObject data, String key) {
+        if (data.get(key).getAsJsonPrimitive().isNumber()) {
+            return data.get(key).getAsInt();
+        }
+
+        SoftwareManager.severe("Failed to get int from json object with key: " + key);
+
+        return -1;
+    }
+
+    public boolean getBoolean(JsonObject data, String key) {
+        if (data.get(key).getAsJsonPrimitive().isBoolean()) {
+            return data.get(key).getAsBoolean();
+        }
+
+        SoftwareManager.severe("Failed to get boolean from json object with key: " + key);
+
+        return false;
     }
 }

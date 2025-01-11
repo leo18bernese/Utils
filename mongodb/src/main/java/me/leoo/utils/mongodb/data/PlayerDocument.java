@@ -59,7 +59,7 @@ public abstract class PlayerDocument<T> extends CommonDocument implements Listen
         Document document = getDocument();
         if (document == null) return;
 
-        saveDocument(getDocument(), uuid.toString());
+        saveDocument(document, uuid.toString());
     }
 
     public void destroy() {
