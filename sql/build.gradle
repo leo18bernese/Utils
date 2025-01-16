@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+group = 'me.leoo.utils'
+
+repositories {
+    maven { url 'https://repo.papermc.io/repository/maven-public/' }
+}
+
+dependencies {
+    compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+
+    implementation 'com.zaxxer:HikariCP:4.0.3'
+
+    // Utils
+    implementation project(':common')
+}
+
+shadowJar {
+    archiveFileName = 'Utils-Sql-' + project.version + '.jar'
+    destinationDirectory = file('../build/libs/')
+}
