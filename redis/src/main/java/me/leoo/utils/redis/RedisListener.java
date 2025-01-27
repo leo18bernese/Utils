@@ -41,6 +41,10 @@ public abstract class RedisListener<T extends Enum<T>> extends JedisPubSub {
         return this;
     }
 
+    public boolean isNull(JsonObject data, String key) {
+        return data.get(key).isJsonNull();
+    }
+
     public String getString(JsonObject data, String key) {
         if (data.get(key).getAsJsonPrimitive().isString()) {
             return data.get(key).getAsString();
