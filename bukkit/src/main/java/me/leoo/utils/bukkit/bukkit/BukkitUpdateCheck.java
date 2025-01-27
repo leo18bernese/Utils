@@ -31,7 +31,7 @@ public class BukkitUpdateCheck {
     }
 
     public void send(Player player) {
-        if (isAvailable() && player.isOp() || player.hasPermission("*")) {
+        if (isAvailable() && (player.isOp() || player.hasPermission("*"))) {
             player.sendMessage("§a§m---------------------------------");
             player.sendMessage("§7An update is available for §a" + Utils.getInitializedFrom().getDescription().getName() + "!");
             player.sendMessage("§7Current version: §e" + currentVersion);
@@ -41,8 +41,6 @@ public class BukkitUpdateCheck {
     }
 
     public boolean isAvailable() {
-        String currentVersion = Utils.getInitializedFrom().getDescription().getVersion();
-
         return latestVersion != null && !currentVersion.equals(latestVersion);
     }
 
