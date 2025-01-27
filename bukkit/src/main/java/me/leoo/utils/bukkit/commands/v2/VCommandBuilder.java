@@ -37,7 +37,7 @@ public class VCommandBuilder {
 
     private final List<VCommandBuilder> subCommands = new ArrayList<>();
 
-    private static final VCommandManager manager = VCommandManager.get();
+    private static final VCommandManager MANAGER = VCommandManager.get();
 
     public VCommandBuilder(Class<?> clazz) {
         Arrays.stream(clazz.getMethods()).filter(method -> method.isAnnotationPresent(Command.class)).findFirst().ifPresent(this::parseMain);
@@ -138,8 +138,8 @@ public class VCommandBuilder {
     }
 
     private String[] parseUsageFromSettings(String name, Method method) {
-        ConfigManager config = manager.getLanguage().get();
-        String path = manager.getUsagePath();
+        ConfigManager config = MANAGER.getLanguage().get();
+        String path = MANAGER.getUsagePath();
 
         if (config != null && path != null) {
             String finalPath = path.replace("%name%", name);
@@ -154,7 +154,7 @@ public class VCommandBuilder {
             return new String[]{config.getString(finalPath)};
         }
 
-        if (manager.isBuildUsageMessage()) {
+        if (MANAGER.isBuildUsageMessage()) {
             return new String[]{"&cUsage: /" + name + " " + ArgumentParser.parseArgumentsString(method)};
         }
 
@@ -173,8 +173,8 @@ public class VCommandBuilder {
     }
 
     private String parseDisplayFromSettings(String name, Method method) {
-        ConfigManager config = manager.getLanguage().get();
-        String path = manager.getDisplayPath();
+        ConfigManager config = MANAGER.getLanguage().get();
+        String path = MANAGER.getDisplayPath();
 
         if (config != null && path != null) {
             String finalPath = path.replace("%name%", name);
@@ -241,19 +241,19 @@ public class VCommandBuilder {
             case PLAYER:
             case OPERATORS:
                 if (!(sender instanceof Player)) {
-                    sender.sendMessage(CC.color(manager.getError().getOnlyPlayersMessage()));
+                    sender.sendMessage(CC.color(MANAGER.getError().getOnlyPlayersMessage()));
                     return false;
                 }
 
                 if (!sender.isOp() && executorType == CommandExecutor.OPERATORS) {
-                    sender.sendMessage(CC.color(manager.getError().getOnlyOperatorsMessage()));
+                    sender.sendMessage(CC.color(MANAGER.getError().getOnlyOperatorsMessage()));
                     return false;
                 }
 
                 return true;
             case CONSOLE:
                 if (sender instanceof Player) {
-                    sender.sendMessage(CC.color(manager.getError().getOnlyConsoleMessage()));
+                    sender.sendMessage(CC.color(MANAGER.getError().getOnlyConsoleMessage()));
                     return false;
                 }
 
@@ -272,16 +272,16 @@ public class VCommandBuilder {
 
     //alies by config
     public List<String> getAliasesByConfig(String commandPath) {
-        String path = VCommandManager.getPath(commandPath, manager.getPath(), "aliases", manager.getConfig());
+        String path = VCommandManager.getPath(commandPath, MANAGER.getPath(), "aliases", MANAGER.getConfig());
         if (path == null) return null;
 
-        return manager.getConfig().get().getList(path);
+        return MANAGER.getConfig().get().getList(path);
     }
 
     //send usage
     public void sendUsage(CommandSender sender) {
         if (usage == null || usage.length == 0) {
-            sender.sendMessage(CC.color(manager.getError().getMissingArgumentsMessage()));
+            sender.sendMessage(CC.color(MANAGER.getError().getMissingArgumentsMessage()));
             return;
         }
 

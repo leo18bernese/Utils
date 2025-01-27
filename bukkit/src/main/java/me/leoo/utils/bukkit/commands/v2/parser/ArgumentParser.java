@@ -31,6 +31,7 @@ public class ArgumentParser {
             }
             return null;
         });
+
         providers.put(int.class, arg -> {
             try {
                 return Integer.parseInt(arg);
@@ -38,6 +39,7 @@ public class ArgumentParser {
                 return null;
             }
         });
+
         providers.put(float.class, arg -> {
             try {
                 return Float.parseFloat(arg);
@@ -114,7 +116,8 @@ public class ArgumentParser {
             }
 
             Object value = provider.apply(arg != null ? arg : args.next());
-            if (value == null) {
+
+            if (parameter.getType().isPrimitive() && value == null) {
                 command.sendUsage(args.getSender());
                 return null;
             }
