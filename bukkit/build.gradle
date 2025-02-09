@@ -20,7 +20,7 @@ dependencies {
 
     compileOnly 'me.clip:placeholderapi:2.11.6'
 
-    api 'de.tr7zw:item-nbt-api:2.13.2'
+    api 'de.tr7zw:item-nbt-api:2.14.1'
     api 'com.github.cryptomorin:XSeries:13.0.0'
 
     // Projects implementation
