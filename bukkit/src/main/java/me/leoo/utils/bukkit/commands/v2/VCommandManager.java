@@ -5,6 +5,8 @@ import me.leoo.utils.bukkit.commands.v2.exception.CommandError;
 import me.leoo.utils.bukkit.commands.v2.exception.VCommandError;
 import me.leoo.utils.bukkit.config.ConfigManager;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 @Data
@@ -14,6 +16,10 @@ public class VCommandManager {
 
     private String usagePath;
     private String displayPath;
+
+    private Map<String, String> usagePaths = new HashMap<>();
+    private Map<String, String> displayPaths = new HashMap<>();
+
     private Supplier<ConfigManager> language;
 
     private String path;
@@ -39,19 +45,39 @@ public class VCommandManager {
         this.displayPath = displayPath;
     }
 
+    public void setCommandUsage(Supplier<ConfigManager> configManager, String id, String usagePath, String displayPath) {
+        this.language = configManager;
+        this.usagePaths.put(id, usagePath);
+        this.displayPaths.put(id, displayPath);
+    }
+
+    public String getUsagePath(String id, String parent) {
+        String name = parent == null ? id : parent;
+
+        return getPath(id, usagePaths.getOrDefault(name, usagePath), null, language);
+    }
+
+    public String getDisplayPath(String id, String parent) {
+        String name = parent == null ? id : parent;
+
+        return getPath(id, displayPaths.getOrDefault(name, displayPath), null, language);
+    }
+
     public void setGeneralConfig(Supplier<ConfigManager> configManager, String path) {
         this.config = configManager;
         this.path = path;
     }
 
     public static String getPath(String name, String path, String subPath, Supplier<ConfigManager> configManager) {
-        if (path == null || configManager == null) return null;
+        System.out.println("getting " + name + " " + path + " " + subPath);
 
+        if (path == null || configManager == null) return null;
+        System.out.println("passed 1");
         ConfigManager config = configManager.get();
         if (config == null) return null;
-
+        System.out.println("passed 2");
         String finalPath = path.replace("%name%", name);
-
+        System.out.println("finalPath: " + finalPath);
         if (subPath != null) {
             finalPath = finalPath + "." + subPath;
         }
@@ -60,7 +86,7 @@ public class VCommandManager {
         if (!config.contains(finalPath)) {
             return null;
         }
-
+        System.out.println("passed 3");
 
         return finalPath;
     }

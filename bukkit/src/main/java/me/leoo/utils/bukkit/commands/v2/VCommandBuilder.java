@@ -25,6 +25,8 @@ public class VCommandBuilder {
     private String name;
     private String[] aliases;
 
+    private String parent;
+
     private CommandExecutor executorType;
     private String permission;
 
@@ -68,8 +70,8 @@ public class VCommandBuilder {
             this.executorType = mainCommand.executor();
             this.permission = parsePermission(method);
 
-            this.usage = parseUsage(this.name, method);
-            this.display = parseDisplay(this.name, method);
+            this.usage = parseUsage(this.name, null, method);
+            this.display = parseDisplay(this.name, null, method);
 
             this.method = method;
         }
@@ -84,23 +86,24 @@ public class VCommandBuilder {
             if (subCommand.value().length == 0) throw new IllegalArgumentException("Sub Command name cannot be empty");
 
             String subName = subCommand.value()[0];
+            String parent = this.name;
 
             String[] subAliases = Arrays.stream(subCommand.value()).skip(1).toArray(String[]::new);
 
             CommandExecutor subExecutor = subCommand.executor();
             String subPermission = parsePermission(method);
 
-            String[] subUsage = parseUsage(subName, method);
-            String subDisplay = parseDisplay(subName, method);
+            String[] subUsage = parseUsage(subName, parent, method);
+            String subDisplay = parseDisplay(subName, parent, method);
 
-            List<String> subAliasesByConfig = getAliasesByConfig(this.name + "." + subName);
+            List<String> subAliasesByConfig = getAliasesByConfig(parent + "." + subName);
             if (subAliasesByConfig != null) {
                 subAliases = subAliasesByConfig.toArray(new String[0]);
             }
 
             boolean confirmation = subCommand.confirmation();
 
-            subCommands.add(new VCommandBuilder(subName, subAliases, subExecutor, subPermission, subUsage, subDisplay, method, confirmation));
+            subCommands.add(new VCommandBuilder(subName, subAliases, parent, subExecutor, subPermission, subUsage, subDisplay, method, confirmation));
         }
     }
 
@@ -127,19 +130,19 @@ public class VCommandBuilder {
     }
 
     //usage
-    private String[] parseUsage(String name, Method method) {
+    private String[] parseUsage(String name, String parent, Method method) {
         if (method.getAnnotation(CommandUsage.class) != null) {
             CommandUsage commandUsage = method.getAnnotation(CommandUsage.class);
 
             return commandUsage.usage();
         }
 
-        return parseUsageFromSettings(name, method);
+        return parseUsageFromSettings(name, parent, method);
     }
 
-    private String[] parseUsageFromSettings(String name, Method method) {
+    private String[] parseUsageFromSettings(String name, String parent, Method method) {
         ConfigManager config = MANAGER.getLanguage().get();
-        String path = MANAGER.getUsagePath();
+        String path = MANAGER.getUsagePath(name, parent);
 
         if (config != null && path != null) {
             String finalPath = path.replace("%name%", name);
@@ -162,19 +165,19 @@ public class VCommandBuilder {
     }
 
     //display
-    private String parseDisplay(String name, Method method) {
+    private String parseDisplay(String name, String parent, Method method) {
         if (method.getAnnotation(CommandUsage.class) != null) {
             CommandUsage commandDisplay = method.getAnnotation(CommandUsage.class);
 
             return commandDisplay.display();
         }
 
-        return parseDisplayFromSettings(name, method);
+        return parseDisplayFromSettings(name, parent, method);
     }
 
-    private String parseDisplayFromSettings(String name, Method method) {
+    private String parseDisplayFromSettings(String name, String parent, Method method) {
         ConfigManager config = MANAGER.getLanguage().get();
-        String path = MANAGER.getDisplayPath();
+        String path = MANAGER.getDisplayPath(name, parent);
 
         if (config != null && path != null) {
             String finalPath = path.replace("%name%", name);
@@ -294,8 +297,8 @@ public class VCommandBuilder {
     public void reload() {
         subCommands.forEach(VCommandBuilder::reload);
 
-        this.usage = parseUsage(name, method);
-        this.display = parseDisplay(name, method);
+        this.usage = parseUsage(name, parent, method);
+        this.display = parseDisplay(name, parent, method);
     }
 
     public static VCommandBuilder fromClass(Class<?> clazz) {
