@@ -15,7 +15,6 @@ public abstract class RedisListener<T extends Enum<T>> extends JedisPubSub {
 
     private final String serverChannel;
     private final Class<T> t;
-    private UUID serverId;
 
     public abstract void onMessage(T type, JsonObject data);
 
@@ -31,15 +30,12 @@ public abstract class RedisListener<T extends Enum<T>> extends JedisPubSub {
         String id = json.get("id").getAsString();
         UUID serverId = id.isEmpty() ? null : UUID.fromString(id);
 
-        if (this.serverId != null && this.serverId.equals(serverId)) return;
+        if (getServerId() != null && getServerId().equals(serverId)) return;
 
         onMessage(type, data);
     }
 
-    public RedisListener<T> setServerId(UUID serverId) {
-        this.serverId = serverId;
-        return this;
-    }
+    public abstract UUID getServerId();
 
     public boolean isNull(JsonObject data, String key) {
         return data.get(key).isJsonNull();
