@@ -79,9 +79,8 @@ public class VCommandManager {
         String finalPath = path.replace("%name%", name);
         System.out.println("finalPath: " + finalPath);
         if (subPath != null) {
-            finalPath = finalPath + "." + subPath;
+            finalPath += "." + subPath;
         }
-
 
         if (!config.contains(finalPath)) {
             return null;

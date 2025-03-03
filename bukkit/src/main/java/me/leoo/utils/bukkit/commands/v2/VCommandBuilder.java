@@ -42,7 +42,15 @@ public class VCommandBuilder {
     private static final VCommandManager MANAGER = VCommandManager.get();
 
     public VCommandBuilder(Class<?> clazz) {
-        Arrays.stream(clazz.getMethods()).filter(method -> method.isAnnotationPresent(Command.class)).findFirst().ifPresent(this::parseMain);
+        boolean mainParsed = Arrays.stream(clazz.getMethods())
+                .filter(method -> method.isAnnotationPresent(Command.class))
+                .findFirst()
+                .map(this::parseMain)
+                .orElse(false);
+
+        if (!mainParsed) {
+            throw new IllegalArgumentException("Error during main command parse or command disabled by config");
+        }
 
         if (this.name == null) {
             throw new IllegalArgumentException("Main Command not initialized for class " + clazz.getName() + " with @Command annotation");
@@ -57,7 +65,7 @@ public class VCommandBuilder {
         }
     }
 
-    private void parseMain(Method method) {
+    private boolean parseMain(Method method) {
         if (method.isAnnotationPresent(Command.class)) {
             Command mainCommand = method.getAnnotation(Command.class);
 
@@ -65,6 +73,9 @@ public class VCommandBuilder {
                 throw new IllegalArgumentException("Main Command name cannot be empty");
 
             this.name = mainCommand.value()[0];
+
+            if(isDisabledByConfig(this.name)) return false;
+
             this.aliases = Arrays.stream(mainCommand.value()).skip(1).toArray(String[]::new);
 
             this.executorType = mainCommand.executor();
@@ -74,7 +85,11 @@ public class VCommandBuilder {
             this.display = parseDisplay(this.name, null, method);
 
             this.method = method;
+
+            return true;
         }
+
+        return false;
     }
 
     private void parseSubCommand(Method method) {
@@ -88,6 +103,8 @@ public class VCommandBuilder {
             String subName = subCommand.value()[0];
             String parent = this.name;
 
+            if (isDisabledByConfig(parent + "." + subName)) return;
+
             String[] subAliases = Arrays.stream(subCommand.value()).skip(1).toArray(String[]::new);
 
             CommandExecutor subExecutor = subCommand.executor();
@@ -100,6 +117,7 @@ public class VCommandBuilder {
             if (subAliasesByConfig != null) {
                 subAliases = subAliasesByConfig.toArray(new String[0]);
             }
+
 
             boolean confirmation = subCommand.confirmation();
 
@@ -271,6 +289,14 @@ public class VCommandBuilder {
         if (permission == null || permission.isEmpty()) return true;
 
         return sender.hasPermission(permission);
+    }
+
+    //check if command is disable by config
+    public boolean isDisabledByConfig(String commandPath) {
+        String path = VCommandManager.getPath(commandPath, MANAGER.getPath(), "disabled", MANAGER.getConfig());
+        if (path == null) return false;
+
+        return MANAGER.getConfig().get().getBoolean(path);
     }
 
     //alies by config
