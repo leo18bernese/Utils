@@ -12,7 +12,6 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ForkJoinPool;
 
 @Getter
 public class RedisManager {
@@ -35,6 +34,7 @@ public class RedisManager {
     public RedisManager(String clientName, String[] channels,
                         String host, int port, @Nullable String user, @Nullable String password,
                         RedisListener<?> listener, boolean generateServerId) {
+
         this.clientName = clientName;
         this.channels = Arrays.stream(channels).map(String::toUpperCase).toArray(String[]::new);
 
@@ -50,7 +50,7 @@ public class RedisManager {
         setupListener(listener);
     }
 
-    private Jedis getRedis() {
+    /*private Jedis getRedis() {
         try (Jedis jedis = pool.getResource()) {
 
             if (password != null) {
@@ -63,41 +63,60 @@ public class RedisManager {
 
             return jedis;
         }
-    }
+    }*/
 
     // Publishing messages
     public void publish(Enum<?> type, JsonBuilder builder, Object... channels) {
-        publish(type, builder.getJsonObject(), Arrays.stream(channels).map(Object::toString).toArray(String[]::new));
+        publish(type, builder.getJsonObject(), false, Arrays.stream(channels).map(Object::toString).toArray(String[]::new));
     }
 
-    public void publish(Enum<?> type, JsonElement json, String... channels) {
+    public void publishSelf(Enum<?> type, JsonBuilder builder, Object... channels) {
+        publish(type, builder.getJsonObject(), true, Arrays.stream(channels).map(Object::toString).toArray(String[]::new));
+    }
+
+
+    public void publish(Enum<?> type, JsonElement json, boolean sendToSelf, String... channels) {
         String message = new JsonBuilder()
                 .add("type", type.name())
-                .add("id", serverId == null ? "" : serverId.toString())
+                .add("id", (serverId == null || sendToSelf) ? "" : serverId.toString())
                 .add("data", json).string();
 
         String[] targetChannels = channels.length == 0 ? this.channels : channels;
 
-        for (String channel : targetChannels) {
-            getRedis().publish(channel.toUpperCase(), message);
+        try (Jedis jedis = pool.getResource()) {
+            for (String channel : targetChannels) {
+                jedis.publish(channel.toUpperCase(), message);
+            }
         }
+    }
+
+    public void publish(Enum<?> type, JsonElement json, String... channels) {
+        publish(type, json, false, channels);
     }
 
     // Set, Get, Delete methods
     public void set(String key, String field, String value) {
-        getRedis().hset(key, field, value);
+        try (Jedis jedis = pool.getResource()) {
+            jedis.hset(key, field, value);
+        }
     }
 
     public Map<String, String> get(String key) {
-        return getRedis().hgetAll(key);
+        try (Jedis jedis = pool.getResource()) {
+            return jedis.hgetAll(key);
+        }
     }
 
     public void delete(String key, String... fields) {
-        getRedis().hdel(key, fields);
+        try (Jedis jedis = pool.getResource()) {
+            jedis.hdel(key, fields);
+        }
     }
 
     public boolean exists(String key, String field) {
-        return getRedis().hexists(key, field);
+        try (Jedis jedis = pool.getResource()) {
+            return jedis.hexists(key, field);
+        }
     }
 
     // Other methods
@@ -106,33 +125,39 @@ public class RedisManager {
     }
 
     private JedisPool setupPool() {
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        poolConfig.setMaxTotal(128);
+
         if (user == null) {
-
             SoftwareManager.info("Connecting to Redis with no authentication");
-
-            return new JedisPool(
-                    new JedisPoolConfig(),
-                    host, port,
-                    30_000, password, 0, clientName
-            );
+            return new JedisPool(poolConfig, host, port, 30_000, password, 0, clientName);
         }
 
         SoftwareManager.info("Connecting to Redis with authentication");
-
-        return new JedisPool(
-                new JedisPoolConfig(),
-                host, port,
-                30_000, user, password, 0, clientName
-        );
+        return new JedisPool(poolConfig, host, port, 30_000, user, password, 0, clientName);
     }
 
     private void setupListener(RedisListener<?> listener) {
-        ForkJoinPool.commonPool().execute(() -> {
+        Thread redisListenerThread = new Thread(() -> {
             try (Jedis jedis = pool.getResource()) {
-                jedis.subscribe(listener/*.setServerId(serverId)*/, channels);
+                jedis.subscribe(listener, channels);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+
+                SoftwareManager.severe("Redis listener error, restarting...");
+
+                setupListener(listener);
+            }
+        });
+
+        redisListenerThread.setName(clientName + " redis listener");
+        redisListenerThread.start();
+        /*ForkJoinPool.commonPool().execute(() -> {
+            try (Jedis jedis = pool.getResource()) {
+                jedis.subscribe(listener/*.setServerId(serverId)*//*, channels);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
-        });
+        });*/
     }
 }
