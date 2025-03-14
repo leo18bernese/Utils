@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -26,6 +27,11 @@ public class JsonBuilder {
 
     public JsonBuilder add(String key, Boolean value) {
         jsonObject.addProperty(key, value);
+        return this;
+    }
+
+    public JsonBuilder add(String key, UUID value) {
+        jsonObject.addProperty(key, value.toString());
         return this;
     }
 
