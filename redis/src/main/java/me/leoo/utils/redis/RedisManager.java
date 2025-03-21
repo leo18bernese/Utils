@@ -67,18 +67,23 @@ public class RedisManager {
 
     // Publishing messages
     public void publish(Enum<?> type, JsonBuilder builder, Object... channels) {
-        publish(type, builder.getJsonObject(), false, Arrays.stream(channels).map(Object::toString).toArray(String[]::new));
+        publish(type, builder.getJsonObject(), null, false, Arrays.stream(channels).map(Object::toString).toArray(String[]::new));
     }
 
     public void publishSelf(Enum<?> type, JsonBuilder builder, Object... channels) {
-        publish(type, builder.getJsonObject(), true, Arrays.stream(channels).map(Object::toString).toArray(String[]::new));
+        publish(type, builder.getJsonObject(), null, true, Arrays.stream(channels).map(Object::toString).toArray(String[]::new));
+    }
+
+    public void publishOnly(Enum<?> type, JsonBuilder builder, String target, Object... channels) {
+        publish(type, builder.getJsonObject(), target, false, Arrays.stream(channels).map(Object::toString).toArray(String[]::new));
     }
 
 
-    public void publish(Enum<?> type, JsonElement json, boolean sendToSelf, String... channels) {
+    private void publish(Enum<?> type, JsonElement json, String target, boolean sendToSelf, String... channels) {
         String message = new JsonBuilder()
                 .add("type", type.name())
                 .add("id", (serverId == null || sendToSelf) ? "" : serverId.toString())
+                .add("target", target)
                 .add("data", json).string();
 
         String[] targetChannels = channels.length == 0 ? this.channels : channels;
@@ -91,7 +96,7 @@ public class RedisManager {
     }
 
     public void publish(Enum<?> type, JsonElement json, String... channels) {
-        publish(type, json, false, channels);
+        publish(type, json, null, false, channels);
     }
 
     // Set, Get, Delete methods
@@ -138,11 +143,21 @@ public class RedisManager {
     }
 
     private void setupListener(RedisListener<?> listener) {
+        setupListener(listener, 0);
+    }
+
+
+    private void setupListener(RedisListener<?> listener, int retryCount) {
         Thread redisListenerThread = new Thread(() -> {
             try (Jedis jedis = pool.getResource()) {
                 jedis.subscribe(listener, channels);
             } catch (Exception exception) {
                 exception.printStackTrace();
+
+                if (retryCount >= 5) {
+                    SoftwareManager.severe("Redis listener error, retry count exceeded, stopping...");
+                    return;
+                }
 
                 SoftwareManager.severe("Redis listener error, restarting...");
 
