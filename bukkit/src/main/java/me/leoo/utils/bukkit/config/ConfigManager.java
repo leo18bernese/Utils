@@ -70,6 +70,16 @@ public class ConfigManager {
         return firstTime;
     }
 
+    /**
+     * @return return true if it's the FIRST TIME or the path DOES NOT exist
+     * <br>
+     * In practice, if TRUE you should save data, otherwise you should not <br>
+     * It's useful when saving values that can be removed by the user, so to prevent the override of the user's preferences
+     */
+    public boolean toSave(String path) {
+        return firstTime || !contains(path);
+    }
+
     public void save() {
         yml.options().copyDefaults(true);
 
