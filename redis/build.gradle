@@ -8,7 +8,7 @@ plugins {
 group = 'me.leoo.utils'
 
 dependencies {
-    compileOnly 'redis.clients:jedis:5.1.0'
+    compileOnly 'redis.clients:jedis:5.2.0'
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 
     // Utils
