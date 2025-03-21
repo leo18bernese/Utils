@@ -74,7 +74,7 @@ public class VCommandBuilder {
 
             this.name = mainCommand.value()[0];
 
-            if(isDisabledByConfig(this.name)) return false;
+            if (isDisabledByConfig(this.name)) return false;
 
             this.aliases = Arrays.stream(mainCommand.value()).skip(1).toArray(String[]::new);
 

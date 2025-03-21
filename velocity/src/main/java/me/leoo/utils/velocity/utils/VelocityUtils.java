@@ -27,7 +27,7 @@ public class VelocityUtils {
         return player.getCurrentServer().orElse(null);
     }
 
-    public static RegisteredServer getServer(String serverName) {
+    public RegisteredServer getServer(String serverName) {
         return Utils.getInstance().getProxy().getServer(serverName).orElse(null);
     }
 }
