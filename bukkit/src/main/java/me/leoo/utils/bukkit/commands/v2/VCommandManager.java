@@ -69,15 +69,10 @@ public class VCommandManager {
     }
 
     public static String getPath(String name, String path, String subPath, Supplier<ConfigManager> configManager) {
-        System.out.println("getting " + name + " " + path + " " + subPath);
-
         if (path == null || configManager == null) return null;
-        System.out.println("passed 1");
         ConfigManager config = configManager.get();
         if (config == null) return null;
-        System.out.println("passed 2");
         String finalPath = path.replace("%name%", name);
-        System.out.println("finalPath: " + finalPath);
         if (subPath != null) {
             finalPath += "." + subPath;
         }
@@ -85,7 +80,6 @@ public class VCommandManager {
         if (!config.contains(finalPath)) {
             return null;
         }
-        System.out.println("passed 3");
 
         return finalPath;
     }
