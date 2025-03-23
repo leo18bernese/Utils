@@ -10,16 +10,25 @@ import java.util.concurrent.TimeUnit;
 public class Tasks {
 
     public ScheduledTask runLater(Object plugin, Runnable task, int seconds) {
+        return runLater(plugin, task, seconds, TimeUnit.SECONDS);
+    }
+
+    public ScheduledTask runLater(Object plugin, Runnable task, int time, TimeUnit unit) {
         return Utils.getInstance().getProxy().getScheduler()
                 .buildTask(plugin, task)
-                .delay(seconds, TimeUnit.SECONDS)
+                .delay(time, unit)
                 .schedule();
     }
 
+
     public ScheduledTask runRepeating(Object plugin, Runnable task, int seconds) {
+        return runRepeating(plugin, task, seconds, TimeUnit.SECONDS);
+    }
+
+    public ScheduledTask runRepeating(Object plugin, Runnable task, int time, TimeUnit unit) {
         return Utils.getInstance().getProxy().getScheduler()
                 .buildTask(plugin, task)
-                .repeat(seconds, TimeUnit.SECONDS)
+                .repeat(time, unit)
                 .schedule();
     }
 }
