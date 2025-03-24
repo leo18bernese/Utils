@@ -5,7 +5,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import lombok.Data;
 import lombok.Getter;
-import me.leoo.utils.common.compatibility.SoftwareManager;
+import me.leoo.utils.common.compatibility.CommonUtils;
 
 @Data
 public class MongoManager {
@@ -37,7 +37,7 @@ public class MongoManager {
 
         this.database = this.client.getDatabase(database);
 
-        SoftwareManager.info("Connected to the database. (MongoDB)");
+        CommonUtils.info("Connected to the database. (MongoDB)");
 
         instance = this;
     }
@@ -45,6 +45,6 @@ public class MongoManager {
     public void close() {
         this.client.close();
 
-        SoftwareManager.info("Disconnected from the database. (MongoDB)");
+        CommonUtils.info("Disconnected from the database. (MongoDB)");
     }
 }

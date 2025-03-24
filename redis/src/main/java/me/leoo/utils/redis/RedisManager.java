@@ -2,7 +2,7 @@ package me.leoo.utils.redis;
 
 import com.google.gson.JsonElement;
 import lombok.Getter;
-import me.leoo.utils.common.compatibility.SoftwareManager;
+import me.leoo.utils.common.compatibility.CommonUtils;
 import me.leoo.utils.redis.json.JsonBuilder;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -134,11 +134,11 @@ public class RedisManager {
         poolConfig.setMaxTotal(128);
 
         if (user == null) {
-            SoftwareManager.info("Connecting to Redis with no authentication");
+            CommonUtils.info("Connecting to Redis with no authentication");
             return new JedisPool(poolConfig, host, port, 30_000, password, 0, clientName);
         }
 
-        SoftwareManager.info("Connecting to Redis with authentication");
+        CommonUtils.info("Connecting to Redis with authentication");
         return new JedisPool(poolConfig, host, port, 30_000, user, password, 0, clientName);
     }
 
@@ -155,11 +155,11 @@ public class RedisManager {
                 exception.printStackTrace();
 
                 if (retryCount >= 5) {
-                    SoftwareManager.severe("Redis listener error, retry count exceeded, stopping...");
+                    CommonUtils.severe("Redis listener error, retry count exceeded, stopping...");
                     return;
                 }
 
-                SoftwareManager.severe("Redis listener error, restarting...");
+                CommonUtils.severe("Redis listener error, restarting...");
 
                 setupListener(listener);
             }

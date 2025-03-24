@@ -4,7 +4,7 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Data;
 import lombok.Getter;
-import me.leoo.utils.common.compatibility.SoftwareManager;
+import me.leoo.utils.common.compatibility.CommonUtils;
 import me.leoo.utils.velocity.software.Software;
 import org.slf4j.Logger;
 
@@ -27,6 +27,6 @@ public class Utils {
         instance.setProxy(proxyServer);
         instance.setLogger(proxyLogger);
 
-        SoftwareManager.init(new Software());
+        CommonUtils.init(new Software());
     }
 }

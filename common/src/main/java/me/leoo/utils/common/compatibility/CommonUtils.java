@@ -1,13 +1,13 @@
 package me.leoo.utils.common.compatibility;
 
-import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class SoftwareManager {
+public class CommonUtils {
 
-    @Getter
+    // Instance
     private static SoftwareUtils utils;
+
 
     public void info(String text) {
         utils.info(text);
@@ -26,6 +26,6 @@ public class SoftwareManager {
     }
 
     public void init(SoftwareUtils utils) {
-        SoftwareManager.utils = utils;
+        CommonUtils.utils = utils;
     }
 }

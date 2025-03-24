@@ -7,7 +7,7 @@ import me.leoo.utils.bukkit.items.InteractListeners;
 import me.leoo.utils.bukkit.menu.MenuListeners;
 import me.leoo.utils.bukkit.menu.MenuTask;
 import me.leoo.utils.bukkit.software.Software;
-import me.leoo.utils.common.compatibility.SoftwareManager;
+import me.leoo.utils.common.compatibility.CommonUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,7 +45,7 @@ public class Utils extends JavaPlugin {
     public static void initialize(JavaPlugin plugin) {
         initializedFrom = plugin;
 
-        SoftwareManager.init(new Software());
+        CommonUtils.init(new Software());
 
         Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(get(), "BungeeCord");
 

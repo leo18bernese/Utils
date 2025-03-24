@@ -1,7 +1,7 @@
 package me.leoo.utils.common.string;
 
 import lombok.experimental.UtilityClass;
-import me.leoo.utils.common.compatibility.SoftwareManager;
+import me.leoo.utils.common.compatibility.CommonUtils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -41,7 +41,7 @@ public class StringUtil {
     public String getCenteredMessage(String message) {
         if (message == null || message.isEmpty()) return "";
 
-        message = SoftwareManager.getUtils().color(message);
+        message = CommonUtils.color(message);
 
         int messagePxSize = 0;
         boolean previousCode = false;
