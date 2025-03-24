@@ -31,7 +31,7 @@ public class JsonBuilder {
     }
 
     public JsonBuilder add(String key, UUID value) {
-        jsonObject.addProperty(key, value.toString());
+        jsonObject.addProperty(key, value == null ? null : value.toString());
         return this;
     }
 
