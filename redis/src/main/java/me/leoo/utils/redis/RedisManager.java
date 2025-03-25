@@ -9,9 +9,7 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 public class RedisManager {
@@ -31,6 +29,8 @@ public class RedisManager {
     @Nullable
     private final String password;
 
+    private static final Map<String, List<String>> CHANNEL_SERVERS = new HashMap<>();
+
     public RedisManager(String clientName, String[] channels,
                         String host, int port, @Nullable String user, @Nullable String password,
                         RedisListener<?> listener, boolean generateServerId) {
@@ -47,7 +47,12 @@ public class RedisManager {
 
         this.pool = setupPool();
 
+        // Setup listener
+        listener = listener.initialize(serverId);
+
         setupListener(listener);
+
+        CHANNEL_SERVERS.computeIfAbsent(listener.getServerChannel(), s -> new ArrayList<>()).add(clientName);
     }
 
     /*private Jedis getRedis() {
@@ -97,6 +102,22 @@ public class RedisManager {
 
     public void publish(Enum<?> type, JsonElement json, String... channels) {
         publish(type, json, null, false, channels);
+    }
+
+    public void publishOnce(Enum<?> type, JsonBuilder builder, Object... channels) {
+        for (Object object : channels) {
+            String channel = object.toString();
+
+
+            if (CHANNEL_SERVERS.containsKey(channel.toUpperCase())) {
+                List<String> target = CHANNEL_SERVERS.get(channel.toUpperCase());
+
+                if (target.isEmpty()) continue;
+
+                publishOnly(type, builder, target.get(0), channel);
+                return;
+            }
+        }
     }
 
     // Set, Get, Delete methods
