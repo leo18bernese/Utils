@@ -156,6 +156,27 @@ public class TimeUtil {
         return calendar;
     }
 
+    public Calendar fromNow(int amount, int type) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(type, amount);
+
+        return calendar;
+    }
+
+    public Calendar fromDate(long date, int amount, int type) {
+        Calendar calendar = getCalendar(date);
+        calendar.add(type, amount);
+
+        return calendar;
+    }
+
+    public int getDifference(long date1, long date2, int compareType) {
+        Calendar calendar1 = getCalendar(date1);
+        Calendar calendar2 = getCalendar(date2);
+
+        return calendar2.get(compareType) - calendar1.get(compareType);
+    }
+
     public int getDayOfYear() {
         Calendar calendar = Calendar.getInstance();
 
