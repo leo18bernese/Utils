@@ -35,29 +35,9 @@ public class Tasks {
         return Bukkit.getScheduler().runTaskTimerAsynchronously(PLUGIN, runnable, delay, interval);
     }
 
-    /*private static final PlatformScheduler SCHEDULER = Utils.foliaLib.getScheduler();
+    public void times(Runnable runnable, int times, long delay) {
+        BukkitTask task = timer(runnable, 0, delay);
 
-    public void run(Runnable runnable) {
-        SCHEDULER.runNextTick(task -> runnable.run());
+        later(task::cancel, delay * times);
     }
-
-    public void async(Runnable runnable) {
-        SCHEDULER.runAsync(task -> runnable.run());
-    }
-
-    public WrappedTask later(Runnable runnable, long delay) {
-        return SCHEDULER.runLater(runnable, delay);
-    }
-
-    public WrappedTask asyncLater(Runnable runnable, long delay) {
-        return SCHEDULER.runLaterAsync(runnable, delay);
-    }
-
-    public WrappedTask timer(Runnable runnable, long delay, long interval) {
-        return SCHEDULER.runTimer(runnable, delay, interval);
-    }
-
-    public WrappedTask asyncTimer(Runnable runnable, long delay, long interval) {
-        return SCHEDULER.runTimerAsync(runnable, delay, interval);
-    }*/
 }

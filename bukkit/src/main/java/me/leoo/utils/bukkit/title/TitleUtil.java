@@ -31,7 +31,8 @@ public class TitleUtil {
     /**
      * @deprecated Use {@link TitleManager constructor} instead.
      */
-    @Deprecated public void sendTitleFromConfig(Player player, ConfigManager config, String path, int fadeIn, int stay, int fadeOut, Function<String, String> replace) {
+    @Deprecated
+    public void sendTitleFromConfig(Player player, ConfigManager config, String path, int fadeIn, int stay, int fadeOut, Function<String, String> replace) {
         Object messageObject = config.getYml().get(path + ".message");
 
         if (messageObject != null) {
@@ -53,7 +54,8 @@ public class TitleUtil {
     /**
      * @deprecated Use {@link TitleManager constructor} instead.
      */
-    @Deprecated  public void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+    @Deprecated
+    public void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
         new Titles(title, subtitle, fadeIn, stay, fadeOut).send(player);
     }
 
