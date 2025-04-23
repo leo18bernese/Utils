@@ -11,6 +11,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 @Data
 public abstract class MenuBuilder {
@@ -70,6 +71,9 @@ public abstract class MenuBuilder {
     }
 
     public void open() {
+        Predicate<Player> require = getOpenCondition();
+        if (require != null && !require.test(player)) return;
+
         player.openInventory(get());
 
         openedInventories.put(player.getUniqueId(), this);
@@ -90,5 +94,9 @@ public abstract class MenuBuilder {
     }
 
     public void onClose() {
+    }
+
+    public Predicate<Player> getOpenCondition() {
+        return null;
     }
 }
