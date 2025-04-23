@@ -9,7 +9,9 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.UUID;
 
 @Getter
 public class RedisManager {
@@ -29,7 +31,7 @@ public class RedisManager {
     @Nullable
     private final String password;
 
-    private static final Map<String, List<String>> CHANNEL_SERVERS = new HashMap<>();
+    private final RedisListener<?> listener;
 
     public RedisManager(String clientName, String[] channels,
                         String host, int port, @Nullable String user, @Nullable String password,
@@ -52,7 +54,7 @@ public class RedisManager {
 
         setupListener(listener);
 
-        CHANNEL_SERVERS.computeIfAbsent(listener.getServerChannel(), s -> new ArrayList<>()).add(clientName);
+        this.listener = listener;
     }
 
     /*private Jedis getRedis() {
@@ -84,12 +86,23 @@ public class RedisManager {
     }
 
 
+    /**
+     * Publish a message to the Redis server.
+     *
+     * @param type       the type of message
+     * @param json       the message data
+     * @param target     the target server
+     * @param sendToSelf whether to send the message to the current server
+     * @param channels   the channels to publish to
+     */
     private void publish(Enum<?> type, JsonElement json, String target, boolean sendToSelf, String... channels) {
         String message = new JsonBuilder()
                 .add("type", type.name())
                 .add("id", (serverId == null || sendToSelf) ? "" : serverId.toString())
                 .add("target", target)
                 .add("data", json).string();
+
+        //System.out.println("published message type: " + type.name() + " id: " + ((serverId == null || sendToSelf) ? "" : serverId.toString()) + " target: " + target);
 
         String[] targetChannels = channels.length == 0 ? this.channels : channels;
 
@@ -102,22 +115,6 @@ public class RedisManager {
 
     public void publish(Enum<?> type, JsonElement json, String... channels) {
         publish(type, json, null, false, channels);
-    }
-
-    public void publishOnce(Enum<?> type, JsonBuilder builder, Object... channels) {
-        for (Object object : channels) {
-            String channel = object.toString();
-
-
-            if (CHANNEL_SERVERS.containsKey(channel.toUpperCase())) {
-                List<String> target = CHANNEL_SERVERS.get(channel.toUpperCase());
-
-                if (target.isEmpty()) continue;
-
-                publishOnly(type, builder, target.get(0), channel);
-                return;
-            }
-        }
     }
 
     // Set, Get, Delete methods
