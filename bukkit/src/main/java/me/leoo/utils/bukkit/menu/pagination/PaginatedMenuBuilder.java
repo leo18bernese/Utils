@@ -13,6 +13,7 @@ import java.util.List;
 public abstract class PaginatedMenuBuilder extends MenuBuilder {
 
     private int page = 1;
+    private int itemsCount = 0;
 
     public abstract List<Integer> getPaginatedSlots();
 
@@ -36,6 +37,8 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
     public List<ItemBuilder> getItems() {
         List<ItemBuilder> items = new ArrayList<>(getGlobalItems());
         List<ItemBuilder> builders = new ArrayList<>(getAllPageItems());
+
+        itemsCount = builders.size();
 
         // Remove the items in the previous and next page slots
         if (getPreviousPageItem() != null) {
@@ -90,7 +93,7 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
     }
 
     public int getPages() {
-        return NumberUtil.getTotalPages(getAllPageItems().size(), getPaginatedSlots().size());
+        return NumberUtil.getTotalPages(itemsCount, getPaginatedSlots().size());
     }
 
 }
