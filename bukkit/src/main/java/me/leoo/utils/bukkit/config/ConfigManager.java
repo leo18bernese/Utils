@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
-public class ConfigManager {
+public class ConfigManager extends ConfigSection {
 
     private YamlConfiguration yml;
     private final File config;
@@ -95,17 +95,6 @@ public class ConfigManager {
         save();
     }
 
-    public void addIfNotExists(String path, Object value) {
-        if (!contains(path)) add(path, value);
-    }
-
-    public void add(String path, Object value) {
-        yml.addDefault(path, value);
-    }
-
-    public void addList(String path, String... values) {
-        add(path, values);
-    }
 
     public void move(String from, String to) {
         if (!contains(from)) return;
@@ -134,80 +123,7 @@ public class ConfigManager {
         }
     }
 
-    public boolean contains(String path) {
-        return yml.get(path) != null;
-    }
-
-    public boolean getBoolean(String path) {
-        return yml.getBoolean(path);
-    }
-
-    public int getInt(String path) {
-        return yml.getInt(path);
-    }
-
-    public double getDouble(String path) {
-        return yml.getDouble(path);
-    }
-
-    public String getString(String path) {
-        String string = yml.getString(path);
-
-        if (string == null) {
-            Bukkit.getLogger().severe("String " + path + " not found in " + name + ".yml");
-            return "StringNotFound";
-        }
-
-        return CC.color(string);
-    }
-
-    public List<String> getList(String path) {
-        if (!contains(path)) {
-            Bukkit.getLogger().severe("List " + path + " not found in " + name + ".yml");
-            return new ArrayList<>();
-        }
-
-        return yml.getStringList(path).stream().map(CC::color).collect(Collectors.toList());
-    }
-
-    public ConfigurationSection getSection(String path) {
-        return yml.getConfigurationSection(path);
-    }
-
-    public Set<String> getKeys(String path) {
-        ConfigurationSection section = yml.getConfigurationSection(path);
-
-        return section == null ? new HashSet<>() : section.getKeys(false);
-    }
-
-    /**
-     * @return A set of entries where the key is the key of the section and the value is the path to the key
-     */
-    public Set<Map.Entry<String, String>> getSectionContent(String path) {
-        Map<String, String> map = new HashMap<>();
-
-        getKeys(path).forEach(key -> map.put(key, path + "." + key));
-
-        return map.entrySet();
-    }
-
-    public List<Integer> getIntegerSplit(String path) {
-        return Arrays.stream(getString(path).split(","))
-                .map(Integer::valueOf)
-                .collect(Collectors.toList());
-    }
-
-    //locations
-    public Location getLocation(String path) {
-        return LocationUtil.deserializeLocation(getString(path));
-    }
-
-    public List<Location> getLocations(String path) {
-        return yml.getStringList(path).stream()
-                .map(LocationUtil::deserializeLocation)
-                .collect(Collectors.toList());
-    }
-
+    // locations
     public void saveLocation(String path, Location location) {
         yml.set(path, LocationUtil.serializeLocation(location));
         save();
@@ -246,10 +162,6 @@ public class ConfigManager {
     }
 
     //items
-    public ItemBuilder getItem(String path) {
-        return ItemBuilder.parse(path, this);
-    }
-
     public void saveItem(String path, int slot, XMaterial material, String name, String... lore) {
         saveItem(path, Utils.getLanguage(this), slot, material, name, lore);
     }
@@ -258,52 +170,10 @@ public class ConfigManager {
         saveItem(path, -1, material, name, lore);
     }
 
-    public void saveItem(String path, ConfigManager language, int slot, XMaterial material, String name, String... lore) {
+    public void saveItem(String path, ConfigSection language, int slot, XMaterial material, String name, String... lore) {
         new ItemBuilder(material).data(material.getData()).name(name).lore(lore).slot(slot).save(path, this, language);
 
         save();
-    }
-
-    //action method from config
-    public boolean executeAction(String path, Player player) {
-        return PlayerAction.execute(player, this, path);
-    }
-
-    //group methods
-    public String getGroupPath(String path, String subPath, String group) {
-        path = path.isEmpty() ? "" : path + ".";
-        subPath = subPath.isEmpty() ? "" : "." + subPath;
-
-        return path + (contains(path + group + subPath) ? group : "Default") + subPath;
-    }
-
-    public String getGroupString(String path, String subPath, String group) {
-
-        return getString(getGroupPath(path, subPath, group));
-    }
-
-    public List<String> getGroupList(String path, String subPath, String group) {
-        return getList(getGroupPath(path, subPath, group));
-    }
-
-    public Set<String> getGroupKeys(String path, String subPath, String group) {
-        return getKeys(getGroupPath(path, subPath, group));
-    }
-
-    public ConfigurationSection getGroupSection(String path, String subPath, String group) {
-        return getSection(getGroupPath(path, subPath, group));
-    }
-
-    public boolean getGroupBoolean(String path, String subPath, String group) {
-        return getBoolean(getGroupPath(path, subPath, group));
-    }
-
-    public int getGroupInt(String path, String subPath, String group) {
-        return getInt(getGroupPath(path, subPath, group));
-    }
-
-    public double getGroupDouble(String path, String subPath, String group) {
-        return getDouble(getGroupPath(path, subPath, group));
     }
 
     public void removeFromMemory() {

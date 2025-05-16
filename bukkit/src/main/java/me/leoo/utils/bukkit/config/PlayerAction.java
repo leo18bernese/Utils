@@ -58,7 +58,7 @@ public class PlayerAction {
         return new PlayerAction(string).run(player);
     }
 
-    public static boolean execute(Player player, ConfigManager config, String path) {
+    public static boolean execute(Player player, ConfigSection config, String path) {
         path = path + ".command";
 
         if (!config.contains(path)) return false;
