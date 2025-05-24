@@ -3,6 +3,7 @@ package me.leoo.utils.bukkit;
 import lombok.Getter;
 import me.leoo.utils.bukkit.chat.ChatMessage;
 import me.leoo.utils.bukkit.config.ConfigManager;
+import me.leoo.utils.bukkit.config.ConfigSection;
 import me.leoo.utils.bukkit.items.InteractListeners;
 import me.leoo.utils.bukkit.menu.MenuListeners;
 import me.leoo.utils.bukkit.menu.MenuTask;
@@ -82,7 +83,7 @@ public class Utils extends JavaPlugin {
         return plugin;
     }
 
-    public static ConfigManager getLanguage(ConfigManager config) {
+    public static ConfigSection getLanguage(ConfigSection config) {
         return language != null ? language.get() : config;
     }
 }

@@ -7,16 +7,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.UUID;
+
 public class ChatMessageListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onChat(AsyncPlayerChatEvent event) {
-        ChatMessage request = ChatMessage.getRequests().get(event.getPlayer().getUniqueId());
+        UUID uuid = event.getPlayer().getUniqueId();
+
+        ChatMessage request = ChatMessage.getRequests().get(uuid);
 
         if (request != null) {
             event.setCancelled(true);
 
-            ChatMessage.getRequests().remove(event.getPlayer().getUniqueId());
+            ChatMessage.getRequests().remove(uuid);
 
             request.getConsumer().accept(event);
         }
