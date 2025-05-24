@@ -8,10 +8,11 @@ import de.tr7zw.changeme.nbtapi.NBT;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.bukkit.PlaceholderMap;
 import me.leoo.utils.bukkit.chat.CC;
-import me.leoo.utils.bukkit.config.ConfigManager;
+import me.leoo.utils.bukkit.config.ConfigSection;
 import me.leoo.utils.bukkit.sound.SoundUtil;
 import me.leoo.utils.common.number.NumberUtil;
 import org.bukkit.Color;
@@ -34,7 +35,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Getter
+@Setter
 @AllArgsConstructor
+@Accessors(chain = true, fluent = true)
 public class ItemBuilder implements Cloneable {
 
     private ItemStack itemStack;
@@ -47,7 +50,10 @@ public class ItemBuilder implements Cloneable {
     private Consumer<PlayerInteractEvent> interactCallback;
     private Predicate<PlayerInteractEvent> interactRequirement;
 
+    @Setter
     private String permission;
+
+    @Setter
     private String command;
 
     private String toSaveString;
@@ -56,11 +62,12 @@ public class ItemBuilder implements Cloneable {
     private final Map<String, String> tags = new HashMap<>();
 
     @Setter
-    private ConfigManager config, language;
+    private ConfigSection config, language;
 
     @Setter
     private String configPath;
 
+    @Setter
     private int slot = -1;
 
     private ItemData itemData = new ItemData();
@@ -126,7 +133,7 @@ public class ItemBuilder implements Cloneable {
     }
 
     public ItemBuilder data(int data) {
-        getItemStack().setDurability((short) data);
+        itemStack.setDurability((short) data);
         return this;
     }
 
@@ -277,33 +284,13 @@ public class ItemBuilder implements Cloneable {
         });
     }
 
-    public ItemBuilder setToSaveString(String toSaveString) {
-        this.toSaveString = toSaveString;
-        return this;
-    }
-
-    public ItemBuilder slot(int slot) {
-        this.slot = slot;
-        return this;
-    }
-
-    public ItemBuilder permission(String permission) {
-        this.permission = permission;
-        return this;
-    }
-
-    public ItemBuilder command(String command) {
-        this.command = command;
-        return this;
-    }
-
     public ItemBuilder sound(String sound) {
         this.sounds.add(sound);
         return this;
     }
 
-    public ItemBuilder event(Predicate<InventoryClickEvent> eventCallBack) {
-        this.eventCallback = eventCallBack;
+    public ItemBuilder event(Predicate<InventoryClickEvent> event) {
+        this.eventCallback = event;
         return this;
     }
 
@@ -316,18 +303,12 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-
     public ItemBuilder interact(Consumer<PlayerInteractEvent> interactCallback) {
         this.interactCallback = interactCallback;
         return this;
     }
 
-    public ItemBuilder interactRequirement(Predicate<PlayerInteractEvent> interactRequirement) {
-        this.interactRequirement = interactRequirement;
-        return this;
-    }
-
-    public ItemBuilder applyToMeta(String path, ConfigManager config) {
+    public ItemBuilder applyToMeta(String path, ConfigSection config) {
         if (config.contains(path + ".name")) name(config.getString(path + ".name"));
         if (config.contains(path + ".lore")) lore(config.getList(path + ".lore"));
 
@@ -345,7 +326,7 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
-    public void save(String path, ConfigManager config, ConfigManager language) {
+    public void save(String path, ConfigSection config, ConfigSection language) {
         config.add(path + ".material", itemStack.getType().name() + (toSaveString == null ? (itemStack.getDurability() == 0 ? "" : ":" + itemStack.getDurability()) : ":" + toSaveString));
 
         if (itemStack.getAmount() > 1) config.add(path + ".amount", itemStack.getAmount());
@@ -361,11 +342,11 @@ public class ItemBuilder implements Cloneable {
         }
     }
 
-    public void save(String path, ConfigManager config) {
+    public void save(String path, ConfigSection config) {
         save(path, config, Utils.getLanguage(config));
     }
 
-    public static ItemBuilder parse(String path, ConfigManager config, ConfigManager language) {
+    public static ItemBuilder parse(String path, ConfigSection config, ConfigSection language) {
         String[] material = config.getString(path + ".material").split(":");
         String name = material[0];
 
@@ -386,7 +367,7 @@ public class ItemBuilder implements Cloneable {
             builder = new ItemBuilder(name, getData(material));
         }
 
-        if (XMaterial.FIREWORK_STAR.isSimilar(builder.getItemStack())) {
+        if (XMaterial.FIREWORK_STAR.isSimilar(builder.itemStack())) {
             if (material.length == 2) {
                 int[] dataSplit = Arrays.stream(material[1].split("-")).mapToInt(NumberUtil::toInt).toArray();
 
@@ -398,11 +379,11 @@ public class ItemBuilder implements Cloneable {
             }
         }
 
-        builder.setConfigPath(path);
-        builder.setConfig(config);
+        builder.configPath(path);
+        builder.config(config);
 
         if (language != null) {
-            builder.setLanguage(language);
+            builder.language(language);
 
             if (language.contains(path + ".name")) builder.name(language.getString(path + ".name"));
             if (language.contains(path + ".lore")) builder.lore(language.getList(path + ".lore"));
@@ -429,7 +410,7 @@ public class ItemBuilder implements Cloneable {
         return builder;
     }
 
-    public static ItemBuilder parse(String path, ConfigManager config) {
+    public static ItemBuilder parse(String path, ConfigSection config) {
         return parse(path, config, Utils.getLanguage(config));
     }
 

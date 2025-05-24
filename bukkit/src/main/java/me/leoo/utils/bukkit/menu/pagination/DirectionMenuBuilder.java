@@ -67,11 +67,11 @@ public abstract class DirectionMenuBuilder<T> extends MenuBuilder {
 
         // Remove the items in the previous and next page slots
         if (getPreviousPageItem() != null) {
-            items.removeIf(item -> item.getSlot() == getPreviousPageItem().getSlot());
+            items.removeIf(item -> item.slot() == getPreviousPageItem().slot());
         }
 
         if (getNextPageItem() != null) {
-            items.removeIf(item -> item.getSlot() == getNextPageItem().getSlot());
+            items.removeIf(item -> item.slot() == getNextPageItem().slot());
         }
 
 

@@ -29,7 +29,7 @@ public class InteractItem {
     }
 
     public void give(Player player) {
-        give(player, item.getSlot());
+        give(player, item.slot());
     }
 
     public void give(Player player, int slot) {

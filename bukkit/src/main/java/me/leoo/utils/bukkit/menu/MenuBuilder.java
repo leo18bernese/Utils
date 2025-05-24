@@ -48,16 +48,16 @@ public abstract class MenuBuilder {
         items.removeIf(Objects::isNull);
 
         items.forEach(itemBuilder -> {
-            int slot = itemBuilder.getSlot();
+            int slot = itemBuilder.slot();
 
             if (slot < 0) return;
 
             if (slot >= getSlots()) {
-                Bukkit.getLogger().warning("Cannot add item " + itemBuilder.getItemMeta().getDisplayName() + " to slot " + slot + " in " + getTitle() + " menu. Slot is out of bounds.");
+                Bukkit.getLogger().warning("Cannot add item " + itemBuilder.itemMeta().getDisplayName() + " to slot " + slot + " in " + getTitle() + " menu. Slot is out of bounds.");
                 return;
             }
 
-            ItemStack item = itemBuilder.getItemData().applyFunctions(player, itemBuilder).defaultFlags().get();
+            ItemStack item = itemBuilder.itemData().applyFunctions(player, itemBuilder).defaultFlags().get();
             inventory.setItem(slot, item);
         });
     }
@@ -67,7 +67,7 @@ public abstract class MenuBuilder {
     }
 
     public Optional<ItemBuilder> getItem(int slot) {
-        return items.stream().filter(menuItem -> menuItem.getSlot() == slot).findAny();
+        return items.stream().filter(menuItem -> menuItem.slot() == slot).findAny();
     }
 
     public void open() {

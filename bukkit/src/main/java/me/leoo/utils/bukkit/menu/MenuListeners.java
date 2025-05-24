@@ -34,12 +34,12 @@ public class MenuListeners implements Listener {
         }
 
         ItemBuilder item = menu.getItem(rawSlot).orElse(null);
-        if (item == null || !item.getItemStack().equals(event.getCurrentItem())) {
+        if (item == null || !item.itemStack().equals(event.getCurrentItem())) {
             event.setCancelled(true);
             return;
         }
 
-        if (item.getPermission() != null && !player.hasPermission(item.getPermission())) {
+        if (item.permission() != null && !player.hasPermission(item.permission())) {
             event.setCancelled(true);
             return;
         }
@@ -49,16 +49,16 @@ public class MenuListeners implements Listener {
             return;
         }
 
-        if (item.getConfig() != null && item.getConfigPath() != null && item.getConfig().executeAction(item.getConfigPath(), player.getPlayer())) {
+        if (item.config() != null && item.configPath() != null && item.config().executeAction(item.configPath(), player.getPlayer())) {
             event.setCancelled(true);
             return;
         }
 
-        if (item.getEventCallback() == null) {
+        if (item.eventCallback() == null) {
             event.setCancelled(true);
         } else {
             item.runSound(player);
-            event.setCancelled(item.getEventCallback().test(event));
+            event.setCancelled(item.eventCallback().test(event));
         }
 
         if (menu.isUpdateOnClick()) menu.update();

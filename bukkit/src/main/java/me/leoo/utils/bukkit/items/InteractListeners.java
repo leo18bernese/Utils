@@ -23,23 +23,23 @@ public class InteractListeners implements Listener {
 
         ItemBuilder builder = item.getItem();
 
-        if (builder.getPermission() != null && !player.hasPermission(builder.getPermission())) {
+        if (builder.permission() != null && !player.hasPermission(builder.permission())) {
             event.setCancelled(true);
             return;
         }
 
-        if ((builder.getConfig() != null && builder.getConfigPath() != null && builder.getConfig().executeAction(builder.getConfigPath(), player.getPlayer())) || item.getItem().getInteractCallback() == null) {
+        if ((builder.config() != null && builder.configPath() != null && builder.config().executeAction(builder.configPath(), player.getPlayer())) || item.getItem().interactCallback() == null) {
             event.setCancelled(true);
             return;
         }
 
-        if (builder.getInteractRequirement() != null && !builder.getInteractRequirement().test(event)) {
+        if (builder.interactRequirement() != null && !builder.interactRequirement().test(event)) {
             event.setCancelled(true);
             return;
         }
 
         builder.runSound(player);
-        builder.getInteractCallback().accept(event);
+        builder.interactCallback().accept(event);
     }
 
     @EventHandler
