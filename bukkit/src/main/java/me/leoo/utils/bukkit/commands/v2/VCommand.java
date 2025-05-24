@@ -121,6 +121,37 @@ public abstract class VCommand extends BukkitCommand {
         return Collections.emptyList();
     }
 
+    /**
+     * <p> Requests confirmation from the player to execute a command.
+     *
+     * <p> Calls {@link #requestConfirmation(Player, List, String, Runnable)} with a single confirmation message.
+     */
+    public void requestConfirmation(Player player, String confirmMessage, String commandFormat, Runnable action) {
+        requestConfirmation(player, Collections.singletonList(confirmMessage), commandFormat, action);
+    }
+
+    /**
+     * Requests confirmation from the player to execute a command.
+     *
+     * @param player         The player to request confirmation from.
+     * @param confirmMessage The message to send to the player for confirmation.
+     * @param commandFormat  The command format to be executed upon confirmation.
+     * @param action         The action to be executed upon confirmation.
+     */
+    public void requestConfirmation(Player player, List<String> confirmMessage, String commandFormat, Runnable action) {
+        confirmMessage.forEach(s -> {
+            s = s.replace("{confirmMessage}", commandFormat);
+
+            player.sendMessage(CC.color(s));
+        });
+
+        ChatMessage.request(player.getUniqueId(), event -> {
+            if (event.getMessage().equalsIgnoreCase(commandFormat)) {
+                action.run();
+            }
+        });
+    }
+
     public VCommandBuilder getMainCommand() {
         return VCommandCache.getCommand(getClass().getName());
     }
