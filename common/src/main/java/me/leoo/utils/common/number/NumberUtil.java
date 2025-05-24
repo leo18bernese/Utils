@@ -1,6 +1,7 @@
 package me.leoo.utils.common.number;
 
 import lombok.experimental.UtilityClass;
+import me.leoo.utils.common.compatibility.CommonUtils;
 
 import java.util.List;
 import java.util.TreeMap;
@@ -40,7 +41,9 @@ public class NumberUtil {
         try {
             return Integer.parseInt(object.toString());
         } catch (NumberFormatException | NullPointerException ignored) {
-            throw new IllegalArgumentException("Cannot convert " + object + " to int");
+            CommonUtils.severe("Cannot convert " + object + " to int");
+
+            return 0;
         }
     }
 
@@ -48,7 +51,9 @@ public class NumberUtil {
         try {
             return Float.parseFloat(object.toString());
         } catch (NumberFormatException | NullPointerException ignored) {
-            throw new IllegalArgumentException("Cannot convert " + object + " to float");
+            CommonUtils.severe("Cannot convert " + object + " to float");
+
+            return Float.NaN;
         }
     }
 
@@ -56,7 +61,9 @@ public class NumberUtil {
         try {
             return Double.parseDouble(object.toString());
         } catch (NumberFormatException | NullPointerException ignored) {
-            throw new IllegalArgumentException("Cannot convert " + object + " to double");
+            CommonUtils.severe("Cannot convert " + object + " to double");
+
+            return Double.NaN;
         }
     }
 
@@ -64,7 +71,9 @@ public class NumberUtil {
         try {
             return Long.parseLong(object.toString());
         } catch (NumberFormatException | NullPointerException ignored) {
-            throw new IllegalArgumentException("Cannot convert " + object + " to long");
+            CommonUtils.severe("Cannot convert " + object + " to long");
+
+            return 0L;
         }
     }
 
@@ -72,7 +81,9 @@ public class NumberUtil {
         try {
             return Short.parseShort(object.toString());
         } catch (NumberFormatException | NullPointerException ignored) {
-            throw new IllegalArgumentException("Cannot convert " + object + " to short");
+            CommonUtils.severe("Cannot convert " + object + " to short");
+
+            return 0;
         }
     }
 
@@ -80,7 +91,9 @@ public class NumberUtil {
         try {
             return Byte.parseByte(object.toString());
         } catch (NumberFormatException | NullPointerException ignored) {
-            throw new IllegalArgumentException("Cannot convert " + object + " to byte");
+            CommonUtils.severe("Cannot convert " + object + " to byte");
+
+            return 0;
         }
     }
 
