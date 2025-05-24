@@ -1,18 +1,25 @@
 package me.leoo.utils.bukkit.location;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class Region {
 
+    @Deprecated
     private String name;
+
+    @Nullable
     private World world;
+
     private int minY;
     private int maxY;
     private int minX;
@@ -44,6 +51,8 @@ public class Region {
     }
 
     public List<Block> getBlocks() {
+        if (world == null) return new ArrayList<>();
+
         List<Block> blocks = new ArrayList<>();
 
         for (int x = minX; x <= maxX; ++x) {
