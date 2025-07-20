@@ -23,7 +23,7 @@ public class HookManager {
      * Non required plugins only!
      *
      * @param pluginName The name of the plugin to check.
-     * @param runnable The runnable to execute if the plugin is enabled.
+     * @param runnable   The runnable to execute if the plugin is enabled.
      */
     public void ifEnabled(String pluginName, Runnable runnable) {
         if (Bukkit.getServer().getPluginManager().isPluginEnabled(pluginName)) {

@@ -20,7 +20,7 @@ public abstract class ItemProvider {
         }
     }
 
-    public static ItemBuilder apply( String[] material) {
+    public static ItemBuilder apply(String[] material) {
         if (material.length == 0) {
             return null;
         }
@@ -46,7 +46,10 @@ public abstract class ItemProvider {
 
 
     public abstract String[] getIds();
+
     public abstract String getPlugin();
+
     public abstract ItemStack getItem(String id);
+
     public abstract String getItemKey(ItemStack item);
 }
