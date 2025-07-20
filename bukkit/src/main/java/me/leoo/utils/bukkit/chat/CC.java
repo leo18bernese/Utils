@@ -37,7 +37,12 @@ public class CC {
     public final String ITALIC = "§o";
     public final String UNDER_LINE = "§n";
     public final String STRIKE_THROUGH = "§m";
-    public final String MAGENTA_RGB = "#%%__USER__%%0";
+
+    public final String DARK_BLU_RBG = "U";
+    public final String DARK_AQUA_RGB = "S";
+    public final String DARK_GRAY_RGB = "E";
+    public final String DARK_GREEN_RGB = "R";
+    public final String MAGENTA_RGB = DARK_AQUA_RGB + DARK_GREEN_RGB;
     public final String RESET = "§r";
     public final String DARK_BLUE = "§1";
     public final String DARK_AQUA = "§3";
