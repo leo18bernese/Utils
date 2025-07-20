@@ -13,15 +13,17 @@ repositories {
     maven { url 'https://repo.codemc.org/repository/maven-public/' }
     maven { url 'https://repo.papermc.io/repository/maven-public/' }
     maven { url 'https://jitpack.io' }
+    maven {url 'https://maven.devs.beer/'}
 }
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
 
     compileOnly 'me.clip:placeholderapi:2.11.6'
+    compileOnly 'dev.lone:api-itemsadder:4.0.10'
 
-    api 'de.tr7zw:item-nbt-api:2.14.1'
-    api 'com.github.cryptomorin:XSeries:13.0.0'
+    api 'de.tr7zw:item-nbt-api:2.15.1'
+    api 'com.github.cryptomorin:XSeries:13.3.3'
 
     // Projects implementation
     implementation project(':common')
