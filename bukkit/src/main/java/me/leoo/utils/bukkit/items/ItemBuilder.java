@@ -5,6 +5,7 @@ import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.profiles.builder.XSkull;
 import com.cryptomorin.xseries.profiles.objects.Profileable;
 import de.tr7zw.changeme.nbtapi.NBT;
+import dev.lone.itemsadder.api.CustomStack;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.bukkit.PlaceholderMap;
 import me.leoo.utils.bukkit.chat.CC;
 import me.leoo.utils.bukkit.config.ConfigSection;
+import me.leoo.utils.bukkit.items.provider.ItemProvider;
 import me.leoo.utils.bukkit.sound.SoundUtil;
 import me.leoo.utils.common.number.NumberUtil;
 import org.bukkit.Color;
@@ -137,9 +139,22 @@ public class ItemBuilder implements Cloneable {
         return this;
     }
 
+    public ItemBuilder itemsadder(String namespacedId) {
+        CustomStack customStack = CustomStack.getInstance(namespacedId);
+        if (customStack != null) {
+            this.itemStack = customStack.getItemStack();
+            this.itemMeta = this.itemStack.getItemMeta();
+        }
+        return this;
+    }
+
     public ItemBuilder skin(String string) {
         if (itemMeta instanceof SkullMeta) {
-            XSkull.of(itemMeta).profile(Profileable.detect(string)).applyAsync();
+            XSkull.of(itemMeta).profile(Profileable.detect(string)).applyAsync()
+                    .exceptionally(throwable -> {
+                        throwable.printStackTrace();
+                        return null;
+                    });
         }
 
         return this;
@@ -147,7 +162,7 @@ public class ItemBuilder implements Cloneable {
 
     public ItemBuilder skinSync(String string) {
         if (itemMeta instanceof SkullMeta) {
-            XSkull.of(itemMeta).profile(Profileable.detect(string)).apply();
+            XSkull.of(itemMeta).lenient().profile(Profileable.detect(string)).apply();
         }
 
         return this;
@@ -363,6 +378,8 @@ public class ItemBuilder implements Cloneable {
         } else if (name.equalsIgnoreCase("potion")) {
             builder = new ItemBuilder(XMaterial.POTION);
             builder.data(getData(material));
+        } else if (ItemProvider.hasProvider(name)) {
+            builder = ItemProvider.apply(material);
         } else {
             builder = new ItemBuilder(name, getData(material));
         }
