@@ -1,6 +1,7 @@
 package me.leoo.utils.bukkit.menu.pagination;
 
 import lombok.Getter;
+import me.leoo.utils.bukkit.Utils;
 import me.leoo.utils.bukkit.items.ItemBuilder;
 import me.leoo.utils.bukkit.menu.MenuBuilder;
 import me.leoo.utils.common.number.NumberUtil;
@@ -79,6 +80,10 @@ public abstract class PaginatedMenuBuilder extends MenuBuilder {
 
     @Override
     public String getTitle() {
+        if (!Utils.setNumberInventoryTitle) {
+            return getPaginationTitle();
+        }
+
         return getPaginationTitle() + " #" + getPage();
     }
 

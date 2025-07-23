@@ -28,6 +28,7 @@ public class Utils extends JavaPlugin {
     public static Supplier<ConfigManager> language;
     public static List<String> menuFunctions = new ArrayList<>();
     public static int menuUpdate = 60;
+    public static boolean setNumberInventoryTitle = true;
 
     @Override
     public void onEnable() {
@@ -67,6 +68,10 @@ public class Utils extends JavaPlugin {
 
     public static void setMenuUpdate(int menuUpdate) {
         Utils.menuUpdate = menuUpdate;
+    }
+
+    public static void setNumberInventoryTitle(boolean setNumberInventoryTitle) {
+        Utils.setNumberInventoryTitle = setNumberInventoryTitle;
     }
 
     public static void disable() {
