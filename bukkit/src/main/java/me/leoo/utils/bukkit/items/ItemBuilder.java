@@ -243,7 +243,7 @@ public class ItemBuilder implements Cloneable {
     }
 
     public ItemBuilder defaultFlags() {
-        flag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        flag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS);
         return this;
     }
 
