@@ -46,7 +46,8 @@ public class InteractListeners implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         ItemStack itemStack = event.getCurrentItem();
 
-        if (itemStack == null || itemStack.getType() == XMaterial.AIR.parseMaterial()) return;
+        if (itemStack == null || itemStack.getType() == XMaterial.AIR.parseMaterial() ||
+                itemStack.getAmount() <= 0) return;
 
         InteractItem item = InteractItem.getByItem(itemStack);
         if (item == null) return;
