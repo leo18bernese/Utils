@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
 
 @Data
 @RequiredArgsConstructor
-@Accessors
+@Accessors (chain = true)
 public class CommandBuilder {
 
     private final String name;
