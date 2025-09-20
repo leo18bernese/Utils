@@ -22,8 +22,8 @@ dependencies {
     compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'dev.lone:api-itemsadder:4.0.10'
 
-    api 'de.tr7zw:item-nbt-api:2.15.1'
-    api 'com.github.cryptomorin:XSeries:13.3.3'
+    api 'de.tr7zw:item-nbt-api:2.15.2'
+    api 'com.github.cryptomorin:XSeries:13.4.0'
 
     // Projects implementation
     implementation project(':common')
