@@ -33,6 +33,7 @@ public class MongoManager {
     }
 
     private void connect(String uri, String database) {
+        CommonUtils.info("Connecting to " + uri + " ...");
         this.client = MongoClients.create(uri);
 
         this.database = this.client.getDatabase(database);
