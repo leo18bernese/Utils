@@ -9,10 +9,10 @@ group = 'me.leoo.utils'
 
 repositories {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url 'https://repo.glaremasters.me/repository/public/' }
 }
 
 dependencies {
-    implementation("com.mojang:brigadier:1.0.500")
     implementation("com.mojang:brigadier:1.2.9")
     compileOnly 'net.md-5:bungeecord-api:1.21-R0.3'
 
