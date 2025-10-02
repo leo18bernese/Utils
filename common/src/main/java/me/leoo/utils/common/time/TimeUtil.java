@@ -33,7 +33,7 @@ public class TimeUtil {
         }
 
         for (String s : new String[]{"month", "months"}) {
-            TIME_VALUES.put(s, 30 * 7 * 24 * 60 * 60);
+            TIME_VALUES.put(s, 30 * 24 * 60 * 60);
         }
 
         for (String s : new String[]{"y", "year", "years"}) {
