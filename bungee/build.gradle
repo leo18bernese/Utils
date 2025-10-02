@@ -12,6 +12,8 @@ repositories {
 }
 
 dependencies {
+    implementation("com.mojang:brigadier:1.0.500")
+    implementation("com.mojang:brigadier:1.2.9")
     compileOnly 'net.md-5:bungeecord-api:1.21-R0.3'
 
     // Projects implementation
