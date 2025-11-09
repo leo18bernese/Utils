@@ -80,7 +80,6 @@ public class Utils extends JavaPlugin {
         Bukkit.getScheduler().cancelTasks(plugin);
     }
 
-
     public static Plugin get() {
         if (plugin == null) {
             plugin = JavaPlugin.getProvidingPlugin(Utils.class);
