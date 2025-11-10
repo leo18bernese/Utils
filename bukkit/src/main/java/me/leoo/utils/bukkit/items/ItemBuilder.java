@@ -17,10 +17,7 @@ import me.leoo.utils.bukkit.config.ConfigSection;
 import me.leoo.utils.bukkit.items.provider.ItemProvider;
 import me.leoo.utils.bukkit.sound.SoundUtil;
 import me.leoo.utils.common.number.NumberUtil;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -126,6 +123,7 @@ public class ItemBuilder implements Cloneable {
 
     public ItemBuilder setItemStack(ItemStack itemStack) {
         this.itemStack = itemStack;
+
         return this;
     }
 
@@ -460,10 +458,11 @@ public class ItemBuilder implements Cloneable {
         if (itemMeta.hasDisplayName()) name(CC.color(itemMeta.getDisplayName()));
         if (itemMeta.hasLore()) lore(CC.color(itemMeta.getLore()));
 
-        itemStack.setItemMeta(itemMeta);
-
         // Apply NBT Tags
         applyTags();
+
+       boolean appl = itemStack.setItemMeta(itemMeta);
+       if(!appl) Bukkit.getLogger().severe("ItemBuilder: Couldn't apply ItemMeta to ItemStack (type: " + itemStack.getType().name() + ")");
 
         return itemStack;
     }
