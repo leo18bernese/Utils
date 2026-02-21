@@ -19,7 +19,7 @@ repositories {
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
 
-    compileOnly 'me.clip:placeholderapi:2.11.7'
+    compileOnly 'me.clip:placeholderapi:2.12.2'
     compileOnly 'dev.lone:api-itemsadder:4.0.10'
 
     api 'de.tr7zw:item-nbt-api:2.15.5'
