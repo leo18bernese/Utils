@@ -19,7 +19,11 @@ public class VelocityUtils {
     }
 
     public Player getPlayerByUuid(String uuid) {
-        return getPlayerByUuid(UUID.fromString(uuid));
+        try {
+            return getPlayerByUuid(UUID.fromString(uuid));
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     public Player getPlayerByName(String name) {

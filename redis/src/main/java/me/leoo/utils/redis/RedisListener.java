@@ -34,21 +34,25 @@ public abstract class RedisListener<T extends Enum<T>> extends JedisPubSub {
     public void onMessage(String channel, String message) {
         if (!channel.equals(serverChannel)) return;
 
-        JsonObject json = new JsonParser().parse(message).getAsJsonObject();
-        JsonObject data = json.get("data").getAsJsonObject();
+        try {
+            JsonObject json = new JsonParser().parse(message).getAsJsonObject();
+            JsonObject data = json.get("data").getAsJsonObject();
 
-        T type = Enum.valueOf(t, json.get("type").getAsString());
+            T type = Enum.valueOf(t, json.get("type").getAsString());
 
-        JsonElement jsonId = json.get("id");
-        JsonElement jsonTarget = json.get("target");
+            JsonElement jsonId = json.get("id");
+            JsonElement jsonTarget = json.get("target");
 
-        // avoid sender server messages
-        if (parseServerId(jsonId, id -> serverId.equals(id))) return;
+            // avoid sender server messages
+            if (parseServerId(jsonId, id -> serverId.equals(id))) return;
 
-        // accept only messages if target is current server
-        if (parseServerId(jsonTarget, id -> !serverId.equals(id))) return;
+            // accept only messages if target is current server
+            if (parseServerId(jsonTarget, id -> !serverId.equals(id))) return;
 
-        onMessage(type, jsonId, jsonTarget, data);
+            onMessage(type, jsonId, jsonTarget, data);
+        } catch (Exception e) {
+            CommonUtils.severe("Error parsing Redis message: " + e.getMessage());
+        }
     }
 
     public boolean isNull(JsonObject data, String key) {

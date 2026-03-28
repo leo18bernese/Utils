@@ -29,14 +29,18 @@ public class LocationUtil {
         if (!string.contains(":")) return null;
 
         String[] split = string.split(":");
-        return new Location(
-                Bukkit.getWorld(split[0]),
-                Double.parseDouble(split[1]),
-                Double.parseDouble(split[2]),
-                Double.parseDouble(split[3]),
-                Float.parseFloat(split[4]),
-                Float.parseFloat(split[5])
-        );
+        try {
+            return new Location(
+                    Bukkit.getWorld(split[0]),
+                    Double.parseDouble(split[1]),
+                    Double.parseDouble(split[2]),
+                    Double.parseDouble(split[3]),
+                    Float.parseFloat(split[4]),
+                    Float.parseFloat(split[5])
+            );
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public String serializeLocation(Location location) {
