@@ -124,10 +124,10 @@ public abstract class VCommand extends BukkitCommand {
     /**
      * <p> Requests confirmation from the player to execute a command.
      *
-     * <p> Calls {@link #requestConfirmation(Player, List, String, Runnable)} with a single confirmation message.
+     * <p> Calls {@link #requestConfirmation(Player, List, String, Runnable, Runnable)} with a single confirmation message.
      */
-    public void requestConfirmation(Player player, String confirmMessage, String commandFormat, Runnable action) {
-        requestConfirmation(player, Collections.singletonList(confirmMessage), commandFormat, action);
+    public void requestConfirmation(Player player, String confirmMessage, String commandFormat, Runnable action, Runnable notConfirmedAction) {
+        requestConfirmation(player, Collections.singletonList(confirmMessage), commandFormat, action, notConfirmedAction);
     }
 
     /**
@@ -137,8 +137,9 @@ public abstract class VCommand extends BukkitCommand {
      * @param confirmMessage The message to send to the player for confirmation.
      * @param commandFormat  The command format to be executed upon confirmation.
      * @param action         The action to be executed upon confirmation.
+        * @param notConfirmedAction The action to be executed if the player does not confirm on his first next message
      */
-    public void requestConfirmation(Player player, List<String> confirmMessage, String commandFormat, Runnable action) {
+    public void requestConfirmation(Player player, List<String> confirmMessage, String commandFormat, Runnable action, Runnable notConfirmedAction) {
         confirmMessage.forEach(s -> {
             s = s.replace("{confirmMessage}", commandFormat);
 
@@ -148,6 +149,8 @@ public abstract class VCommand extends BukkitCommand {
         ChatMessage.request(player.getUniqueId(), event -> {
             if (event.getMessage().equalsIgnoreCase(commandFormat)) {
                 action.run();
+            } else {
+                notConfirmedAction.run();
             }
         });
     }
