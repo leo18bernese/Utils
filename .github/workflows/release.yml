@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+# 1. FIX ACCESSO: Concede i permessi di scrittura per creare la release
+permissions:
+  contents: write
+
 jobs:
   check_commit:
     runs-on: ubuntu-latest
@@ -12,7 +16,7 @@ jobs:
       is_release: ${{ steps.check.outputs.is_release }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4 # Aggiornato alla v4
         with:
           fetch-depth: 2
 
@@ -35,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4 # Aggiornato alla v4
         with:
           fetch-depth: 0
 
@@ -53,7 +57,8 @@ jobs:
 
       - name: Get release description
         run: |
-          DESCRIPTION=$(git log ${{ github.event.before }}..${{ github.sha }} --pretty=format:'- %s' | grep -v "updated version")
+          # 2. FIX CRASH: Aggiunto "|| true" alla fine per evitare l'exit code 1 se non ci sono altri commit
+          DESCRIPTION=$(git log ${{ github.event.before }}..${{ github.sha }} --pretty=format:'- %s' | grep -v "updated version" || true)
           echo "DESCRIPTION<<EOF" >> $GITHUB_ENV
           echo "$DESCRIPTION" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -61,10 +66,10 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v2 # Nuova action ufficiale aggiornata
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Usa il token automatico di GitHub, non serve il tuo PAT
         with:
           tag_name: ${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
+          name: Release ${{ env.VERSION }}
           body: ${{ env.DESCRIPTION }}
