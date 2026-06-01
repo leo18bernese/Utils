@@ -74,6 +74,8 @@ public abstract class MenuBuilder {
         Predicate<Player> require = getOpenCondition();
         if (require != null && !require.test(player)) return;
 
+        onOpen();
+
         player.openInventory(get());
 
         openedInventories.put(player.getUniqueId(), this);
@@ -94,6 +96,9 @@ public abstract class MenuBuilder {
     }
 
     public void onClose() {
+    }
+
+    public void onOpen() {
     }
 
     public Predicate<Player> getOpenCondition() {

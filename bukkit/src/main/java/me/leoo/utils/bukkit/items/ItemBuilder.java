@@ -438,6 +438,11 @@ public class ItemBuilder implements Cloneable {
     }
 
     public ItemStack get() {
+        if(itemStack == null) {
+            Bukkit.getLogger().severe("ItemBuilder: ItemStack is null for item with name: " + (itemMeta.hasDisplayName() ? itemMeta.getDisplayName() : "null") + " and type: " + (itemStack != null ? itemStack.getType().name() : "null"));
+            return new ItemStack(Material.STONE);
+        }
+
         for (Map.Entry<String, String> entry : replacements.entrySet()) {
             if (entry.getValue() == null) continue;
 
